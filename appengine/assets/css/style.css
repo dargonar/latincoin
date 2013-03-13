@@ -4626,3 +4626,12 @@ Dropzone css changes(new in v1.1.1)
     -moz-border-radius: 0px !important;
          border-radius: 0px !important;
 }
+
+/* HACKO */
+.form-horizontal .control-group-item{float:left; padding-left:20px;}
+.form-horizontal .control-group-item.input-container {width:300px; }
+.form-horizontal .control-group-item.input-container2 {width:100%; }
+.form-horizontal .control-group-item.symbol-container{width:50px;color: #424242;font-size: 25px;margin-top:5px;}
+.form-horizontal .control-label.ex {width:250px !important; text-align:left;}
+.form-horizontal .controls.ex {margin-left: 0px !important;}
+.form-horizontal .controls.ex2 {margin-left: 20px !important;}
