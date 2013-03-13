@@ -1,0 +1,7 @@
+  Bienvenido {{editor}},
+  
+  Diarios Móviles le da la bienvenida.
+  Un agente se estará comunicando contigo a la brevedad para completar su registro.
+  
+  ¡Muchas gracias por elegir nuestro servicio!
+  Diarios Móviles
