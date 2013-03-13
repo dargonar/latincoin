@@ -10,9 +10,13 @@ handlers:
   upload: static/favicon.ico
   mime_type: image/vnd.microsoft.icon
 
-- url: /(css|img|js|html)/(.*)
-  static_files: static/\1/\2
-  upload: static/(.*)
+- url: /assets/(.*)
+  static_files: assets/\1
+  upload: assets/(.*)
+
+- url: /html/(.*)
+  static_files: html/\1
+  upload: html/(.*)
 
 - url: /_ah/queue/deferred
   script: main.app
