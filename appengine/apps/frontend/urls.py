@@ -6,8 +6,9 @@ def get_rules():
     
     rules = [
       PathPrefixRoute('/account', [ NamePrefixRoute('account-', [ HandlerPrefixRoute('apps.frontend.account', [
-        Route('/signin', name='signin', handler='.Account:signin'),
-        Route('/login',  name='login',  handler='.Account:login'),
+        Route('/signup',  name='signup',  handler='.Account:signup'),
+        Route('/login',   name='login',   handler='.Account:login'),
+        Route('/confirm', name='confirm', handler='.Account:confirm'),
       ]) ]) ]),
       
       PathPrefixRoute('/ver', [ NamePrefixRoute('ver-', [ HandlerPrefixRoute('apps.frontend.designer', [
