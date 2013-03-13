@@ -3,12 +3,18 @@
   {%block content%}
     <!-- BEGIN LOGIN FORM -->
     <form class="form-vertical login-form" action="index.html">
-      <h3 class="form-title">Login to your account</h3>
+      <h3 class="form-title">{{ 'Ingrese a su cuenta' }}</h3>
       <div class="control-group">
+
+      <div class="alert alert-success">
+                  <button class="close" data-dismiss="alert"></button>
+                  <strong>Success!</strong> Te mandamos un mail, miralo, confirma y logueate puto.
+      </div>
+
         <div class="controls">
           <div class="input-icon left">
             <i class="icon-user"></i>
-            <input class="m-wrap" type="text" placeholder="Username" />
+            <input class="m-wrap" type="text" placeholder="{{'E-mail'}}" />
           </div>
         </div>
       </div>
@@ -16,31 +22,28 @@
         <div class="controls">
           <div class="input-icon left">
             <i class="icon-lock"></i>
-            <input class="m-wrap" type="password" style="" placeholder="Password" />
+            <input class="m-wrap" type="password" style="" placeholder="{{'Contraseña'}}" />
           </div>
         </div>
       </div>
       <div class="form-actions">
-        <label class="checkbox">
-        <input type="checkbox" /> Remember me
-        </label>
-        <a href="dashboard.html" id="login-btn" class="btn green pull-right">
-        Login <i class="m-icon-swapright m-icon-white"></i>
+        <a href="dashboard.html" id="login-btn" class="btn green pull-left">
+        {{'Ingresar'}} <i class="m-icon-swapright m-icon-white"></i>
         </a>            
       </div>
       <div class="forget-password">
-        <h4>Forgot your password ?</h4>
+        <h4>{{'Olvido su contraseña ?'}}</h4>
         <p>
-          no worries, click <a href="javascript:;" class="" id="forget-password">here</a>
-          to reset your password.
+          {{'Haga click'}}&nbsp;<a href="javascript:;" class="" id="forget-password">{{'aquí'}}</a>
+          {{'y siga las instrucciones'}}.
         </p>
       </div>
       <div class="create-account">
         <p>
-          Don't have an account yet ?&nbsp; 
-          <a href="javascript:;" id="register-btn" class="">Create an account</a>
+          {{'No tiene una cuenta aún ?'}}&nbsp; 
+          <a href="javascript:;" id="register-btn" class="">{{'Registrarse'}}</a>
         </p>
       </div>
     </form>
     <!-- END LOGIN FORM -->        
-  {%endblock%}  
+  {%endblock%}
