@@ -14,10 +14,6 @@ handlers:
   static_files: assets/\1
   upload: assets/(.*)
 
-- url: /html/(.*)
-  static_files: html/\1
-  upload: html/(.*)
-
 - url: /_ah/queue/deferred
   script: main.app
   login: admin

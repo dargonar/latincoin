@@ -9,6 +9,10 @@ def get_rules():
         Route('/signin', name='signin', handler='.Account:signin'),
         Route('/login',  name='login',  handler='.Account:login'),
       ]) ]) ]),
+      
+      PathPrefixRoute('/ver', [ NamePrefixRoute('ver-', [ HandlerPrefixRoute('apps.frontend.designer', [
+        Route('/<html>',         name='html',         handler='.Designer:verHtmlTemplate'),
+      ]) ]) ]),
     ]
     
     return rules
