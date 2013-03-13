@@ -17,6 +17,7 @@ light blue: #bfd5fa
 red: #e02222
 yellow: #ffb848
 green: #35aa47
+light green #28b779 
 purple: #852b99
 light grey: #fafafa;
 grey: #555555;
@@ -37,7 +38,7 @@ Reset and overrides
 /* general body settings */
 body { 
   color: #000; 
-  font-family: 'Open Sans';
+  font-family: 'Open Sans', Verdana, Arial;
   padding: 0px !important;
   margin: 0px !important;
   font-size:13px; 

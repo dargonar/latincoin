@@ -1128,10 +1128,14 @@
 				</div>
 			</div>
 			<!-- END PAGE CONTAINER-->		
-  <script>
-		jQuery(document).ready(function() {		
-			App.setPage("index");  // set current page
-			App.init(); // init the rest of plugins and elements
-		});
-	</script>
+    {%endblock%}
+    
+    {%block javascript_run%}
+    <script>
+      jQuery(document).ready(function() {			
+        // initiate layout and plugins
+        App.setPage("index");
+        App.init();
+      });
+    </script>
     {%endblock%}
