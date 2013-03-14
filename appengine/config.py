@@ -23,5 +23,12 @@ config['webapp2_extras.jinja2'] = {
   }
 }
 
-config['btc-xchange'] = {
+config['my'] = {
+  'site_name'   : 'BTC-XChange',
+  'domain_name' : 'www.btc-xchange.com.ar',
+  'secret_key'  : 'x-ray X-RAY ] % # ~ * QUEBEC kilo . bravo $ [ whiskey # ! whiskey " @ / 1 $ = + 8',
+  'mail': {
+    'welcome':             {'sender':'noreply', 'subject': 'Bienvenido', 'template':'email/welcome'},
+  },
+
 }

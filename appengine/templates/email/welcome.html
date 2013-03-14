@@ -1,60 +1,22 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title></title>
-  </head>
-  <body>
+{% extends "email/_base.html"%}
 
-    <div marginwidth="0" marginheight="0" style="">
-      <div style="">
-        <div style="width:600px;padding:10px">
-          <div>
-            <span style="font-size:12px"><span style="font-family:verdana,geneva,sans-serif">Bienvenido {{editor}},</span></span>
-          </div>
-          <div>
-          &nbsp;</div>
-          <div>
-            <span style="font-size:12px"><span style="font-family:verdana,geneva,sans-serif"><strong>Diarios Móviles&copy;</strong> le da la bienvenida.</span></span>
-          </div>
-          <div>
-            <span style="font-size:12px;font-family:verdana,geneva,sans-serif">Un agente se estará comunicando contigo a la brevedad para completar su registro.</span>
-          </div>
-          <br />
-          <div>
-            <span style="font-size:12px;font-family:verdana,geneva,sans-serif">¡Muchas gracias por elegir nuestro servicio!</span>
-          </div> 
-          <br />
-          <br/>
-          <span style="font-size:12px">
-            <span style="font-family:verdana,geneva,sans-serif">
-              El equipo de <a href="http://www.diariosmoviles.com.ar" style="color:#000;text-decoration:none;font-weight:bold" target="_blank"><span style="color:#000000;">diarios</span><span style="color:#aaaaaa;">móviles</span></a>&copy;
-            </span>
-          </span>
-          <br/>
-          <br/>
-          <br/>
+{%block content%}
+  <tr>
+    <td style="font-family:Arial, Helvetica, sans-serif; padding:20px;"><h1 style="font-size:18px; font-weight:normal;">!Bienvenido a ULTRAPROP, {{realestate_name}}!</h1>
+      <p style="font-size:13px; margin-bottom:20px;"> Estamos contentos por contar con su membrecía, esperamos que encuentre en ULTRAPROP una herramienta indispensable para concretar sus negocios inmobiliarios. Esa es nuestra misión. </p>
+      <div style="border-bottom:solid 3px #cccccc; border-right:solid 4px #cccccc;">
+        <div style="border:solid 1px #cccccc; padding:20px; padding-top:25px; height:120px;">
+          <table width="100%" border="0">
+            <tr>
+              <td valign="top" width="300"><span style="font-size:15px; font-weight:bold;">Comienza a utilizar ULTRAPROP</span></td>
+              <td valign="top" align="right"><a href="{{confirm_link}}" style="background-color: #5cb039; border: 1px solid #559f32; color: #FFFFFF; display: inline-block; font-size: 13px; font-weight: bold; padding: 10px 50px; text-decoration: none; white-space: nowrap; margin-bottom:15px;">Ingresar Ahora!</a><br /></td>
+            </tr>
+          </table>
+          <p style="font-size:12px; margin-bottom:10px;">Haga <a href="{{confirm_link}}" style="font-size:12px;">click aquí</a> o en el botón "Ingresar Ahora" para validar su cuenta.
+          </p>
+          <p style="font-size:12px;">Recuerde completar su perfil, es indispensable para que los usuarios lo contacten.</p>
         </div>
       </div>
-    </div>
-    <center>
-      <table border="0" cellpadding="20" cellspacing="0" width="100%" style="background:#eeeeee!important;border-top:1px solid #dddddd;clear:both">
-        <tbody>
-          <tr>
-            <td align="center" valign="top" style="padding-bottom:20px;">
-              <table border="0" cellpadding="0" cellspacing="0" width="600">
-                <tbody>
-                  <tr>
-                    <td align="center" valign="top">
-                      <a style="color:#505050!important;font-family:Verdana,Arial,Sans!important;font-size:11px!important;font-weight:normal!important;text-decoration:underline!important;vertical-align:top!important;text-align:center!important" href="http://www.diariosmoviles.com.ar" target="_blank">www.diariosmoviles.com.ar</a> 
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </center>
-  </body>
-</html>
+    </td>
+  </tr>
+{% endblock %}

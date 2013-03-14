@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
-from models import Account
 
+from config import config
+
+from models import Account
 from wtforms import Form, BooleanField, SelectField, TextField, FloatField , PasswordField, FileField, DateField
 from wtforms import HiddenField, TextAreaField, IntegerField, validators, ValidationError
 

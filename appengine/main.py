@@ -19,16 +19,16 @@ def enable_jinja2_debugging():
     """Enables blacklisted modules that help Jinja2 debugging."""
     if not debug:
         return
-    from google.appengine.tools.dev_appserver import HardenedModulesHook
-    HardenedModulesHook._WHITE_LIST_C_MODULES += ['_ctypes', 'gestalt']
+    #from google.appengine.tools.devappserver2 import HardenedModulesHook
+    #HardenedModulesHook._WHITE_LIST_C_MODULES += ['_ctypes', 'gestalt']
 
 # Corriendo en debug?
 debug = os.environ.get('SERVER_SOFTWARE', '').startswith('Dev')
 
 fullver = os.environ.get('CURRENT_VERSION_ID', '1')
 
-config['btc-xchange']['app_version_id'] = fullver
-config['btc-xchange']['app_version']    = fullver[0:fullver.rfind('.')]
+config['my']['app_version_id'] = fullver
+config['my']['app_version']    = fullver[0:fullver.rfind('.')]
 
 # Instanciamos la aplicacion.
 app = webapp2.WSGIApplication(routes=get_rules(config), debug=debug, config=config)

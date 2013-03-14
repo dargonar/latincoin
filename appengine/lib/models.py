@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import decimal
+
 from google.appengine.ext import db
 from appengine_properties import DecimalProperty
 
@@ -7,33 +9,32 @@ class Account(db.Model):
   email                 = db.StringProperty()
   bitcoin_address       = db.StringProperty()
   password              = db.StringProperty(indexed=False)
-  password_salt         = db.StringProperty(indexed=False)
   time_zone             = db.StringProperty(indexed=False)
   
-  reset_password_token  = db.StringProperty(indexed=False)
+  reset_password_token  = db.StringProperty()
 
-  confirmation_token    = db.StringProperty(indexed=False)
-  confirmation_sent_at  = db.DateProperty()
-  confirmed_at          = db.DateProperty()
+  confirmation_token    = db.StringProperty()
+  confirmation_sent_at  = db.DateTimeProperty()
+  confirmed_at          = db.DateTimeProperty()
 
   sign_in_count         = db.IntegerProperty()
-  current_sign_in_at    = db.DateProperty()
-  last_sign_in_at       = db.DateProperty()
+  current_sign_in_at    = db.DateTimeProperty()
+  last_sign_in_at       = db.DateTimeProperty()
   current_sign_in_ip    = db.StringProperty()
   last_sign_in_ip       = db.StringProperty()
   failed_attempts       = db.IntegerProperty(indexed=False)
   
   unlock_token          = db.StringProperty(indexed=False)
-  locked_at             = db.DateProperty()
+  locked_at             = db.DateTimeProperty()
   
   authentication_token  = db.StringProperty()
   ga_otp_secret         = db.StringProperty()
-  last_address_refresh  = db.DateProperty()
+  last_address_refresh  = db.DateTimeProperty()
   require_ga_otp        = db.IntegerProperty()
   full_name             = db.StringProperty()
   address               = db.TextProperty()
   notify_on_trade       = db.IntegerProperty()
-  commission_rate       = DecimalProperty()
+  commission_rate       = DecimalProperty(default=decimal.Decimal(0.6))
   created_at            = db.DateTimeProperty(auto_now_add=True)
   updated_at            = db.DateTimeProperty(auto_now=True)
 
