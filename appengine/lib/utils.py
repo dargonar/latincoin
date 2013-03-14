@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import logging
 import urllib
-
+from datetime import datetime
 from google.appengine.ext import db
 
 from webapp2 import abort, cached_property, RequestHandler, Response, HTTPException, uri_for as url_for, get_app
@@ -95,8 +95,9 @@ class Jinja2Mixin(object):
 class MyBaseHandler(RequestHandler, Jinja2Mixin, FlashBuildMixin):
   def dispatch(self):
     # Get a session store for this request.
-    self.session_store = sessions.get_store(request=self.request)
-
+    self.session_store   = sessions.get_store(request=self.request)
+    self.request.charset = 'utf-8'
+    
     try:
       # Dispatch the request.
       RequestHandler.dispatch(self)
@@ -133,5 +134,25 @@ class MyBaseHandler(RequestHandler, Jinja2Mixin, FlashBuildMixin):
     return get_app().config
     
 class FrontendHandler(MyBaseHandler):
+
+  def do_login(self, user):
+
+    user.sign_in_count        = user.sign_in_count + 1
+    user.last_sign_in_at      = user.current_sign_in_at
+    user.current_sign_in_at   = datetime.now()
+    user.last_sign_in_ip      = user.current_sign_in_ip
+    user.current_sign_in_ip   = self.request.remote_addr
+    user.reset_password_token = ''
+    user.put()
+
+    self.session['account.logged'] = True
+
+  def do_logout(self):
+    self.session.clear()
+
+  @property
+  def is_logged(self):
+    return self.session['account.logged'] if 'account.logged' in self.session else False
+
   pass
 

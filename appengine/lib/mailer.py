@@ -7,21 +7,40 @@ from webapp2_extras import jinja2
 from config import config
 from utils import Jinja2Mixin
 
-def send_welcome_email(user, host):
+def send_resetpassword_email(user, host):
+  
+  context = {
+    'reset_link' : url_for('account-reset', token=user.reset_password_token, _full=True),
+  }
+  
+  send_user_email(user, 'reset_password', context, host)
 
-  # Mando Correo de bienvenida y validación de eMail.
-  # Armo el contexto dado que lo utilizo para mail plano y mail HTML.
+
+
+def send_welcome_email(user, host):
+  
+  context = {
+    'confirm_link' : url_for('account-confirm', token=user.confirmation_token, _full=True),
+  }
+  
+  send_user_email(user, 'welcome', context, host)
+
+
+
+def send_user_email(user, email_type, params, host):
+
   fullurl = 'http://%s' % host
 
-  context = { 'site_name'    : config['my']['site_name'],
+  tmp =     { 'site_name'    : config['my']['site_name'],
               'domain_name'  : config['my']['domain_name'],
-              'server_url'   : fullurl        
-             ,'confirm_link' : url_for('account-confirm', token=user.confirmation_token, _full=True) 
-             ,'support_url'  : fullurl }
+              'server_url'   : fullurl,        
+              'support_url'  : fullurl }
 
-  template = config['my']['mail']['welcome']['template']
-  sender   = config['my']['mail']['welcome']['sender']
-  subject  = config['my']['mail']['welcome']['subject']
+  context = dict(params.items() + tmp.items())
+
+  template = config['my']['mail'][email_type]['template']
+  sender   = config['my']['mail'][email_type]['sender']
+  subject  = config['my']['mail'][email_type]['subject']
 
   j2 = jinja2.get_jinja2(app=get_app())
   

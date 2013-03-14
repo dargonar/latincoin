@@ -28,7 +28,8 @@ config['my'] = {
   'domain_name' : 'www.btc-xchange.com.ar',
   'secret_key'  : 'x-ray X-RAY ] % # ~ * QUEBEC kilo . bravo $ [ whiskey # ! whiskey " @ / 1 $ = + 8',
   'mail': {
-    'welcome':             {'sender':'noreply', 'subject': 'Bienvenido', 'template':'email/welcome'},
+    'welcome':        {'sender':'noreply', 'subject': 'Bienvenido', 'template':'email/welcome'},
+    'reset_password': {'sender':'noreply', 'subject': 'Recuperación de contraseña', 'template':'email/reset_password'},
   },
 
 }

@@ -17,14 +17,14 @@ class Account(db.Model):
   confirmation_sent_at  = db.DateTimeProperty()
   confirmed_at          = db.DateTimeProperty()
 
-  sign_in_count         = db.IntegerProperty()
+  sign_in_count         = db.IntegerProperty(default=0)
   current_sign_in_at    = db.DateTimeProperty()
   last_sign_in_at       = db.DateTimeProperty()
   current_sign_in_ip    = db.StringProperty()
   last_sign_in_ip       = db.StringProperty()
-  failed_attempts       = db.IntegerProperty(indexed=False)
+  failed_attempts       = db.IntegerProperty(default=0)
   
-  unlock_token          = db.StringProperty(indexed=False)
+  unlock_token          = db.StringProperty()
   locked_at             = db.DateTimeProperty()
   
   authentication_token  = db.StringProperty()

@@ -2,7 +2,7 @@
   
   {%block content%}
     <!-- BEGIN LOGIN FORM -->
-    <form id="login-form" class="form-vertical login-form" action="{{url_for('account-login')}}">
+    <form id="login-form" class="form-vertical login-form" action="{{url_for('account-login')}}" method="POST">
       <h3 class="form-title">{{ 'Ingrese a su cuenta' }}</h3>
       <div class="control-group">
 
@@ -16,7 +16,7 @@
         <div class="controls">
           <div class="input-icon left">
             <i class="icon-user"></i>
-            <input class="m-wrap" type="text" placeholder="{{'E-mail'}}" />
+            <input name="email" class="m-wrap" type="text" placeholder="{{'E-mail'}}" />
           </div>
         </div>
       </div>
@@ -24,7 +24,7 @@
         <div class="controls">
           <div class="input-icon left">
             <i class="icon-lock"></i>
-            <input class="m-wrap" type="password" style="" placeholder="{{'Contraseña'}}" />
+            <input name="password" class="m-wrap" type="password" style="" placeholder="{{'Contraseña'}}" />
           </div>
         </div>
       </div>
