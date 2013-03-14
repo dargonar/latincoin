@@ -12,7 +12,7 @@ def get_rules():
         Route('/forget',          name='forget',          handler='.Account:forget'),
       ]) ]) ]),
       
-      PathPrefixRoute('/ver', [ NamePrefixRoute('ver-', [ HandlerPrefixRoute('apps.frontend.designer', [
+      PathPrefixRoute('/designer', [ NamePrefixRoute('designer-', [ HandlerPrefixRoute('apps.frontend.designer', [
         Route('/<html>',         name='html',         handler='.Designer:verHtmlTemplate'),
       ]) ]) ]),
     ]

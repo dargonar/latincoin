@@ -17,6 +17,7 @@ light blue: #bfd5fa
 red: #e02222
 yellow: #ffb848
 green: #35aa47
+light green #28b779 
 purple: #852b99
 light grey: #fafafa;
 grey: #555555;
@@ -37,7 +38,7 @@ Reset and overrides
 /* general body settings */
 body { 
   color: #000; 
-  font-family: 'Open Sans';
+  font-family: 'Open Sans', Verdana, Arial;
   padding: 0px !important;
   margin: 0px !important;
   font-size:13px; 
@@ -710,7 +711,7 @@ Page breadcrumb
   padding-left: 8px;
   margin-bottom: 25px;
   border:0px !important;  
-  background-color: #eee;
+  /*HACK background-color: #eee; */
 }
 
 .page-content .breadcrumb a, 
@@ -2264,7 +2265,8 @@ Custom tabs
 }
 
 .tabbable-custom .nav-tabs > li.active { 
-  border-top: 3px solid #d12610; 
+  /*border-top: 3px solid #d12610; */
+  /*HACK */border-top: 3px solid #4b8df8; 
   margin-top: 0; 
   position: relative; 
 }
