@@ -113,6 +113,7 @@
                      </div>
                   </div>
                   {% set operations_table_name = 'Operaciones de compra activas'%}
+                  {% set collpased = True %}
                   {%include "frontend/trade_operations_table.html"%}
                   
 								</div>
@@ -196,6 +197,7 @@
                   </div>
                   
                   {% set operations_table_name = 'Operaciones de venta activas'%}
+                  {% set collpased = True %}
                   {%include "frontend/trade_operations_table.html"%}
 								
                   
@@ -205,6 +207,7 @@
 								<div class="tab-pane row-fluid profile-account" id="tab_1_3">
 									<div class="tab-pane active" id="tab_1_11">
                     {% set operations_table_name = 'Operaciones realiazadas desde el inicio de los tiempos'%}
+                    {% set collpased = False %}
                     {%include "frontend/trade_operations_table.html"%}
                     <div class="portlet-body" style="display: block;">
                     </div>
