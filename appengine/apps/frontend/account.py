@@ -74,7 +74,7 @@ class Account(FrontendHandler):
       user.put()
 
     self.set_error(u'Usuario o contraseña inválidos')
-
+    
     return self.redirect_to('account-login')
 
   def logout(self, **kwargs):

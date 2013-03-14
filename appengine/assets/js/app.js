@@ -1495,6 +1495,7 @@ var App = function () {
     }
 
     var handleLoginForm = function () {
+        //return;/* HACK */
         $('.login-form input').keypress(function (e) {
             if (e.which == 13) {
                 window.location.href = "index.html";

@@ -24,7 +24,8 @@
 				<!-- END PAGE HEADER-->
 				<!-- BEGIN PAGE CONTENT-->
 				<div class="row-fluid profile">
-					<div class="span12">
+					
+          <div class="span12">
 						<!--BEGIN TABS-->
 						<div class="tabbable tabbable-custom">
 							<ul class="nav nav-tabs">
@@ -36,180 +37,108 @@
 								
                 <!-- TAB #1 -->
                 <div class="tab-pane row-fluid active" id="tab_1_1">
-                  
-                  <div class="portlet tabbable">
-                  <!-- div class="portlet box light-grey tabbable" -->
-                     <div class="portlet-title">
+                  <div class="span8">
+                    <div class="portlet tabbable">
+                      <div class="portlet-title">
                         <h4>
-                           <i class="icon-money hidden-320"></i>
-                           <span class="hidden-480">Nueva orden de compra</span>
+                          <i class="icon-money hidden-320"></i>
+                          <span class="hidden-480">Nueva orden de compra</span>
                            &nbsp;
                         </h4>
-                     </div>
-                     <div class="portlet-body form"> <!-- style="border-top: 1px solid #b4cef8;" -->
-                        
-                           <div class="tab-content">
-                              <div class="tab-pane active" id="portlet_tab1">
-                                 <!-- BEGIN FORM-->
-                                 <form action="#" class="form-horizontal">
-                                    <div class="control-group">
-                                      <div class="control-group-item input-container input-container2">
-                                         <br/>
-                                         <div class="controls ex2">
-                                          <label class="checkbox">
-                                            <input type="checkbox" value="" /> Orden de Mercado (compre a precio de mercado): esta Orden o bien se ejecuta inmediatamente o se cancela.
-                                          </label>
-                                         </div>
-                                      </div>
-                                    </div>
-                                    <div class="control-group">
-                                      <div class="control-group-item input-container">
-                                         <label class="control-label ex">Cantidad de BTC a comprar</label>
-                                         <br/>
-                                         <div class="controls ex">
-                                            <div class="input-prepend">
-                                              <span class="add-on">BTC</span>
-                                              <input type="text" placeholder="2.1" class="m-wrap medium" />
-                                            </div>
-                                         </div>
-                                      </div>
-                                      <div class="control-group-item symbol-container">
-                                        <br/>x
-                                      </div>
-                                      <div class="control-group-item input-container">
-                                         <label class="control-label ex">Precio por BTC en Pesos</label>
-                                         <div class="controls ex">
-                                            <div class="input-prepend">
-                                              <span class="add-on">$</span>
-                                              <input type="text" placeholder="301.5" class="m-wrap medium" />
-                                            </div>
-                                         </div>
-                                      </div>
-                                      <div class="control-group-item symbol-container">
-                                        <br/>=
-                                      </div>
-                                      <div class="control-group-item input-container">
-                                        <label class="control-label ex">Total a recibir en Pesos</label>
-                                         <div class="controls ex">
-                                            <div class="input-prepend">
-                                              <span class="add-on">$</span>
-                                              <input type="text" placeholder="633.15" class="m-wrap medium" />
-                                            </div>
-                                         </div>
-                                      </div>
-                                    </div>
-                                    
-                                    <div class="form-actions">
-                                       <button type="submit" class="btn green"><i class="icon-ok"></i> Comprar</button>
-                                       <button type="button" class="btn" title="Borrar valores">Cancelar</button>
-                                    </div>
-                                 </form>
-                                 <!-- END FORM-->  
-                              </div>
-                              
-                              
-                           </div>
-                        
-                     </div>
+                       </div>
+                       <div class="portlet-body form"> <!-- style="border-top: 1px solid #b4cef8;" -->
+                          {% set bid = True %}
+                          {%include "frontend/trade_form.html"%}
+                      </div>
+                    </div>
                   </div>
-                  {% set operations_table_name = 'Operaciones de compra activas'%}
-                  {% set collpased = True %}
-                  {%include "frontend/trade_operations_table.html"%}
                   
+                  <div class="span4">
+                    <div>
+                      <div class="portlet">
+                        <div class="portlet-title">
+                          <h4><i class=" icon-question-sign"></i></h4>
+                        </div>
+                        <div class="portlet-body">
+                          <div class="well">
+                            <h4>Instrucciones</h4>
+                            <p>Para adicionar bitcoins em sua conta basta enviar para qualquer um dos endereços ao lado.</p>
+                            <p>Após algumas confirmações de rede o valor será automaticamente creditado e você será avisado por email. Esta operação pode demandar de vários minutos até poucas horas.</p>
+                            <p>Para aumentar o seu anonimato, poderão ser criados novos endereços a cada 24 horas.</p>
+                            <p>Qualquer dúvida entre em contato com o suporte.</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- END WELLS PORTLET-->
+                  </div>
+				
+                  
+                  <div class="span12" style="margin-left:0;">
+                    {% set operations_table_name = 'Operaciones de compra activas'%}
+                    {% set collpased = True %}
+                    {%include "frontend/trade_operations_table.html"%}
+                  </div>
 								</div>
 								
                 <!--end tab-pane-->
 								<!-- TAB #2 -->
                 <div class="tab-pane profile-classic row-fluid" id="tab_1_2">
-									<div class="portlet tabbable">
-                     <div class="portlet-title">
+									<div class="span8">
+                    <div class="portlet tabbable">
+                      <div class="portlet-title">
                         <h4>
-                           <i class="icon-money hidden-320"></i>
-                           <span class="hidden-480">Nueva orden de venta</span>
+                          <i class="icon-money hidden-320"></i>
+                          <span class="hidden-480">Nueva orden de venta</span>
                            &nbsp;
                         </h4>
-                     </div>
-                     <div class="portlet-body form">
-                        
-                           <div class="tab-content">
-                              <div class="tab-pane active" id="portlet_tab1">
-                                 <!-- BEGIN FORM-->
-                                 <form action="#" class="form-horizontal">
-                                    <div class="control-group">
-                                      <div class="control-group-item input-container input-container2">
-                                        <br/>
-                                        <div class="controls ex2">
-                                          <label class="checkbox">
-                                            <input type="checkbox" value="" /> Orden de Mercado (venda a precio de mercado): esta Orden o bien se ejecuta inmediatamente o se cancela.
-                                          </label>
-                                        </div>
-                                      </div>
-                                    </div>
-                                    <div class="control-group">
-                                      <div class="control-group-item input-container">
-                                         <label class="control-label ex">Cantidad de BTC a vender</label>
-                                         <br/>
-                                         <div class="controls ex">
-                                            <div class="input-prepend">
-                                              <span class="add-on">BTC</span>
-                                              <input type="text" placeholder="2.1" class="m-wrap medium" />
-                                            </div>
-                                         </div>
-                                      </div>
-                                      <div class="control-group-item symbol-container">
-                                        <br/>x
-                                      </div>
-                                      <div class="control-group-item input-container">
-                                         <label class="control-label ex">Precio por BTC en Pesos</label>
-                                         <div class="controls ex">
-                                            <div class="input-prepend">
-                                              <span class="add-on">$</span>
-                                              <input type="text" placeholder="301.5" class="m-wrap medium" />
-                                            </div>
-                                         </div>
-                                      </div>
-                                      <div class="control-group-item symbol-container">
-                                        <br/>=
-                                      </div>
-                                      <div class="control-group-item input-container">
-                                        <label class="control-label ex">Total a gastar en Pesos</label>
-                                         <div class="controls ex">
-                                            <div class="input-prepend">
-                                              <span class="add-on">$</span>
-                                              <input type="text" placeholder="633.15" class="m-wrap medium" />
-                                            </div>
-                                         </div>
-                                      </div>
-                                    </div>
-                                    
-                                    <div class="form-actions">
-                                       <button type="submit" class="btn green"><i class="icon-ok"></i> Vender</button>
-                                       <button type="button" class="btn" title="Borrar valores">Cancelar</button>
-                                    </div>
-                                 </form>
-                                 <!-- END FORM-->  
-                              </div>
-                              
-                              
-                           </div>
-                        
-                     </div>
+                       </div>
+                       <div class="portlet-body form"> <!-- style="border-top: 1px solid #b4cef8;" -->
+                          {% set bid = False %}
+                          {%include "frontend/trade_form.html"%}
+                      </div>
+                    </div>
                   </div>
                   
-                  {% set operations_table_name = 'Operaciones de venta activas'%}
-                  {% set collpased = True %}
-                  {%include "frontend/trade_operations_table.html"%}
-								
+                  
+                  <div class="span4">
+                    <div>
+                      <div class="portlet">
+                        <div class="portlet-title">
+                          <h4><i class=" icon-question-sign"></i></h4>
+                        </div>
+                        <div class="portlet-body">
+                          <div class="well">
+                            <h4>Instrucciones</h4>
+                            <p>Para adicionar bitcoins em sua conta basta enviar para qualquer um dos endereços ao lado.</p>
+                            <p>Após algumas confirmações de rede o valor será automaticamente creditado e você será avisado por email. Esta operação pode demandar de vários minutos até poucas horas.</p>
+                            <p>Para aumentar o seu anonimato, poderão ser criados novos endereços a cada 24 horas.</p>
+                            <p>Qualquer dúvida entre em contato com o suporte.</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- END WELLS PORTLET-->
+                  </div>
+				
+                  
+                  <div class="span12" style="margin-left:0;">
+                    {% set operations_table_name = 'Operaciones de venta activas'%}
+                    {% set collpased = True %}
+                    {%include "frontend/trade_operations_table.html"%}
+                  </div>
                   
 								</div>
 								
                 <!-- TAB #3 -->
 								<div class="tab-pane row-fluid profile-account" id="tab_1_3">
 									<div class="tab-pane active" id="tab_1_11">
-                    {% set operations_table_name = 'Operaciones realiazadas desde el inicio de los tiempos'%}
-                    {% set collpased = False %}
-                    {%include "frontend/trade_operations_table.html"%}
-                    <div class="portlet-body" style="display: block;">
+                    <div class="row-fluid">
+                      <div class="span12" style="margin-left:0;">
+                        {% set operations_table_name = 'Operaciones realiazadas desde el inicio de los tiempos'%}
+                        {% set collpased = False %}
+                        {%include "frontend/trade_operations_table.html"%}
+                      </div>
                     </div>
 									</div>
 								</div>
@@ -219,7 +148,11 @@
 						</div>
 						<!--END TABS-->
 					</div>
-				</div>
+				
+          
+          
+				
+        </div>
 				<!-- END PAGE CONTENT-->
 			</div>
   {%endblock%}
