@@ -31,16 +31,17 @@
 								<li class="active"><a href="#tab_1_1" data-toggle="tab">Comprar bitcoins</a></li>
 								<li><a href="#tab_1_2" data-toggle="tab">Vender bitcoins</a></li>
 								<li><a href="#tab_1_3" data-toggle="tab">Mis órdenes</a></li>
-                <li><a href="#tab_1_4" data-toggle="tab">Borrar 1</a></li>
-                <li><a href="#tab_1_6" data-toggle="tab">Borrar 2</a></li>
 							</ul>
 							<div class="tab-content">
-								<div class="tab-pane row-fluid active" id="tab_1_1">
+								
+                <!-- TAB #1 -->
+                <div class="tab-pane row-fluid active" id="tab_1_1">
                   
-                  <div class="portlet box light-grey tabbable">
+                  <div class="portlet tabbable">
+                  <!-- div class="portlet box light-grey tabbable" -->
                      <div class="portlet-title">
                         <h4>
-                           <i class="icon-reorder hidden-320"></i>
+                           <i class="icon-money hidden-320"></i>
                            <span class="hidden-480">Nueva orden de compra</span>
                            &nbsp;
                         </h4>
@@ -55,9 +56,8 @@
                                       <div class="control-group-item input-container input-container2">
                                          <br/>
                                          <div class="controls ex2">
-                                            <label class="radio" style="display:block;width:auto;">
-                                            <input type="radio" name="optionsRadios1" value="option1" />
-                                            Orden de Mercado (compre a precio de mercado): esta Orden o bien se ejecuta inmediatamente o se cancela.
+                                          <label class="checkbox">
+                                            <input type="checkbox" value="" /> Orden de Mercado (compre a precio de mercado): esta Orden o bien se ejecuta inmediatamente o se cancela.
                                           </label>
                                          </div>
                                       </div>
@@ -116,14 +116,14 @@
                   {%include "frontend/trade_operations_table.html"%}
                   
 								</div>
-								<!--end tab-pane-->
-								<div class="tab-pane profile-classic row-fluid" id="tab_1_2">
-									
-                   
-                  <div class="portlet box light-grey tabbable">
+								
+                <!--end tab-pane-->
+								<!-- TAB #2 -->
+                <div class="tab-pane profile-classic row-fluid" id="tab_1_2">
+									<div class="portlet tabbable">
                      <div class="portlet-title">
                         <h4>
-                           <i class="icon-reorder hidden-320"></i>
+                           <i class="icon-money hidden-320"></i>
                            <span class="hidden-480">Nueva orden de venta</span>
                            &nbsp;
                         </h4>
@@ -136,13 +136,12 @@
                                  <form action="#" class="form-horizontal">
                                     <div class="control-group">
                                       <div class="control-group-item input-container input-container2">
-                                         <br/>
-                                         <div class="controls ex2">
-                                            <label class="radio" style="display:block;width:auto;">
-                                            <input type="radio" name="optionsRadios1" value="option1" />
-                                            Orden de Mercado (venda a precio de mercado): esta Orden o bien se ejecuta inmediatamente o se cancela.
+                                        <br/>
+                                        <div class="controls ex2">
+                                          <label class="checkbox">
+                                            <input type="checkbox" value="" /> Orden de Mercado (venda a precio de mercado): esta Orden o bien se ejecuta inmediatamente o se cancela.
                                           </label>
-                                         </div>
+                                        </div>
                                       </div>
                                     </div>
                                     <div class="control-group">
@@ -201,7 +200,8 @@
 								
                   
 								</div>
-								<!--tab_1_2-->
+								
+                <!-- TAB #3 -->
 								<div class="tab-pane row-fluid profile-account" id="tab_1_3">
 									<div class="tab-pane active" id="tab_1_11">
                     {% set operations_table_name = 'Operaciones realiazadas desde el inicio de los tiempos'%}

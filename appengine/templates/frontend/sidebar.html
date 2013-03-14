@@ -1,11 +1,12 @@
 <!-- BEGIN SIDEBAR MENU -->        	
 			<ul>
-				<li>
+				
+        <li style="display:none;">
 					<!-- BEGIN SIDEBAR TOGGLER BUTTON -->
 					<div class="sidebar-toggler hidden-phone"></div>
 					<!-- BEGIN SIDEBAR TOGGLER BUTTON -->
 				</li>
-				<li>
+				<li style="display:none;">
 					<!-- BEGIN RESPONSIVE QUICK SEARCH FORM -->
 					<form class="sidebar-search">
 						<div class="input-box">
@@ -16,25 +17,25 @@
 					</form>
 					<!-- END RESPONSIVE QUICK SEARCH FORM -->
 				</li>
-				<li class="start active ">
-					<a href="trade.html">
+				<li class="start {{ 'active' if html=='trade' else '' }} ">
+					<a href="{{ url_for('designer-html', html='trade') }}">
             <i class="icon-home"></i> 
             <span class="title">Compra/Venta</span>
-            <span class="selected"></span>
+            <span class="{{ 'selected' if html=='trade' else 'arrow' }}"></span>
 					</a>
 				</li>
-				<li class="has-sub ">
-					<a href="funding.html">
+				<li class="has-sub {{ 'active' if html=='funding' else '' }} ">
+					<a href="{{ url_for('designer-html', html='funding') }}">
             <i class="icon-bookmark-empty"></i> 
             <span class="title">Fondos</span>
-            <span class="arrow "></span>
+            <span class="{{ 'selected' if html=='funding' else 'arrow' }}"></span>
 					</a>
 				</li>
-				<li class="has-sub ">
-					<a href="operations.html">
+				<li class="has-sub {{ 'active' if html=='operations' else '' }} ">
+					<a href="{{ url_for('designer-html', html='operations') }}">
 					<i class="icon-table"></i> 
 					<span class="title">Historial</span>
-					<span class="arrow "></span>
+					<span class="{{ 'selected' if html=='operations' else 'arrow' }}"></span>
 					</a>
 				</li>
 			</ul>

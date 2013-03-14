@@ -11,7 +11,7 @@ def get_rules():
         Route('/confirm', name='confirm', handler='.Account:confirm'),
       ]) ]) ]),
       
-      PathPrefixRoute('/ver', [ NamePrefixRoute('ver-', [ HandlerPrefixRoute('apps.frontend.designer', [
+      PathPrefixRoute('/designer', [ NamePrefixRoute('designer-', [ HandlerPrefixRoute('apps.frontend.designer', [
         Route('/<html>',         name='html',         handler='.Designer:verHtmlTemplate'),
       ]) ]) ]),
     ]
