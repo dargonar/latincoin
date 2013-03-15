@@ -3901,11 +3901,14 @@ Profile Page
   display:inline-block;
 }
 
-.sale-summary li i.icon-img-up {
+.maket_arrow
+{ height:14px;width:14px;margin-left:3px !important;margin-top:2px !important;}
+
+.sale-summary li i.icon-img-up, .maket_arrow_up {
   background:url(../img/icon-img-up.png) no-repeat !important;
 }
 
-.sale-summary li i.icon-img-down {
+.sale-summary li i.icon-img-down, .maket_arrow_down {
   background:url(../img/icon-img-down.png) no-repeat !important;
 }
 
@@ -4637,3 +4640,5 @@ Dropzone css changes(new in v1.1.1)
 .form-horizontal .control-label.ex {width:250px !important; text-align:left;}
 .form-horizontal .controls.ex {margin-left: 0px !important;}
 .form-horizontal .controls.ex2 {margin-left: 20px !important;}
+
+span.white_ticker {color:#ffffff; font-weight:bold;}
