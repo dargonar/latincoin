@@ -27,18 +27,66 @@
 						<!--BEGIN TABS-->
 						<div class="tabbable tabbable-custom">
 							<ul class="nav nav-tabs">
-								<li class="active"><a href="#tab_1_1" data-toggle="tab">Identidad</a></li>
-								<li><a href="#tab_1_2" data-toggle="tab">Clave y acceso</a></li>
+								<li class="active"><a href="#tab_1_1" data-toggle="tab">Info personal</a></li>
+								<li><a href="#tab_1_X" data-toggle="tab">Verificación de identidad</a></li>
+                <li><a href="#tab_1_2" data-toggle="tab">Clave y OTP</a></li>
 								<li><a href="#tab_1_4" data-toggle="tab">Cuentas bancarias</a></li>
 								<li><a href="#tab_1_5" data-toggle="tab">Direcciones bitcoins</a></li>
 							</ul>
 							<div class="tab-content">
                 <!--tab_1_1-->
                 <div class="tab-pane row-fluid active" id="tab_1_1">
-                  <!-- Perfil y Verificación de identidad -->
-                  {%include "frontend/profile_form.html"%}
+                  <div class="span12">
+                    <div>
+                      <!-- BEGIN GENERAL PORTLET-->
+                      <div class="portlet">
+                        <!-- div class="portlet-title">
+                          <h4><i class="icon-minus-sign"></i></h4>
+                        </div-->
+                        <div class="portlet-body form">
+                            {%include "frontend/profile_form_info.html"%}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
 								</div>
 								
+                <div class="tab-pane row-fluid" id="tab_1_X">
+                  
+                  <div class="span8">
+                    <div>
+                      <!-- BEGIN GENERAL PORTLET-->
+                      <div class="portlet">
+                        <!--div class="portlet-title">
+                          <h4><i class="icon-minus-sign"></i></h4>
+                        </div-->
+                        <div class="portlet-body form">
+                            {%include "frontend/profile_form_verification.html"%}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  
+                  <div class="span4">
+                    <div>
+                      <div class="portlet">
+                        <div class="portlet-body">
+                          <div class="well">
+                            <h4>Verificación de identidad y residencia</h4>
+                            <p>In order to be upgraded to a verified account, we need a proof of residence document. This is usually either a <b>Utility Bill</b>, a Tax Return, or a Voter's Registration Form. Please scan a copy of your ID and upload it on this page. Note that:<br/></p>
+                            <ul><li>The card must be clear and legible.</li><li>It cannot be an unopened envelope.</li><li>It cannot be a bank statement.</li><li>It cannot be edited or censored in any way.</li><li>It must be either in JPEG (.jpg), PNG (.png) or PDF (.pdf) format.</li><li><b>It must have been issued within the last 3 months.</b><br/></li></ul><br/>
+                            <p>A complete list of acceptable proof of residence documents is as follows:</p>
+                            <ul><li>Monthly utility bill</li><li>Internet Bill</li><li>Cellphone Bill</li><li>Tax Return document</li><li>Residency Certificate</li><li>Medical insurance bill<br/></li></ul>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- END WELLS PORTLET-->
+                  </div>
+
+								</div>
+                
                 <!--tab_1_2-->
 								<div class="tab-pane row-fluid" id="tab_1_2">
                   <!-- Cambia contraseña y Autenticación en dos pasos -->

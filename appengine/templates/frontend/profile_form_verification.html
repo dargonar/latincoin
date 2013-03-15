@@ -1,58 +1,71 @@
       <form action="#">
-        <h1>Identidad</h1>
-        <p>Necesitamos una prueba de identidad blah balh lba.</p>
-        <br />
-        <div class="controls">
-          <div class="thumbnail" style="width: 291px; height: 288px;">
-            <img src="/assets/img/profile/pirata.png" alt="" />
-          </div>
-        </div>
-        <div class="space10"></div>
-        <div class="control-group">
-          <label class="control-label">Seleccionar archivo en formato JPEG (.jpg), PNG (.png) ó PDF (.pdf).</label>
+        <div class="span5">
+          <h1><i class="icon-user"></i> Identidad</h1>
+          <p>Necesitamos una prueba de identidad.</p>
+          <br />
           <div class="controls">
-             <div class="fileupload fileupload-new" data-provides="fileupload">
+            <div class="thumbnail" style="width: 291px; height: 288px;">
+              <span style="position:absolute;"span class="label label-important">NO VERIFICADO</span>
+              <img src="/assets/img/profile/pirata.png" alt="" />
+            </div>
+          </div>
+          <div class="space10"></div>
+          <div class="control-group">
+            <div class="controls">
+              <label class="control-label">Seleccionar archivo que valide su <b>identidad</b>.</label>
+              <div class="fileupload fileupload-new" data-provides="fileupload">
                 <span class="btn btn-file">
-                <span class="fileupload-new">Select file</span>
-                <span class="fileupload-exists">Change</span>
+                <span class="fileupload-new">Elegir archivo</span>
+                <span class="fileupload-exists">Cambiar</span>
                 <input type="file" class="default" />
-                </span>
+                </span>&nbsp;<small>JPEG (.jpg), PNG (.png) ó PDF (.pdf).</small>
                 <span class="fileupload-preview"></span>
                 <a href="#" class="close fileupload-exists" data-dismiss="fileupload" style="float: none"></a>
-             </div>
+              </div>
+              <label class="control-label">Puede ser primer y segunda hoja del <b>DNI</b>, <b>pasaporte</b> o <b>carnet de conducir</b>.</label>
+            </div>
           </div>
+          <div class="clearfix"></div>
         </div>
-        <div class="clearfix"></div>
         
-        <h1>Residencia</h1>
-        <p>Necesitamos una prueba de residencia blah balh lba.</p>
-        <br />
-        <div class="controls">
-          <div class="thumbnail" style="width: 288px; height: 288px;">
-            <img src="/assets/img/profile/residencia_pirata.png" alt="" />
-          </div>
-        </div>
-        <div class="space10"></div>
-        <div class="control-group">
-          <label class="control-label">Seleccionar archivo en formato JPEG (.jpg), PNG (.png) ó PDF (.pdf).</label>
+        <div class="span5">
+          <h1><i class="icon-map-marker"></i> Domicilio</h1>
+          <p>Necesitamos una prueba de domicilio.</p>
+          <br />
           <div class="controls">
-             <div class="fileupload fileupload-new" data-provides="fileupload">
-                <span class="btn btn-file">
-                <span class="fileupload-new">Select file</span>
-                <span class="fileupload-exists">Change</span>
-                <input type="file" class="default" />
-                </span>
-                <span class="fileupload-preview"></span>
-                <a href="#" class="close fileupload-exists" data-dismiss="fileupload" style="float: none"></a>
-             </div>
+            <div class="thumbnail" style="width: 288px; height: 288px;">
+              <!-- span style="position:absolute;" class="label label-warning">NO VERIFICADO</span -->
+              <span style="position:absolute;" class="label label-success">VERIFICADO</span>
+              <img src="/assets/img/profile/residencia_pirata.png" alt="" />
+            </div>
           </div>
+          <div class="space10"></div>
+          <div class="control-group">
+            <label class="control-label">Seleccionar archivo que valide su <b>domicilio</b>.</label>
+            <div class="controls">
+               <div class="fileupload fileupload-new" data-provides="fileupload">
+                  <span class="btn btn-file">
+                    <span class="fileupload-new">Elegir archivo</span>
+                    <span class="fileupload-exists">Cambiar</span>
+                    <input type="file" class="default" />
+                  </span>&nbsp;<small>JPEG (.jpg), PNG (.png) ó PDF (.pdf).</small>
+                  <span class="fileupload-preview"></span>
+                  <a href="#" class="close fileupload-exists" data-dismiss="fileupload" style="float: none"></a>
+               </div>
+            </div>
+            <label class="control-label">Puede ser una <b>factura a su nombre</b> o un <b>certificado de domicilio</b>.</label>
+          </div>
+          <div class="clearfix"></div>
         </div>
-        <div class="clearfix"></div>
         
-        <div class="space10"></div>
-        <div class="submit-btn">
-          <a href="#" class="btn green">Subir archivos</a>
-          <a href="#" class="btn">Cancelar</a>
+        <div class="span10">
+          <div class="space10"></div>
+          <div class="submit-btn">
+            <div class="span9">
+              <a href="#" class="btn green btn-block">Subir archivos</a>
+            </div>&nbsp;
+            <a href="#" class="btn">Cancelar</a>
+          </div>
         </div>
       </form>
     

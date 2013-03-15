@@ -19,16 +19,23 @@
 				</li>
 				<li class="start {{ 'active' if html=='trade' else '' }} ">
 					<a href="{{ url_for('designer-html', html='trade') }}">
-            <i class="icon-home"></i> 
+            <i class="icon-money"></i> 
             <span class="title">Compra/Venta</span>
             <span class="{{ 'selected' if html=='trade' else 'arrow' }}"></span>
 					</a>
 				</li>
-				<li class="has-sub {{ 'active' if html=='funding' else '' }} ">
-					<a href="{{ url_for('designer-html', html='funding') }}">
-            <i class="icon-bookmark-empty"></i> 
-            <span class="title">Fondos</span>
-            <span class="{{ 'selected' if html=='funding' else 'arrow' }}"></span>
+				<li class="has-sub {{ 'active' if html=='deposito' else '' }} ">
+					<a href="{{ url_for('designer-html', html='deposito') }}">
+            <i class="icon-signin"></i> 
+            <span class="title">Depósito</span>
+            <span class="{{ 'selected' if html=='deposito' else 'arrow' }}"></span>
+					</a>
+				</li>
+        <li class="has-sub {{ 'active' if html=='retiro' else '' }} ">
+					<a href="{{ url_for('designer-html', html='retiro') }}">
+            <i class=" icon-signout"></i> 
+            <span class="title">Retiro</span>
+            <span class="{{ 'selected' if html=='retiro' else 'arrow' }}"></span>
 					</a>
 				</li>
 				<li class="has-sub {{ 'active' if html=='operations' else '' }} ">
