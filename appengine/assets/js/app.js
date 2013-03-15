@@ -2088,7 +2088,7 @@ var App = function () {
             var aData = oTable.fnGetData(nRow);
             var jqTds = $('>td', nRow);
             jqTds[0].innerHTML = '<input type="text" class="m-wrap small" value="' + aData[0] + '">';
-            //jqTds[1].innerHTML = '<input type="text" class="m-wrap small" value="' + aData[1] + '">';
+            jqTds[1].innerHTML = (aData[1]!='')?aData[1]:'<input type="text" class="m-wrap small" value="' + aData[1] + '">';
             jqTds[2].innerHTML = '<a class="edit" href="">Guardar</a>&nbsp;<a class="cancel" href="">Cancelar</a>';
         }
         
@@ -2109,10 +2109,12 @@ var App = function () {
         }
 
         var oTable = $('#tabla_direcciones_bitcoin').dataTable();
-        jQuery('#tabla_direcciones_bitcoin_new_wrapper .dataTables_filter input').addClass("m-wrap medium"); // modify table search input
-        jQuery('#tabla_direcciones_bitcoin_new_wrapper .dataTables_length select').addClass("m-wrap xsmall"); // modify table per page dropdown
+        //jQuery('#tabla_direcciones_bitcoin_wrapper .dataTables_filter input').addClass("m-wrap medium"); // modify table search input
+        //jQuery('#tabla_direcciones_bitcoin_wrapper .dataTables_length select').addClass("m-wrap xsmall"); // modify table per page dropdown
 
-        var nEditing = null;
+        jQuery('#tabla_direcciones_bitcoin_wrapper .row-fluid').remove(); // modify table search input
+        
+        var xEditing = null;
 
         $('#tabla_direcciones_bitcoin_new').click(function (e) {
             e.preventDefault();
@@ -2120,7 +2122,7 @@ var App = function () {
                 '<a class="edit" href="">Editar</a>&nbsp;<a class="cancel" data-mode="new" href="">Cancelar</a>']);
             var nRow = oTable.fnGetNodes(aiNew[0]);
             editRow(oTable, nRow);
-            nEditing = nRow;
+            xEditing = nRow;
         });
 
         /*
@@ -2137,37 +2139,38 @@ var App = function () {
         });
         */
 
-        $('#tabla_direcciones_bitcoin_new a.cancel').live('click', function (e) {
+        $('#tabla_direcciones_bitcoin a.cancel').live('click', function (e) {
             e.preventDefault();
             if ($(this).attr("data-mode") == "new") {
                 var nRow = $(this).parents('tr')[0];
                 oTable.fnDeleteRow(nRow);
             } else {
-                restoreRow(oTable, nEditing);
-                nEditing = null;            
+                restoreRow(oTable, xEditing);
+                xEditing = null;            
             }
         });
 
-        $('#tabla_direcciones_bitcoin_new a.edit').live('click', function (e) {
+        $('#tabla_direcciones_bitcoin a.edit').live('click', function (e) {
             e.preventDefault();
 
             /* Get the row as a parent of the link that was clicked on */
             var nRow = $(this).parents('tr')[0];
-
-            if (nEditing !== null && nEditing != nRow) {
+            
+            if (xEditing !== null && xEditing != nRow) {
                 /* Currently editing - but not this row - restore the old before continuing to edit mode */
-                restoreRow(oTable, nEditing);
+                restoreRow(oTable, xEditing);
                 editRow(oTable, nRow);
-                nEditing = nRow;
-            } else if (nEditing == nRow && this.innerHTML == "Save") {
+                xEditing = nRow;
+            } else if (xEditing == nRow && this.innerHTML == "Guardar") {
                 /* Editing this row and want to save it */
-                saveRow(oTable, nEditing);
-                nEditing = null;
+                saveRow(oTable, xEditing);
+                xEditing = null;
                 alert("Updated! Do not forget to do some ajax to sync with backend :)");
             } else {
                 /* No edit in progress - let's start one */
                 editRow(oTable, nRow);
-                nEditing = nRow;
+                xEditing = nRow;
+                //alert('edit::2');
             }
         });
     }
@@ -2199,15 +2202,17 @@ var App = function () {
         }
         
         function getCuentaCombo(value){
+          var cuenta = '';
+          var caja = '';
           if(value=='Cuenta Corriente')
           {
-            return '<select class="medium m-wrap" tabindex="1"><option value="1" selected>Cuenta Corriente</option><option value="2">Caja de Ahorro</option></select>';
+            cuenta = 'selected';
           }
           if(value=='Caja de Ahorro')
           {
-            return '<select class="medium m-wrap" tabindex="1"><option value="1">Cuenta Corriente</option><option value="2" selected>Caja de Ahorro</option></select>';
+            caja = 'selected';
           }
-          return '<select class="medium m-wrap" tabindex="1"><option value="1">Cuenta Corriente</option><option value="2">Caja de Ahorro</option></select>';
+          return '<select class="medium m-wrap" tabindex="1"><option value="1" '+cuenta+'>Cuenta Corriente</option><option value="2" '+caja+'>Caja de Ahorro</option></select>';
         }
 
         function saveRow(oTable, nRow) {
@@ -2233,9 +2238,11 @@ var App = function () {
         }
 
         var oTable = $('#tabla_cuentas_bancarias').dataTable();
-        jQuery('#tabla_cuentas_bancarias_wrapper .dataTables_filter input').addClass("m-wrap medium"); // modify table search input
-        jQuery('#tabla_cuentas_bancarias_wrapper .dataTables_length select').addClass("m-wrap xsmall"); // modify table per page dropdown
+        // jQuery('#tabla_cuentas_bancarias_wrapper .dataTables_filter input').addClass("m-wrap medium"); // modify table search input
+        // jQuery('#tabla_cuentas_bancarias_wrapper .dataTables_length select').addClass("m-wrap xsmall"); // modify table per page dropdown
 
+        jQuery('#tabla_cuentas_bancarias_wrapper .row-fluid').remove(); // modify table search input
+        
         var nEditing = null;
 
         $('#tabla_cuentas_bancarias_new').click(function (e) {
@@ -2281,7 +2288,7 @@ var App = function () {
                 restoreRow(oTable, nEditing);
                 editRow(oTable, nRow);
                 nEditing = nRow;
-            } else if (nEditing == nRow && this.innerHTML == "Save") {
+            } else if (nEditing == nRow && this.innerHTML == "Guardar") {
                 /* Editing this row and want to save it */
                 saveRow(oTable, nEditing);
                 nEditing = null;
