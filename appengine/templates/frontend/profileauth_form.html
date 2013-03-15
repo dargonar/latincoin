@@ -1,0 +1,49 @@
+  <div class="row-fluid">
+    <div class="span12">
+      <div class="span3">
+        <ul class="ver-inline-menu tabbable margin-bottom-10">
+          <li class="active"><a data-toggle="tab" href="#tab_password"><i class="icon-cog"></i> Cambia contraseña</a> <span class="after"></span></li>
+          <li class=""><a data-toggle="tab" href="#tab_2steps_auth"><i class="icon-eye-open"></i> Autenticación en dos pasos (Google)</a></li>
+        </ul>
+      </div>
+      
+      <div class="span5">
+        <div class="tab-content">
+          <div id="tab_password" class="tab-pane active">
+            <div style="height: auto;" id="accordion3-3" class="accordion collapse">
+              {%include "frontend/profileauth_form_password.html"%}
+            </div>
+          </div>
+          
+          <div id="tab_2steps_auth" class="tab-pane">
+            <div style="height: auto;" id="accordion44-3" class="accordion collapse">
+              {%include "frontend/profileauth_form_otp.html"%}
+              
+            </div>
+          </div>
+        </div>
+      </div>
+      <!--end span5-->                                   
+      
+      <div class="span4">
+        <div>
+          <div class="portlet">
+            <div class="portlet-body">
+              <div class="well">
+                <h4>Autenticación en dos pasos OTP</h4>
+                <p>Welcome to the Mt.Gox Security Center.<br>
+                  <br>
+                Here you can secure your account by linking One Time Password (OTP) solutions such as a YubiKey or Google Authenticator to various account functions.<br>
+                <br>
+                <b>Please be careful when linking OTP to Extra Security. Once linked, all changes to the Security Center will require a YubiKey or Google Authenticator use.</b>
+                </p>
+
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- END WELLS PORTLET-->
+      </div>
+
+    </div>
+  </div>
