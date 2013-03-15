@@ -3901,14 +3901,14 @@ Profile Page
   display:inline-block;
 }
 
-.maket_arrow
+.maket_arrow /*HACK*/
 { height:14px;width:14px;margin-left:3px !important;margin-top:2px !important;}
 
-.sale-summary li i.icon-img-up, .maket_arrow_up {
+.sale-summary li i.icon-img-up, .maket_arrow_up /*HACK*/{
   background:url(../img/icon-img-up.png) no-repeat !important;
 }
 
-.sale-summary li i.icon-img-down, .maket_arrow_down {
+.sale-summary li i.icon-img-down, .maket_arrow_down /*HACK*/{
   background:url(../img/icon-img-down.png) no-repeat !important;
 }
 
@@ -4641,4 +4641,6 @@ Dropzone css changes(new in v1.1.1)
 .form-horizontal .controls.ex {margin-left: 0px !important;}
 .form-horizontal .controls.ex2 {margin-left: 20px !important;}
 
+/*HACK*/
 span.white_ticker {color:#ffffff; font-weight:bold;}
+.form-actions {padding-left: 180px !important;}
