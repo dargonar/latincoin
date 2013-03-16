@@ -30,7 +30,7 @@ grey: #555555;
 /***
 Import fonts
 ***/
-@import url(http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700);
+@import url(http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700); 
 
 /***
 Reset and overrides  
@@ -853,7 +853,7 @@ Custom wells
      -moz-box-shadow: none !important;
           box-shadow: none !important;        
 }
-
+.well.gray{background-color: #F5F5F5;}
 .well.mini {
   padding: 7px !important;
 }
@@ -4644,3 +4644,6 @@ Dropzone css changes(new in v1.1.1)
 /*HACK*/
 span.white_ticker {color:#ffffff; font-weight:bold;}
 .form-actions {padding-left: 180px !important;}
+
+/* HACK breadcrumbs */
+.breadcrumb {background-color:#FFFFFF;}
