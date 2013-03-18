@@ -1,8 +1,18 @@
-				<!-- BEGIN TOP NAVIGATION MENU -->					
-				<ul class="nav pull-right">
-					
-          <li class="dropdown user">
-						<div class="dropdown-toggle" style="margin-top:3px;">
+				<!-- display:none si no esta  logeado -->					
+				<ul class="nav pull-left">
+          <li class="dropdown user" style="left:0px;">
+						<div class="dropdown-toggle" style="margin-top: 3px;height: 26px;">
+              <a href="#" class="dropdown-toggle">
+                <i class="icon-shopping-cart"></i>
+                <span class="username">Mercado</span>
+              </a>
+            </div>
+          </li>
+        </ul>
+        
+        <ul class="nav pull-right">
+          <li class="dropdown user" style="height:42px;">
+						<div class="dropdown-toggle" style="margin-top: 3px;height: 26px;">
               <span class="username">Ultimo precio: <span class="white_ticker">$179,94</span> <i class="maket_arrow maket_arrow_down"></i></span>
               &nbsp;&nbsp;
               <span class="username">HIGH: <span class="white_ticker"><span class="white_ticker">$188,13</span> <i class="maket_arrow maket_arrow_down"></i></span>
@@ -20,7 +30,7 @@
           
           {# %include "frontend/header_items_icons.html" % #}
           
-          <!-- BEGIN USER LOGIN DROPDOWN -->
+          <!-- display:none si no esta  logeado -->					
 					<li class="dropdown user">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
 						<img alt="" src="/assets/img/avatar1_small.jpg" />
@@ -35,6 +45,6 @@
 							<li><a href="{{url_for('account-logout')}}"><i class="icon-key"></i> Log Out</a></li>
 						</ul>
 					</li>
-					<!-- END USER LOGIN DROPDOWN -->
-				</ul>
+
+        </ul>
 				

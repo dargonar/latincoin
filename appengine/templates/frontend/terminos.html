@@ -1,0 +1,104 @@
+  {% extends "frontend/base.html"%}
+  
+  {%block html_head%}
+  <!-- Index -->
+  <link href="/assets/google-code-prettify/prettify.css" rel="stylesheet" />
+  <link href="/assets/css/docs.css" rel="stylesheet" />
+  {%endblock%}
+  
+  {%block content_body%}
+
+  <header class="jumbotron subhead" style="margin-top:42px;">
+    <div class="container container-narrow">
+      <h1>BTC Exchanger</h1>
+      <p class="lead">ARGENTINA</p>
+      <div style="display:none;position:absolute; bottom:0px; right:0px;">
+        <a href="/login" id="login-btn-off" class="btn green pull-left">
+        Ingresar / Registrarse&nbsp;<i class="m-icon-swapright m-icon-white"></i>
+        </a>
+      </div>
+    </div>
+  </header>
+
+	<!-- BEGIN CONTAINER -->	
+	<div class="container  row-fluid" style="width:75%;max-width:1024px;margin:0 auto;" >
+		
+    
+          <div class="row" style="margin-top:20px;margin-bottom:20px">
+          <div class="span12">
+              <table class="table table-bordered table-striped">
+               <tbody>
+                  <tr>
+                    <td width="50%">
+                      <ul class="menu">
+                        <h1>Términos y condiciones</h1>
+                        <p>
+                          <b>Metronic</b> is a responsive admin dashboard template powered with <a href="http://twitter.github.com/bootstrap/" target="_blank">Twitter Bootstrap Framework</a> for admin and backend applications.  Metronic has a clean and intuitive metro style design which makes your next project look awesome and yet user friendly.  Metronic comes with a huge collection of plugins and UI components and it works in all major web browsers, tablets and phones.
+                        </p>  
+                        <hr>
+                        <p>
+                          <a href="http://www.mercadobtc.com.ar" target="_blank">BTC Exchanger Argentina</a><br>
+                          Contacto: <a href="mailto:support@keenthemes.com">soporte@mercadobtc.com.ar</a><br>
+                          Ultima actualización: 13/02/2013<br>
+                        </p>
+                      </ul>
+                    </td>
+                    <td width="50%">
+                      <h4>Tabla de contenidos:</h4>
+                      <ul class="menu">
+                        <li><a href="javascript:;" class="clickable" data-section="#overview">1. ACEPTACION DEL CONTRATO Y DE SUS MODIFICACIONES</a></li>
+                        <li><a href="javascript:;" class="clickable" data-section="#template_structure">2. EL SISTEMA</a></li>
+                        <li><a href="javascript:;" class="clickable" data-section="#font">3. PERSONAS EXCLUIDAS</a></li>
+                        <li><a href="javascript:;" class="clickable" data-section="#theme_config">4. AGREGAR FONDOS</a></li>
+                        <li><a href="javascript:;" class="clickable" data-section="#top_menu">5. INSTRUCCIONES DE TRANSFERENCIA</a></li>
+                        <li><a href="javascript:;" class="clickable" data-section="#main_menu">6. RECEPCION</a></li>
+                        <li><a href="javascript:;" class="clickable" data-section="#new_page">7. LIMITES</a></li>
+                        <li><a href="javascript:;" class="clickable" data-section="#buttons">8. RETIRO DE FONDOS</a></li>                        
+                        <li><a href="javascript:;" class="clickable" data-section="#init">9. TERMINACION DEL CONTRATO. CIERRE DE CUENTA</a></li>
+                        <li><a href="javascript:;" class="clickable" data-section="#references">10. EXCLUSIÓN DE RESPONSABILIDAD DE LA EMPRESA</a></li>
+                        <li><a href="javascript:;" class="clickable" data-section="#log">11. USO INDEBIDO DEL SITIO</a></li>
+                        <li><a href="javascript:;" class="clickable" data-section="#end">12. CESION</a></li>
+                        <li><a href="javascript:;" class="clickable" data-section="#end">13. INFORMACION INTRODUCIDA POR EL USUARIO</a></li>
+                        <li><a href="javascript:;" class="clickable" data-section="#end">14. DERECHOS SOBRE EL SITIO Y SU CONTENIDO</a></li>
+                        <li><a href="javascript:;" class="clickable" data-section="#end">15. INFORMACION DEL USUARIO</a></li>
+                        <li><a href="javascript:;" class="clickable" data-section="#end">16. NOTIFICACIONES</a></li>
+                        <li><a href="javascript:;" class="clickable" data-section="#end">17. JURISDICCIÓN Y LEY APLICABLE</a></li>
+                      </ul>
+                    </td>  
+                  </tr>
+                </tbody>
+              </table>
+          </div> 
+      </div> 
+
+       <div class="row">
+        <div class="span12">
+          <section id="template_structure">
+            <div class="page-header">
+              <h2>1. ACEPTACION DEL CONTRATO Y DE SUS MODIFICACIONES</h2>
+               <a href="javascript:;">To top <i class="icon-arrow-up"></i></a>
+            </div>
+            
+            <div class="well">
+1.1 El uso del Sistema implica la aceptación sin reservas por parte del Usuario del Contrato, la Política de Privacidad y todo otro documento al cual se hace referencia en el presente.
+1.2 La Empresa podrá modificar unilateralmente el Contrato. Las modificaciones serán obligatorias desde su publicación en el Sitio o desde su notificación al Usuario, lo que suceda primero, sin perjuicio de la facultad del Usuario de terminar el Contrato.
+            </div>
+            
+
+          </section>
+        </div>
+      </div>
+    
+	</div>
+	<!-- END CONTAINER -->
+	{%endblock%}
+  
+  {%block javascript_run%}
+  <script>
+		jQuery(document).ready(function() {			
+			// initiate layout and plugins
+			App.setPage("calendar");
+			App.init();
+		});
+	</script>
+  {%endblock%}
