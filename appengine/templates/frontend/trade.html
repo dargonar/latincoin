@@ -31,7 +31,6 @@
 							<ul class="nav nav-tabs">
 								<li class="active"><a href="#tab_1_1" data-toggle="tab">Comprar bitcoins</a></li>
 								<li><a href="#tab_1_2" data-toggle="tab">Vender bitcoins</a></li>
-								<li><a href="#tab_1_3" data-toggle="tab">Ordenes activas</a></li>
 							</ul>
 							<div class="tab-content">
 								
@@ -129,20 +128,6 @@
                   </div>
                   
 								</div>
-								
-                <!-- TAB #3 -->
-								<div class="tab-pane row-fluid profile-account" id="tab_1_3">
-									<div class="tab-pane active" id="tab_1_11">
-                    <div class="row-fluid">
-                      <div class="span12" style="margin-left:0;">
-                        {% set operations_table_name = 'Operaciones realiazadas desde el inicio de los tiempos'%}
-                        {% set collpased = False %}
-                        {%include "frontend/trade_operations_table.html"%}
-                      </div>
-                    </div>
-									</div>
-								</div>
-								<!--end tab-pane-->
 								
 							</div>
 						</div>

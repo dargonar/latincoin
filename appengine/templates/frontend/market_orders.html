@@ -6,13 +6,13 @@
 								<h4><i class="icon-shopping-cart"></i>Ordenes de venta - Asks</h4>
 							</div>
 							<div class="portlet-body">
-								<table class="table table-striped table-bordered table-advance table-hover">
+								<table class="table table-striped table-bordered table-advance table-hover {{ 'jquery-table' if table_navegable else ''}} ">
 								<!--table class="table table-condensed table-hover" -->
 									<thead>
 										<tr>
 											<th>#</th>
 											<th>Precio/BTC</th>
-											<th>BTC</th>
+											<th>Cantidad(BTC)</th>
 											<th>Pesos</th>
 											<th></th>
 										</tr>
@@ -89,13 +89,13 @@
 							</div>
 							<div class="portlet-body">
 								<!--table class="table table-condensed table-hover"-->
-                <table class="table table-striped table-bordered table-advance table-hover">
+                <table class="table table-striped table-bordered table-advance table-hover {{ 'jquery-table' if table_navegable else ''}}">
 									<thead>
 										<tr>
 											<th>#</th>
 											<th>Precio/BTC</th>
-											<th>BTC</th>
-											<th class="hidden-480">Pesos</th>
+											<th>Cantidad(BTC)</th>
+											<th>Pesos</th>
 											<th></th>
 										</tr>
 									</thead>

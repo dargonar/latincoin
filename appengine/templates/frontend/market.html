@@ -1,0 +1,70 @@
+  {% extends "frontend/base_home.html"%}
+  
+  {%block content%}
+    <!-- BEGIN PAGE CONTAINER-->
+			<div class="container-fluid">
+				<!-- BEGIN PAGE HEADER-->
+				<div class="row-fluid">
+					<div class="span12">
+						<!-- BEGIN PAGE TITLE & BREADCRUMB-->			
+						<h3 class="page-title">
+							Ordenes de mercado <small>Lista de bids y asks activos.</small>
+						</h3>
+						<ul class="breadcrumb">
+							<li>
+								<i class="icon-home"></i>
+								<a href="trade.html">Inicio</a> 
+								<i class="icon-angle-right"></i>
+							</li>
+							<li><a href="#">Ordenes de mercado</a></li>
+						</ul>
+						<!-- END PAGE TITLE & BREADCRUMB-->
+					</div>
+				</div>
+				<!-- END PAGE HEADER-->
+				<!-- BEGIN PAGE CONTENT-->
+				<div class="row-fluid profile">
+					
+          <div class="span12">
+						<!--BEGIN TABS-->
+						<div class="tabbable tabbable-custom">
+							<ul class="nav nav-tabs">
+								<li class="active"><a href="#tab_1_1" data-toggle="tab">Ordenes activas</a></li>
+								<li><a href="#tab_1_2" data-toggle="tab">Historial de operaciones</a></li>
+							</ul>
+							<div class="tab-content">
+								
+                {% set table_navegable = True %}
+                <!-- TAB #1 -->
+                <div class="tab-pane row-fluid active" id="tab_1_1">
+                  {%include "frontend/market_orders.html" %}
+								</div>
+								
+                <!--end tab-pane-->
+								<!-- TAB #2 -->
+                <div class="tab-pane profile-classic row-fluid" id="tab_1_2">
+									{%include "frontend/market_history.html" %}
+								</div>
+								
+							</div>
+						</div>
+						<!--END TABS-->
+					</div>
+				
+          
+          
+				
+        </div>
+				<!-- END PAGE CONTENT-->
+			</div>
+  {%endblock%}
+  
+  {%block javascript_run%}
+  <script>
+		jQuery(document).ready(function() {			
+			// initiate layout and plugins
+			App.setPage("table_managed");
+			App.init();
+		});
+	</script>
+  {%endblock%}

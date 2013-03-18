@@ -8,7 +8,7 @@
 					<div class="span12">
 						<!-- BEGIN PAGE TITLE & BREADCRUMB-->			
 						<h3 class="page-title">
-							Historial <small>Historial de operaciones, acciones y <accesos></accesos></small>
+							Operaciones <small>Operaciones activas. Historial de operaciones, acciones y accesos.</small>
 						</h3>
 						<ul class="breadcrumb">
 							<li>
@@ -16,7 +16,7 @@
 								<a href="trade.html">Inicio</a> 
 								<i class="icon-angle-right"></i>
 							</li>
-							<li><a href="#">Historial</a></li>
+							<li><a href="#">Operaciones</a></li>
 						</ul>
 						<!-- END PAGE TITLE & BREADCRUMB-->
 					</div>
@@ -27,8 +27,17 @@
 					
           <div class="span12">
             <div class="span12" style="margin-left:0;">
+              {% set operations_table_name = 'Operaciones activas'%}
+              {% set collpased = False %}
+              {% set editable = True %}
+              {%include "frontend/trade_operations_table.html"%}
+            </div>
+						<div class="clearfix"></div>		
+                
+            <div class="span12" style="margin-left:0;">
               {% set operations_table_name = 'Historial de Operaciones'%}
               {% set collpased = False %}
+              {% set editable = False %}
               {%include "frontend/trade_operations_table.html"%}
             </div>
 					</div>
