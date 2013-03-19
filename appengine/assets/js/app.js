@@ -1976,7 +1976,7 @@ var App = function () {
             "sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
             "sPaginationType": "bootstrap",
             "oLanguage": {
-                "sLengthMenu": "_MENU_ filas por pág.",
+                /*"sLengthMenu": "_MENU_ filas por pág.",*/
                 "oPaginate": {
                     "sPrevious": "Ant.",
                     "sNext": "Sig."

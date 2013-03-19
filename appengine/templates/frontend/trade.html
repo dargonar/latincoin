@@ -8,7 +8,7 @@
 					<div class="span12">
 						<!-- BEGIN PAGE TITLE & BREADCRUMB-->			
 						<h3 class="page-title">
-							Compra/Venta <small>Genere órdenes de compra y venta de bitcoins</small>
+							Comprar / Vender <small>Genere órdenes de compra y venta de bitcoins</small>
 						</h3>
 						<ul class="breadcrumb">
 							<li>
@@ -16,12 +16,20 @@
 								<a href="trade.html">Inicio</a> 
 								<i class="icon-angle-right"></i>
 							</li>
-							<li><a href="#">Compra/Venta</a></li>
+							<li><a href="#">Comprar / Vender</a></li>
 						</ul>
 						<!-- END PAGE TITLE & BREADCRUMB-->
 					</div>
 				</div>
 				<!-- END PAGE HEADER-->
+
+      {% if flash %}
+      <div class="alert alert-{{flash.type}}">
+                  <button class="close" data-dismiss="alert"></button>
+                  {{flash.message}}
+      </div>
+      {% endif %}
+
 				<!-- BEGIN PAGE CONTENT-->
 				<div class="row-fluid profile">
 					
@@ -46,7 +54,8 @@
                         </h4>
                        </div>
                        <div class="portlet-body form"> <!-- style="border-top: 1px solid #b4cef8;" -->
-                          {% set bid = True %}
+                          {% set type = 'bid' %}
+                          {% set form = bid_form %}
                           {%include "frontend/trade_form.html"%}
                       </div>
                     </div>
@@ -93,7 +102,8 @@
                         </h4>
                        </div>
                        <div class="portlet-body form"> <!-- style="border-top: 1px solid #b4cef8;" -->
-                          {% set bid = False %}
+                          {% set type = 'ask' %}
+                          {% set form = ask_form %}
                           {%include "frontend/trade_form.html"%}
                       </div>
                     </div>
@@ -145,7 +155,15 @@
   {%block javascript_run%}
   <script>
 		jQuery(document).ready(function() {			
-			// initiate layout and plugins
+			
+      $('#market_order_bid').change(function(){
+        if($(this).is(':checked'))
+          $('#form-bid .control-group:gt(1)').hide();
+        else
+          $('#form-bid .control-group:gt(1)').show();        
+      });
+
+      // initiate layout and plugins
 			App.setPage("table_managed");
 			App.init();
 		});

@@ -1,5 +1,17 @@
-    
-    <form action="{{ '#' if bid else '#' }}" class="form-horizontal">
+  {%- macro form_input(field, label='', symbol='') -%}
+    <div class="control-group {{'error' if field.errors else ''}}">
+      {{'<span class="help-inline">'+field.errors.0+'</span>' if field.errors else ''}}
+      <label class="control-label" style="color:#000" >{{label}}</label>
+      <div class="controls">
+        <div class="input-prepend">
+          <span class="add-on">{{symbol}}</span>
+          {{field(class='m-wrap')}}
+        </div>
+      </div>
+    </div>
+  {%- endmacro -%}
+
+    <form id="form-{{type}}" action="{{url_for('trade-new')}}" class="form-horizontal" method="POST">
       <div class="row-fluid">
         <div class="span12">
           
@@ -8,39 +20,24 @@
                <br/>
                <div class="controls ex2">
                 <label class="checkbox">
-                  <input type="checkbox" value="" /> Orden de Mercado ({{ 'compre' if bid else 'venda' }} a precio de mercado): esta Orden o bien se ejecuta inmediatamente o se cancela.
+                  <input id="market_order_{{type}}" type="checkbox" value="" /> Orden de Mercado ({{ 'compre' if type=='bid' else 'venda' }} a precio de mercado): esta Orden o bien se ejecuta inmediatamente o se cancela.
                   
                 </label>
                </div>
             </div>
           </div>
-      
-          <div class="control-group">
-            <label class="control-label">Cantidad de bitcoins a {{ 'compre' if bid else 'vender' }}</label>
-            <div class="controls">
-              <div class="input-prepend">
-                <span class="add-on">BTC</span>
-                <input type="text" class="m-wrap" />
-              </div>
-            </div>
-          </div>
+
+          {{form_input(form.amount, symbol='BTC', label='Cantidad de bitcoins a ' +  ( 'comprar' if type=='bid' else 'Vender')   )}}
+          {{form_input(form.ppc, symbol='$', label='Precio por bitcoin en pesos')}}
           
+          <input type="hidden" name="type" value="{{type}}"/>
+
           <div class="control-group">
-            <label class="control-label">Precio por bitcoin en pesos</label>
+            <label class="control-label">Total a {{ 'pagar' if type=='bid' else 'recibir' }} en pesos</label>
             <div class="controls">
                <div class="input-prepend">
                   <span class="add-on">$</span>
-                  <input class="m-wrap " type="text" />
-               </div>
-            </div>
-          </div>
-          
-          <div class="control-group">
-            <label class="control-label">Total a {{ 'pagar' if bid else 'recibir' }} en pesos</label>
-            <div class="controls">
-               <div class="input-prepend">
-                  <span class="add-on">$</span>
-                  <input class="m-wrap " type="text" disabled />
+                  <input id="total_" class="m-wrap " type="text" disabled />
                </div>
             </div>
           </div>
@@ -48,7 +45,6 @@
       </div>
     
       <div class="form-actions">
-        <button type="submit" class="btn blue">{{ 'Comprar' if bid else 'Vender' }}</button>
-        <!--button type="button" class="btn" title="Borrar valores">Cancelar</button -->
+        <button type="submit" class="btn blue">{{'Crear Orden'}}</button>
       </div>
     </form>

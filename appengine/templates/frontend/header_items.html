@@ -1,5 +1,7 @@
 				<!-- display:none si no esta  logeado -->					
-				<ul class="nav pull-left">
+				{% if is_logged %}
+        <!--
+        <ul class="nav pull-left">
           <li class="dropdown user" style="left:0px;">
 						<div class="dropdown-toggle" style="margin-top: 3px;height: 26px;">
               <a href="{{ url_for('designer-html', html='market') }}" class="dropdown-toggle">
@@ -9,28 +11,35 @@
             </div>
           </li>
         </ul>
+        -->
+        {% endif %}
         
         <ul class="nav pull-right">
           <li class="dropdown user" style="height:42px;">
 						<div class="dropdown-toggle" style="margin-top: 3px;height: 26px;">
-              <span class="username">Ultimo precio: <span class="white_ticker">$179,94</span> <i class="maket_arrow maket_arrow_down"></i></span>
+              <span class="username">Ultimo precio: <span class="white_ticker">$0</span> <i class="maket_arrow maket_arrow_down"></i></span>
               &nbsp;&nbsp;
-              <span class="username">HIGH: <span class="white_ticker"><span class="white_ticker">$188,13</span> <i class="maket_arrow maket_arrow_down"></i></span>
+              <span class="username">HIGH: <span class="white_ticker"><span class="white_ticker">$0</span> <i class="maket_arrow maket_arrow_down"></i></span>
               &nbsp;&nbsp;
-              <span class="username">LOW: <span class="white_ticker">$169,49</span> <i class="maket_arrow maket_arrow_up"></i></span>
+              <span class="username">LOW: <span class="white_ticker">$0</span> <i class="maket_arrow maket_arrow_up"></i></span>
               &nbsp;&nbsp;
-              <span class="username">Volumen: <span class="white_ticker">152.940,45</span> <i class="maket_arrow maket_arrow_down"></i></span>
+              <span class="username">Volumen: <span class="white_ticker">0</span> <i class="maket_arrow maket_arrow_down"></i></span>
+              
+              {% if is_logged %}
               &nbsp;&nbsp;
               <span class="username"><span class="white_ticker">Balance:</span>
-              &nbsp;<span class="white_ticker">10,0025001</span>BTC&nbsp;-
-              &nbsp;<span class="white_ticker">$1.500,10</span>PESOS</span>
+              &nbsp;<span class="white_ticker">{{btc_balance}}</span>&nbsp;BTC&nbsp;-
+              &nbsp;<span class="white_ticker">{{ars_balance}}</span>&nbsp;ARS</span>
+              {% endif %}
+
             </div>
             
           </li>
           
           {# %include "frontend/header_items_icons.html" % #}
           
-          <!-- display:none si no esta  logeado -->					
+          {% if is_logged %}
+          <!-- display:none si no esta  logeado -->
 					<li class="dropdown user">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
 						<img alt="" src="/assets/img/avatar1_small.jpg" />
@@ -45,6 +54,11 @@
 							<li><a href="{{url_for('account-logout')}}"><i class="icon-key"></i> Log Out</a></li>
 						</ul>
 					</li>
+          {% else %}
+          <li class="dropdown user">
+            <a href="{{url_for('account-login')}}">login</a>
+          </li>          
+          {% endif %}
 
         </ul>
 				

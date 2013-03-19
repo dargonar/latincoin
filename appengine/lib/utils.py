@@ -2,10 +2,15 @@
 import logging
 import urllib
 from datetime import datetime
+from decimal import Decimal
+
 from google.appengine.ext import db
 
 from webapp2 import abort, cached_property, RequestHandler, Response, HTTPException, uri_for as url_for, get_app
 from webapp2_extras import jinja2, sessions, json
+
+from models import AccountBalance
+from account_functions import get_account_balance
 
 class need_auth(object):
   def __init__(self, code=0, url='account-login'):
@@ -78,7 +83,10 @@ class Jinja2Mixin(object):
       flashes = self.session.get_flashes()
       env.globals['flash'] = flashes[0][0] if len(flashes) and len(flashes[0]) else None
     
-    env.globals['session']     = self.session
+    env.globals['session']      = self.session
+    env.globals['is_logged']    = self.is_logged
+    env.globals['ars_balance']  = self.ars_balance
+    env.globals['btc_balance']  = self.btc_balance
     
     pass
           
@@ -145,14 +153,44 @@ class FrontendHandler(MyBaseHandler):
     user.reset_password_token = ''
     user.put()
 
+    balance = get_account_balance(user)
+    
+    # BORRAR -----
+    from random import uniform
+    balance['BTC'].amount += Decimal('%.5f'% uniform(10,100))
+    balance['BTC'].put();
+    balance['ARS'].amount += Decimal('%.2f'% uniform(10,10000))
+    balance['ARS'].put();
+
+    # BORRAR ----
+
+    self.session['account.user'] = str(user.key())
+    self.session['account.btc']  = str(balance['BTC'].key())
+    self.session['account.ars']  = str(balance['ARS'].key())
+
     self.session['account.logged'] = True
 
   def do_logout(self):
     self.session.clear()
 
   @property
+  def btc_balance(self):
+    return '%.5f' % db.get(self.session['account.btc']).amount if 'account.btc' in self.session else Decimal('0')
+
+  @property
+  def ars_balance(self):
+    return '%.2f' % db.get(self.session['account.ars']).amount if 'account.ars' in self.session else Decimal('0')
+
+  @property
   def is_logged(self):
-    return self.session['account.logged'] if 'account.logged' in self.session else False
+    return self.session_value('account.logged', False)
+
+  @property
+  def user(self):
+    return self.session_value('account.user')
+
+  def session_value(self, key, default=None):
+    return self.session[key] if key in self.session else default
 
   pass
 
