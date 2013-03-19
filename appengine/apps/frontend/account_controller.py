@@ -7,7 +7,7 @@ from google.appengine.ext import db
 from webapp2 import cached_property
 from webapp2_extras.security import generate_password_hash, generate_random_string, check_password_hash
 
-from models import Account
+from models import Account, AccountBalance
 
 from config import config
 from utils import FrontendHandler
