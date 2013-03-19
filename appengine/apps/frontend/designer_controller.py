@@ -2,7 +2,7 @@
 
 from utils import FrontendHandler
 
-class Designer(FrontendHandler):
+class DesignerController(FrontendHandler):
 
   def verHtmlTemplate(self, **kwargs):
     #return self.render_response('frontend/signin.html')

@@ -2,6 +2,7 @@
 """WSGI app setup."""
 import os
 import sys
+import logging
 
 # Add lib as primary libraries directory, with fallback to lib/dist
 # and optionally to lib/dist.zip, loaded using zipimport.
@@ -29,6 +30,8 @@ fullver = os.environ.get('CURRENT_VERSION_ID', '1')
 
 config['my']['app_version_id'] = fullver
 config['my']['app_version']    = fullver[0:fullver.rfind('.')]
+
+logging.error('ESTOY ACA')
 
 # Instanciamos la aplicacion.
 app = webapp2.WSGIApplication(routes=get_rules(config), debug=debug, config=config)

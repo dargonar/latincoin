@@ -2,6 +2,6 @@
 
 from utils import FrontendHandler
 
-class Main(FrontendHandler):
+class MainController(FrontendHandler):
   def home(self):
     return self.render_response('frontend/index.html')
