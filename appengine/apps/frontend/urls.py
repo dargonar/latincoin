@@ -5,7 +5,7 @@ from webapp2_extras.routes import PathPrefixRoute, NamePrefixRoute, HandlerPrefi
 def get_rules():
     
     rules = [
-      Route('/', name='home', handler='apps.frontend.main.Main:home'),
+      Route('/', name='home', handler='apps.frontend.main_controller.MainController:home'),
 
       PathPrefixRoute('/account', [ NamePrefixRoute('account-', [ HandlerPrefixRoute('apps.frontend.account_controller', [
         Route('/signup',          name='signup',          handler='.AccountController:signup'),
@@ -23,8 +23,8 @@ def get_rules():
         Route('/new',         name='new',          handler='.TradeController:new'),
       ]) ]) ]),
       
-      PathPrefixRoute('/designer', [ NamePrefixRoute('designer-', [ HandlerPrefixRoute('apps.frontend.designer', [
-        Route('/<html>',         name='html',         handler='.Designer:verHtmlTemplate'),
+      PathPrefixRoute('/designer', [ NamePrefixRoute('designer-', [ HandlerPrefixRoute('apps.frontend.designer_controller', [
+        Route('/<html>',         name='html',         handler='.DesignerController:verHtmlTemplate'),
       ]) ]) ]),
     ]
     
