@@ -32,18 +32,17 @@
 
 				<!-- BEGIN PAGE CONTENT-->
 				<div class="row-fluid profile">
-					
           <div class="span12">
 						<!--BEGIN TABS-->
 						<div class="tabbable tabbable-custom">
 							<ul class="nav nav-tabs">
-								<li class="active"><a href="#tab_1_1" data-toggle="tab">Comprar bitcoins</a></li>
-								<li><a href="#tab_1_2" data-toggle="tab">Vender bitcoins</a></li>
+								<li {{'class="active"' if active_tab == 'bid' else ''}}><a href="#tab_1_1" data-toggle="tab">Comprar bitcoins</a></li>
+								<li {{'class="active"' if active_tab == 'ask' else ''}}><a href="#tab_1_2" data-toggle="tab">Vender bitcoins</a></li>
 							</ul>
 							<div class="tab-content">
 								
                 <!-- TAB #1 -->
-                <div class="tab-pane row-fluid active" id="tab_1_1">
+                <div class="tab-pane row-fluid {{'active' if active_tab == 'bid' else ''}}" id="tab_1_1">
                   <div class="span8">
                     <div class="portlet tabbable">
                       <div class="portlet-title">
@@ -83,15 +82,14 @@
 				
                   
                   <div class="span12" style="margin-left:0;">
-                    {% set operations_table_name = 'Operaciones de compra activas'%}
-                    {% set collpased = True %}
+                    {% set operations_table_name = 'Ordenes de compra activas'%}
                     {%include "frontend/trade_operations_table.html"%}
                   </div>
 								</div>
 								
                 <!--end tab-pane-->
 								<!-- TAB #2 -->
-                <div class="tab-pane profile-classic row-fluid" id="tab_1_2">
+                <div class="tab-pane profile-classic row-fluid {{'active' if active_tab == 'ask' else ''}}" id="tab_1_2">
 									<div class="span8">
                     <div class="portlet tabbable">
                       <div class="portlet-title">
@@ -154,6 +152,25 @@
   
   {%block javascript_run%}
   <script>
+
+    var table_ajax_source = {'bid': '{{url_for('trade-active-orders', type='bid')}}',
+                             'ask': '{{url_for('trade-active-orders', type='ask')}}' };
+
+    function update_total(mo) {
+      
+      var amount = ($('input#'+mo+'_amount').val().match(/^[-+]?(?:\d+\.?\d*|\.\d+)$/));
+      var ppc = ($('input#'+mo+'_ppc').val().match(/^[-+]?(?:\d+\.?\d*|\.\d+)$/));
+
+      if(amount == null || ppc == null)
+        return;
+
+      var total = parseFloat(amount)*parseFloat(ppc);
+      var total = Math.round(total*100)/100;
+
+      $('input#'+mo+'_total').val(total);
+    }
+
+
 		jQuery(document).ready(function() {			
 			
       $('#market_order_bid').change(function(){
@@ -163,8 +180,13 @@
           $('#form-bid .control-group:gt(1)').show();        
       });
 
+      $('input#bid_amount, input#bid_ppc, input#ask_amount, input#ask_ppc').keyup(function() {
+        update_total('bid');
+        update_total('ask');
+      });
+
       // initiate layout and plugins
-			App.setPage("table_managed");
+			App.setPage('trade_new');
 			App.init();
 		});
 	</script>

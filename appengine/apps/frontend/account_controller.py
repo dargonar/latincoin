@@ -7,7 +7,7 @@ from google.appengine.ext import db
 from webapp2 import cached_property
 from webapp2_extras.security import generate_password_hash, generate_random_string, check_password_hash
 
-from models import Account
+from models import Account, AccountBalance
 
 from config import config
 from utils import FrontendHandler
@@ -53,6 +53,7 @@ class AccountController(FrontendHandler):
     def _tx():
       if user and (datetime.now() - user.confirmation_sent_at).seconds < 3600 and user.confirmed_at is None:
         user.confirmed_at = datetime.now()
+        user.confirmation_token = ''
         balance_curr = AccountBalance(parent=user, account=user, currency='ARS')
         balance_btc  = AccountBalance(parent=user, account=user, currency='BTC')
 
@@ -156,6 +157,7 @@ class AccountController(FrontendHandler):
 # DELETE
 
   def init_all(self):
+    from models import Dummy
     parent=Dummy.get_or_insert('trade_orders')
     parent=Dummy.get_or_insert('operations')
 

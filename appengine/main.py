@@ -31,8 +31,6 @@ fullver = os.environ.get('CURRENT_VERSION_ID', '1')
 config['my']['app_version_id'] = fullver
 config['my']['app_version']    = fullver[0:fullver.rfind('.')]
 
-logging.error('ESTOY ACA')
-
 # Instanciamos la aplicacion.
 app = webapp2.WSGIApplication(routes=get_rules(config), debug=debug, config=config)
 enable_jinja2_debugging()

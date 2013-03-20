@@ -1995,6 +1995,39 @@ var App = function () {
         
     }
 
+
+    var handleTablesBidAsk = function (type) {
+        
+        if (!jQuery().dataTable) {
+            return;
+        }
+
+        // begin first table
+        $('#my_'+type+'_table').dataTable({
+            "bProcessing": true,
+            "sAjaxSource": table_ajax_source[type],
+            "sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
+            "sPaginationType": "bootstrap",
+            "oLanguage": {
+                "sEmptyTable": "Sin ordenes activas",
+                "sInfoEmpty": " ",
+                "sLengthMenu": "_MENU_ ordenes por pág.",
+                "sInfo": "Mostrando _START_ a _END_ de _TOTAL_ ordenes",
+                "oPaginate": {
+                    "sPrevious": "Ant.",
+                    "sNext": "Sig."
+                }
+            },
+            "aoColumnDefs": [{
+                'bSortable': false,
+                'aTargets': [0]
+            }]
+        });
+
+        jQuery('.dataTables_filter').parent(".span6 ").remove(); // delete table search input
+    }
+
+
     var handleTablaBitcoins = function () {
 
         function restoreRow(oTable, nRow) {
@@ -2848,6 +2881,11 @@ var App = function () {
                 handleTables(); // handles data tables
             }
 
+            if (App.isPage("trade_new")) {
+                handleTablesBidAsk('bid'); // handles data tables
+                handleTablesBidAsk('ask'); // handles data tables
+            }
+
             // global handlers
             handleChoosenSelect(); // handles bootstrap chosen dropdowns
             handleScrollers(); // handles slim scrolling contents
@@ -2906,7 +2944,7 @@ var App = function () {
         blockUI: function (el, loaderOnTop) {
             lastBlockedUI = el;
             jQuery(el).block({
-                message: '<img src="./assets/img/loading.gif" align="absmiddle">',
+                message: '<img src="/assets/img/loading.gif" align="absmiddle">',
                 css: {
                     border: 'none',
                     padding: '2px',

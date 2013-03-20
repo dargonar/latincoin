@@ -15,7 +15,7 @@ config['webapp2_extras.sessions'] = {
 
 config['webapp2_extras.jinja2'] = {
   'template_path' :  'templates',
-  'compiled_path' :  'templates_compiled',
+  'compiled_path' :  None,
   'force_compiled':  False,
 
   'environment_args': {
