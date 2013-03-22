@@ -7,12 +7,44 @@ from account_functions import get_account_balance
 
 class Trader:
 
+  # Elimina una orden de compra o venta
+  # Acomoda el balance del usuario dueño de esa orden
+  def cancel_order(self, order_key):
+
+    # TODO: assert input
+    assert(isinstance(order_key, basestring) and len(order_key) > 0 ), u'Key de orden inválida'
+
+    @db.transactional(xg=True)
+    def _tx():
+
+      order = db.get(db.Key(order_key))
+
+      # Solo cancelamos ordenes que esten ACTIVAS
+      if order.status != TradeOrder.ORDER_ACTIVE:
+        return False
+
+      order.status = TradeOrder.ORDER_CANCELED
+
+      user_balance = get_account_balance(order.user)
+
+      if order.bid_ask == TradeOrder.BID_ORDER:
+        balance = user_balance['ARS']
+        balance.amount_comp -= order.amount*order.ppc
+      else:
+        balance = user_balance['BTC']
+        balance.amount_comp -= order.amount
+
+      db.put([order, balance])
+      return True
+
+    return _tx()
+
   # Acomoda la historia de operaciones sobre las cuentas involucradas en una Operation
   # 2 AccountOperation + arreglo de balance para el comprador
   # 2 AccountOperation + arreglo de balance para el vendedor
   # 2 AccountOperation + arreglo de balance para el x-changer
 
-  def apply_order(self, operation_key):
+  def apply_operation(self, operation_key):
 
     # TODO: assert input
     assert(operation_key is not None), u'Operation key invalida'
@@ -22,12 +54,16 @@ class Trader:
 
       # Traemos la operacion que resulto del match de dos TradeOrders
       op = db.get(db.Key(operation_key))
+      
+      # Si ya se habia aplicado no la aplico nuevamente
+      if op.status == Operation.OPERATION_DONE:
+        return True
 
       assert(op.seller.commission_rate > Decimal('0')), u'Comisión inválida'
       assert(op.buyer.commission_rate > Decimal('0')), u'Comisión inválida'
 
       # Traemos la cuenta del xchanger
-      xchg = Account.get_by_key_name(db.Key('xchg'))
+      xchg = Account.get_by_key_name('xchg')
 
       # Traemos los balances del comprador, vendedor y el xchanger
       seller_balance = get_account_balance(op.seller)
@@ -97,7 +133,7 @@ class Trader:
                                     currency       = 'ARS',
                                     state          = STATE_DONE)
 
-      op.status = OPERATION_DONE
+      op.status = Operation.OPERATION_DONE
 
 
       to_save =  [op]
@@ -112,6 +148,10 @@ class Trader:
       to_save += [xchg_op1, xchg_op2]
 
       db.put(to_save)
+
+      return True
+
+    return _tx()
 
 
   # Intenta matchear la mejor BID con la mejor ASK
@@ -159,16 +199,17 @@ class Trader:
       # Luego, cuando se generen los 6 AccountOperations y la actualizacion de
       # los balances se pasa a OPERATION_DONE
 
-      op = Operation(parent=Dummy.get_by_key_name('operations'))
-      op.purchase_order_id = best_bid
-      op.sale_order_id     = best_ask
-      op.traded_btc        = amount
-      op.traded_currency   = amount*ppc
-      op.ppc               = ppc
-      op.currency          = 'ARS'
-      op.seller            = best_ask.user
-      op.buyer             = best_bid.user
-      op.status            = Operation.OPERATION_PENDING
+      op = Operation(parent=Dummy.get_by_key_name('operations'),
+                     purchase_order_id = best_bid,
+                     sale_order_id     = best_ask,
+                     traded_btc        = amount,
+                     traded_currency   = amount*ppc,
+                     ppc               = ppc,
+                     currency          = 'ARS',
+                     seller            = best_ask.user,
+                     buyer             = best_bid.user,
+                     status            = Operation.OPERATION_PENDING
+            );
 
       # Acomodamos los valores de los TradeOrders y los marcamos como completos en caso 
       # Que den 0
@@ -213,15 +254,13 @@ class Trader:
         if balance['BTC'].amount - balance['BTC'].amount_comp < amount:
           return [None, u'No tiene suficiente balance disponible en BTC']
         else:
-          balance['BTC'].amount      -= amount
           balance['BTC'].amount_comp += amount
       
       else: #if bid_ask == TradeOrder.ASK_ORDER:
         if balance['ARS'].amount - balance['ARS'].amount_comp < amount * ppc:
           return [None, u'No tiene suficiente balance disponible en ARS']
         else:
-          balance['ARS'].amount       -= amount * ppc
-          balance['ARS'].amount_comp  += amount * ppc
+          balance['ARS'].amount_comp += amount * ppc
 
       # Creamos la orden ya que el balance dio para que se pueda meter
       # y mandamos a guardar las dos cosas juntas.

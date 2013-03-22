@@ -16,7 +16,7 @@ class DecimalProperty(db.Property):
     return decimal.Decimal(value)
 
   def validate(self, value):
-    value = super(DecimalProperty, self).validate(value)
+    value = super(DecimalProperty, self).validate(str(value))
 
     if value is None or isinstance(value, decimal.Decimal):
       return value

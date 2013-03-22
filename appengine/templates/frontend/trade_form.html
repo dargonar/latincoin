@@ -1,11 +1,15 @@
-  {%- macro form_input(field, label='', symbol='') -%}
+  {%- macro form_input(field, label='', symbol='', disabled=False) -%}
     <div class="control-group {{'error' if field.errors else ''}}">
       {{'<span class="help-inline">'+field.errors.0+'</span>' if field.errors else ''}}
       <label class="control-label" style="color:#000" >{{label}}</label>
       <div class="controls">
         <div class="input-prepend">
           <span class="add-on">{{symbol}}</span>
-          {{field(class='m-wrap')}}
+          {% if disabled %}
+            {{field(class='m-wrap', readonly='readonly')}}
+          {% else %}
+            {{field(class='m-wrap')}}
+          {% endif %}
         </div>
       </div>
     </div>
@@ -27,24 +31,18 @@
             </div>
           </div>
 
-          {{form_input(form.amount, symbol='BTC', label='Cantidad de bitcoins a ' +  ( 'comprar' if type=='bid' else 'Vender')   )}}
-          {{form_input(form.ppc, symbol='$', label='Precio por bitcoin en pesos')}}
+          {{form_input(form.bid_amount if type == 'bid' else form.ask_amount, symbol='BTC', label='Cantidad de bitcoins a ' +  ( 'comprar' if type=='bid' else 'Vender')   )}}
+          
+          {{form_input(form.bid_ppc if type == 'bid' else form.ask_ppc, symbol='$', label='Precio por bitcoin en pesos')}}
+          
+          {{form_input(form.bid_total if type == 'bid' else form.ask_total, symbol='$', label='Total a ' + ('pagar' if type=='bid' else 'recibir') + ' en pesos', disabled=True)}}
           
           <input type="hidden" name="type" value="{{type}}"/>
 
-          <div class="control-group">
-            <label class="control-label">Total a {{ 'pagar' if type=='bid' else 'recibir' }} en pesos</label>
-            <div class="controls">
-               <div class="input-prepend">
-                  <span class="add-on">$</span>
-                  <input id="total_" class="m-wrap " type="text" disabled />
-               </div>
-            </div>
-          </div>
         </div>
       </div>
     
       <div class="form-actions">
-        <button type="submit" class="btn blue">{{'Crear Orden'}}</button>
+        <button type="submit" class="btn blue">{{'Crear Orden de ' + ('Compra' if type=='bid' else 'Venta')}}</button>
       </div>
     </form>

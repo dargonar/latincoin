@@ -175,11 +175,11 @@ class FrontendHandler(MyBaseHandler):
 
   @property
   def btc_balance(self):
-    return '%.5f' % db.get(self.session['account.btc']).amount if 'account.btc' in self.session else Decimal('0')
+    return '%.5f' % self.try_get_balance('btc')
 
   @property
   def ars_balance(self):
-    return '%.2f' % db.get(self.session['account.ars']).amount if 'account.ars' in self.session else Decimal('0')
+    return '%.2f' % self.try_get_balance('ars')
 
   @property
   def is_logged(self):
@@ -189,8 +189,20 @@ class FrontendHandler(MyBaseHandler):
   def user(self):
     return self.session_value('account.user')
 
+  def try_get_balance(self, currency):
+    tmp = self.session_value('account.%s' % currency, None)
+    if tmp is None:
+      return Decimal('0')
+
+    balance = db.get(tmp)
+    return (balance.amount - balance.amount_comp)
+
   def session_value(self, key, default=None):
     return self.session[key] if key in self.session else default
 
-  pass
-
+  def mine_or_404(self, key):
+    obj = get_or_404(key)
+    if str(obj.user.key()) != self.user:
+      abort(404)
+    
+    return obj

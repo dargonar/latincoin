@@ -123,6 +123,12 @@ class TradeOrder(db.Model):
   created_at            = db.DateTimeProperty(auto_now_add=True)
   updated_at            = db.DateTimeProperty(auto_now=True)
 
+  def is_bid(self):
+    return self.bid_ask == self.BID_ORDER
+
+  def is_ask(self):
+    return not is_bid()
+
 class Operation(db.Model):
 
   OPERATION_PENDING = 'P'
