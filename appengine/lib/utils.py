@@ -87,6 +87,7 @@ class Jinja2Mixin(object):
     env.globals['is_logged']    = self.is_logged
     env.globals['ars_balance']  = self.ars_balance
     env.globals['btc_balance']  = self.btc_balance
+    env.globals['user_name']    = self.user_name
     
     pass
           
@@ -167,6 +168,7 @@ class FrontendHandler(MyBaseHandler):
     self.session['account.user'] = str(user.key())
     self.session['account.btc']  = str(balance['BTC'].key())
     self.session['account.ars']  = str(balance['ARS'].key())
+    self.session['account.name'] = user.email
 
     self.session['account.logged'] = True
 
@@ -184,6 +186,10 @@ class FrontendHandler(MyBaseHandler):
   @property
   def is_logged(self):
     return self.session_value('account.logged', False)
+
+  @property
+  def user_name(self):
+    return self.session_value('account.name', '---')
 
   @property
   def user(self):

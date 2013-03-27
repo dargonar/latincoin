@@ -7,9 +7,6 @@ from appengine_properties import DecimalProperty
 class Dummy(db.Model):
   pass
 
-class FakeTradeOrder(db.Model):
-  v = db.StringProperty()
-
 class Account(db.Model):
   name                  = db.StringProperty() 
   email                 = db.StringProperty()
@@ -40,14 +37,17 @@ class Account(db.Model):
   full_name             = db.StringProperty()
   address               = db.TextProperty()
   notify_on_trade       = db.IntegerProperty()
-  commission_rate       = DecimalProperty(required=True, default=decimal.Decimal('0.6'))
+  commission_rate       = DecimalProperty(required=True, default=decimal.Decimal('0.006'))
   created_at            = db.DateTimeProperty(auto_now_add=True)
   updated_at            = db.DateTimeProperty(auto_now=True)
 
 class AccountBalance(db.Model):
   
   def __repr__(self):
-    return [amount, amount_comp]
+    return 'bal: %s %s %.5f' % (self.account.key() if self.account.key().name() is None else self.account.key().name(), self.currency, self.amount)
+
+  def available(self):
+    return self.amount - self.amount_comp
 
   account               = db.ReferenceProperty(Account, collection_name='balances', required=True) 
   currency              = db.StringProperty(required=True)
@@ -55,25 +55,24 @@ class AccountBalance(db.Model):
   amount_comp           = DecimalProperty(default=decimal.Decimal('0'))
 
 class AccountOperation(db.Model):
-  
-  BTC_FEE      = 'BF'
-  CUR_FEE      = 'CF'
+  XCHG_FEE     = 'XF'
 
-  BTC_IN       = 'BI'
-  BTC_OUT      = 'BO'
-
-  CUR_IN       = 'CI'
-  CUR_OUT      = 'CO'
+  MONEY_IN     = 'MI'
+  MONEY_OUT    = 'MO'
 
   BTC_BUY      = 'BB'
   BTC_SELL     = 'BS'
 
   STATE_PENDING  = 'P'
+  STATE_ACCEPTED = 'A'
   STATE_CANCELED = 'C'
   STATE_DONE     = 'D'
+  
+  def __repr__(self):
+    return 'ao: %s %s %s %.5f' % (self.operation_type, self.account.key(), self.currency, self.amount)
 
-  operation_type        = db.StringProperty(choices=[BTC_BUY,BTC_SELL,BTC_IN,BTC_OUT,CUR_IN,CUR_OUT,BTC_FEE,CUR_FEE], required=True)
-  account               = db.ReferenceProperty(Account, collection_name='accounts', required=True) 
+  operation_type        = db.StringProperty(choices=[BTC_BUY,BTC_SELL,MONEY_IN,MONEY_OUT,XCHG_FEE], required=True)
+  account               = db.ReferenceProperty(Account, collection_name='accounts', required=True)
   address               = db.StringProperty()
   amount                = DecimalProperty(required=True)
   currency              = db.StringProperty(required=True)
@@ -81,19 +80,15 @@ class AccountOperation(db.Model):
   bt_tx_from            = db.StringProperty()
   bt_tx_confirmations   = db.IntegerProperty()
   payee                 = db.ReferenceProperty(Account, collection_name='payees')
-  email                 = db.StringProperty()
-  px_tx_id              = db.StringProperty()
-  px_payer              = db.StringProperty()
-  px_fee                = DecimalProperty()
   comment               = db.StringProperty()
-  state                 = db.StringProperty(choices=[STATE_PENDING,STATE_CANCELED,STATE_DONE], required=True)
+  state                 = db.StringProperty(choices=[STATE_PENDING,STATE_ACCEPTED,STATE_CANCELED,STATE_DONE], required=True)
   bank_account_id       = db.StringProperty()
   created_at            = db.DateTimeProperty(auto_now_add=True)
   updated_at            = db.DateTimeProperty(auto_now=True)
 
 
 class BankAccount(db.Model):
-  user                  = db.ReferenceProperty(Account)
+  user                  = db.ReferenceProperty(Account, collection_name='bank_accounts')
   cbu                   = db.StringProperty()
   account_holder        = db.StringProperty()
   state                 = db.StringProperty()
@@ -102,6 +97,9 @@ class BankAccount(db.Model):
 
 class TradeOrder(db.Model):
   
+  def __repr__(self):
+    return 'to: amount:%s amount_orig:%s ppc:%.5f %s' % (self.amount, self.original_amount, self.ppc, self.status)
+
   LIMIT_ORDER  = 'L'
   MARKET_ORDER = 'M'
 
@@ -115,7 +113,8 @@ class TradeOrder(db.Model):
   user                  = db.ReferenceProperty(Account, required=True)
   original_amount       = DecimalProperty(required=True)
   amount                = DecimalProperty(required=True)
-  ppc                   = DecimalProperty()
+  ppc                   = DecimalProperty(default=decimal.Decimal('0'))
+  ppc_int               = db.IntegerProperty(required=True)
   currency              = db.StringProperty(required=True)
   status                = db.IntegerProperty(required=True, choices=[ORDER_ACTIVE, ORDER_CANCELED, ORDER_COMPLETED])
   bid_ask               = db.StringProperty(required=True, choices=[ASK_ORDER, BID_ORDER])
@@ -131,11 +130,14 @@ class TradeOrder(db.Model):
 
 class Operation(db.Model):
 
+  def __repr__(self):
+    return 'op: btc:%.5f cur:%.5f ppc:%.5f ' % (self.traded_btc, self.traded_currency, self.ppc)
+
   OPERATION_PENDING = 'P'
   OPERATION_DONE    = 'D'
 
-  purchase_order_id     = db.ReferenceProperty(TradeOrder, collection_name='purchases')
-  sale_order_id         = db.ReferenceProperty(TradeOrder, collection_name='sales')
+  purchase_order        = db.ReferenceProperty(TradeOrder, collection_name='purchases')
+  sale_order            = db.ReferenceProperty(TradeOrder, collection_name='sales')
   traded_btc            = DecimalProperty(required=True)
   traded_currency       = DecimalProperty(required=True)
   ppc                   = DecimalProperty(required=True)

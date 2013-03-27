@@ -10,10 +10,10 @@ def get_account_balance(account):
   if isinstance(account, basestring):
     account = db.Key(account)
 
-  balances = AccountBalance.all().ancestor(account).filter('account =', account).fetch(2)
-
+  balances = AccountBalance.all().ancestor(account).filter('account =', account).fetch(100)
   assert(balances is not None), u'No tiene balance'
   assert(len(balances) >= 2), u'No tiene todos los balances %s => %s' % (len(balances),account.key())
+  assert(len(balances) == 2), u'Tiene muchos balances! (%d)' % len(balances)
 
   balance = {}
   for b in balances:
