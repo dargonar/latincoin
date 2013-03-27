@@ -56,8 +56,11 @@
 					</li>
           {% else %}
           <li class="dropdown user">
-            <a href="{{url_for('account-login')}}">login</a>
-          </li>          
+            <a href="{{url_for('account-login')}}">Ingresar</a>
+          </li> 
+          <li class="dropdown user">
+            <a href="{{url_for('account-signup')}}">Registrarse</a>
+          </li>           
           {% endif %}
 
         </ul>

@@ -21,28 +21,28 @@
 					<a href="{{ url_for('designer-html', html='trade') }}">
             <i class="icon-money"></i> 
             <span class="title">Comprar / Vender</span>
-            <span class="{{ 'selected' if html=='trade' else 'arrow' }}"></span>
+            <span class="{{ 'selected' if html=='trade' else '' }}"></span>
 					</a>
 				</li>
 				<li class="has-sub {{ 'active' if html=='deposito' else '' }} ">
 					<a href="{{ url_for('designer-html', html='deposito') }}">
             <i class="icon-signin"></i> 
             <span class="title">Depósito</span>
-            <span class="{{ 'selected' if html=='deposito' else 'arrow' }}"></span>
+            <span class="{{ 'selected' if html=='deposito' else '' }}"></span>
 					</a>
 				</li>
         <li class="has-sub {{ 'active' if html=='retiro' else '' }} ">
 					<a href="{{ url_for('designer-html', html='retiro') }}">
             <i class=" icon-signout"></i> 
             <span class="title">Retiro</span>
-            <span class="{{ 'selected' if html=='retiro' else 'arrow' }}"></span>
+            <span class="{{ 'selected' if html=='retiro' else '' }}"></span>
 					</a>
 				</li>
 				<li class="has-sub {{ 'active' if html=='operations' else '' }} ">
 					<a href="{{ url_for('designer-html', html='operations') }}">
 					<i class="icon-table"></i> 
 					<span class="title">Historial</span>
-					<span class="{{ 'selected' if html=='operations' else 'arrow' }}"></span>
+					<span class="{{ 'selected' if html=='operations' else '' }}"></span>
 					</a>
 				</li>
 			</ul>

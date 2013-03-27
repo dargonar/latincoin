@@ -1,5 +1,15 @@
   {% extends "frontend/base_home.html"%}
   
+  {%block html_head%}
+    <link rel="stylesheet" href="/assets/jquery-file-upload/css/jquery.fileupload-ui.css">
+		<!--
+      <noscript>
+        <link rel="stylesheet" href="/assets/jquery-file-upload/css/jquery.fileupload-ui-noscript.css">
+      </noscript>
+    -->
+  {%endblock%}
+  
+  
   {%block content%}
       <div class="container-fluid">
 				<!-- BEGIN PAGE HEADER-->
@@ -27,15 +37,15 @@
 						<!--BEGIN TABS-->
 						<div class="tabbable tabbable-custom">
 							<ul class="nav nav-tabs">
-								<li class="active"><a href="#tab_1_1" data-toggle="tab">Info personal</a></li>
-								<li><a href="#tab_1_X" data-toggle="tab">Verificación de identidad</a></li>
+								<li><a href="#tab_1_1" data-toggle="tab">Info personal</a></li>
+								<li class="active"><a href="#tab_1_X" data-toggle="tab">Verificación de identidad</a></li>
                 <li><a href="#tab_1_2" data-toggle="tab">Clave y OTP</a></li>
 								<li><a href="#tab_1_4" data-toggle="tab">Cuentas bancarias</a></li>
 								<li><a href="#tab_1_5" data-toggle="tab">Direcciones bitcoins</a></li>
 							</ul>
 							<div class="tab-content">
                 <!--tab_1_1-->
-                <div class="tab-pane row-fluid active" id="tab_1_1">
+                <div class="tab-pane row-fluid" id="tab_1_1">
                   <div class="span12">
                     <div>
                       <!-- BEGIN GENERAL PORTLET-->
@@ -51,41 +61,11 @@
                   </div>
 								</div>
 								
-                <div class="tab-pane row-fluid" id="tab_1_X">
+                <div class="tab-pane row-fluid active" id="tab_1_X">
                   
-                  <div class="span8">
-                    
-                      <!-- BEGIN GENERAL PORTLET-->
-                      <div class="portlet">
-                        <!--div class="portlet-title">
-                          <h4><i class="icon-minus-sign"></i></h4>
-                        </div-->
-                        <div class="portlet-body form">
-                            {%include "frontend/profile_form_verification.html"%}
-                        </div>
-                      </div>
-                    
-                  </div>
-                  
-                  
-                  <div class="span4">
-                    <div>
-                      <div class="portlet">
-                        <div class="portlet-body">
-                          <div class="well">
-                            <h4>Verificación de identidad y domicilio</h4>
-                            <p>In order to be upgraded to a verified account, we need a proof of residence document. This is usually either a <b>Utility Bill</b>, a Tax Return, or a Voter's Registration Form. Please scan a copy of your ID and upload it on this page. Note that:<br/></p>
-                            <ul><li>The card must be clear and legible.</li><li>It cannot be an unopened envelope.</li><li>It cannot be a bank statement.</li><li>It cannot be edited or censored in any way.</li><li>It must be either in JPEG (.jpg), PNG (.png) or PDF (.pdf) format.</li><li><b>It must have been issued within the last 3 months.</b><br/></li></ul><br/>
-                            <p>A complete list of acceptable proof of residence documents is as follows:</p>
-                            <ul><li>Monthly utility bill</li><li>Internet Bill</li><li>Cellphone Bill</li><li>Tax Return document</li><li>Residency Certificate</li><li>Medical insurance bill<br/></li></ul>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <!-- END WELLS PORTLET-->
-                  </div>
+                  {%include "frontend/profile_form_verification.html"%}
 
-								</div>
+                </div>
                 
                 <!--tab_1_2-->
 								<div class="tab-pane row-fluid" id="tab_1_2">
@@ -135,14 +115,34 @@
 			</div>
 			<!-- END PAGE CONTAINER-->	
 		
-{%endblock%}
+  {%endblock%}
   
   {%block javascript_run%}
+  	<!-- BEGIN:File Upload Plugin JS files-->
+	<script src="/assets/jquery-file-upload/js/vendor/jquery.ui.widget.js"></script>
+	<!-- The Templates plugin is included to render the upload/download listings -->
+	<!-- script src="/assets/jquery-file-upload/js/vendor/tmpl.min.js"></script -->
+	<!-- The Load Image plugin is included for the preview images and image resizing functionality -->
+	<script src="/assets/jquery-file-upload/js/vendor/load-image.min.js"></script>
+	<!-- The Canvas to Blob plugin is included for image resizing functionality -->
+	<script src="/assets/jquery-file-upload/js/vendor/canvas-to-blob.min.js"></script>
+	<!-- The Iframe Transport is required for browsers without support for XHR file uploads -->
+	<script src="/assets/jquery-file-upload/js/jquery.iframe-transport.js"></script>
+	<!-- The basic File Upload plugin -->
+	<script src="/assets/jquery-file-upload/js/jquery.fileupload.js"></script>
+	<!-- The File Upload file processing plugin -->
+	<script src="/assets/jquery-file-upload/js/jquery.fileupload-fp.js"></script>
+	<!-- The File Upload user interface plugin -->
+	<script src="/assets/jquery-file-upload/js/jquery.fileupload-ui.js"></script>
+	<!-- The main application script -->
+	<!-- script src="/assets/jquery-file-upload/js/main.js"></script -->
+
   <script>
 		jQuery(document).ready(function() {			
 			// initiate layout and plugins
       App.setPage("profile");
       App.init();
+      App.initUniform('.fileupload-toggle-checkbox'); // initialize uniform checkboxes
 		});
 	</script>
   {%endblock%}
