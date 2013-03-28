@@ -30,6 +30,12 @@ def get_rules():
 
       ]) ]) ]),
       
+      PathPrefixRoute('/profile', [ NamePrefixRoute('profile-', [ HandlerPrefixRoute('apps.frontend.profile_controller', [
+        Route('/personal_info',         name='personal_info',         handler='.ProfileController:personal_info'),
+        Route('/identity_validation',   name='identity_validation',   handler='.ProfileController:identity_validation'),
+        #Route('/post_info',       name='post_info',     handler='.ProfileController:post_info'),
+      ]) ]) ]),
+      
       PathPrefixRoute('/designer', [ NamePrefixRoute('designer-', [ HandlerPrefixRoute('apps.frontend.designer_controller', [
         Route('/<html>',         name='html',         handler='.DesignerController:verHtmlTemplate'),
       ]) ]) ]),

@@ -18,7 +18,7 @@
           <h1>BTC Exchanger</h1>
           <p class="lead">ARGENTINA</p>
           <div style="display:none;position:absolute; bottom:0px; right:0px;">
-            <a href="/login" id="login-btn-off" class="btn green pull-left">
+            <a href="{{ url_for('account-login')}}" id="login-btn-off" class="btn green pull-left">
             Ingresar / Registrarse&nbsp;<i class="m-icon-swapright m-icon-white"></i>
             </a>
           </div>
@@ -99,7 +99,7 @@
             
             <div class="row-fluid">
               <div class="span12">
-                <a href="/login" id="login-btn-off" class="btn green pull-right">
+                <a href="{{ url_for('account-login')}}" id="login-btn-off" class="btn green pull-right">
                 Ingresar / Registrarse&nbsp;<i class="m-icon-swapright m-icon-white"></i>
                 </a>
               </div>

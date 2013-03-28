@@ -9,6 +9,8 @@ class Dummy(db.Model):
 
 class Account(db.Model):
   name                  = db.StringProperty() 
+  last_name             = db.StringProperty() 
+  telephone             = db.StringProperty() 
   email                 = db.StringProperty()
   bitcoin_address       = db.StringProperty()
   password              = db.StringProperty(indexed=False)

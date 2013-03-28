@@ -37,49 +37,41 @@
 						<!--BEGIN TABS-->
 						<div class="tabbable tabbable-custom">
 							<ul class="nav nav-tabs">
-								<li><a href="#tab_1_1" data-toggle="tab">Info personal</a></li>
-								<li class="active"><a href="#tab_1_X" data-toggle="tab">Verificación de identidad</a></li>
-                <li><a href="#tab_1_2" data-toggle="tab">Clave y OTP</a></li>
-								<li><a href="#tab_1_4" data-toggle="tab">Cuentas bancarias</a></li>
-								<li><a href="#tab_1_5" data-toggle="tab">Direcciones bitcoins</a></li>
+								<li class="{{'active' if tab == 'personal_info' else ''}}">
+                  <a href="#personal_info" data-toggle="tab">Info personal</a>
+                </li>
+								<li class="{{'active' if tab == 'identity_validation' else ''}}">
+                  <a href="#identity_validation" data-toggle="tab">Verificación de identidad</a>
+                </li>
+                <li><a href="#change_password" data-toggle="tab">Password</a></li>
+                <li><a href="#otp" data-toggle="tab">OTP</a></li>
+								<li><a href="#bank_accounts" data-toggle="tab">Cuentas bancarias</a></li>
+								<li><a href="#btc_address" data-toggle="tab">Direcciones bitcoins</a></li>
 							</ul>
 							<div class="tab-content">
-                <!--tab_1_1-->
-                <div class="tab-pane row-fluid" id="tab_1_1">
-                  <div class="span12">
-                    <div>
-                      <!-- BEGIN GENERAL PORTLET-->
-                      <div class="portlet">
-                        <!-- div class="portlet-title">
-                          <h4><i class="icon-minus-sign"></i></h4>
-                        </div-->
-                        <div class="portlet-body form">
-                            {%include "frontend/profile_form_info.html"%}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                
+                
+                <div class="tab-pane row-fluid {{'active' if tab == 'personal_info' else ''}}" id="personal_info">
+                  {% if tab == 'personal_info' %}
+                    {%include "frontend/profile_form_info.html"%}
+                  {%endif%}
 								</div>
 								
-                <div class="tab-pane row-fluid active" id="tab_1_X">
-                  
-                  {%include "frontend/profile_form_verification.html"%}
-
+                <div class="tab-pane row-fluid {{'active' if tab == 'identity_validation' else ''}}" id="identity_validation">
+                  {# % if tab == 'identity_validation' % #}
+                    {%include "frontend/profile_form_verification.html"%}
+                  {# %endif% #}
                 </div>
                 
-                <!--tab_1_2-->
-								<div class="tab-pane row-fluid" id="tab_1_2">
-                  <!-- Cambia contraseña y Autenticación en dos pasos -->
-                  {%include "frontend/profileauth_form.html"%}
+								<div class="tab-pane row-fluid" id="change_password">
+                  {%include "frontend/profile_form_password.html"%}
                 </div>
 								
-                <!--tab_1_3-->
-								<div class="tab-pane row-fluid profile-account" id="tab_1_3">
-								</div>
-								
-                <!--tab_1_4-->
-                <div class="tab-pane" id="tab_1_4">
+                <div class="tab-pane row-fluid" id="otp">
+                  {%include "frontend/profile_form_otp.html"%}
+                </div>
                 
+                <div class="tab-pane" id="bank_accounts">
                   <div class="row-fluid">
                     <div class="span12">
                       {%include "frontend/profile_cuentasbancos_table.html"%}
@@ -88,21 +80,12 @@
         
                 </div>
 								
-                <!--tab_1_5-->
-                <div class="tab-pane row-fluid" id="tab_1_5">
-                
-                
+                <div class="tab-pane" id="btc_address">
                   <div class="row-fluid">
                     <div class="span12">
-                      
                       {%include "frontend/profile_cuentasbitcoin_table.html"%}
-                      
                     </div>
                   </div>
-        
-
-                
-                
                 </div>
 								
                 <!--end tab-pane-->
