@@ -773,6 +773,7 @@
         },
 
         _onAdd: function (e, data) {
+            
             var that = this,
                 result = true,
                 options = $.extend({}, this.options, data),
@@ -782,6 +783,7 @@
                 paramNameSlice,
                 fileSet,
                 i;
+            
             if (!(options.singleFileUploads || limit) ||
                     !this._isXHRUpload(options)) {
                 fileSet = [data.files];
@@ -800,6 +802,7 @@
             } else {
                 paramNameSet = paramName;
             }
+            
             data.originalFiles = data.files;
             $.each(fileSet || data.files, function (index, element) {
                 var newData = $.extend({}, data);
@@ -979,9 +982,11 @@
                 data.files = files;
                 if (that.options.replaceFileInput) {
                     that._replaceFileInput(data.fileInput);
+                  //alert('1');
                 }
                 if (that._trigger('change', e, data) !== false) {
                     that._onAdd(e, data);
+                    //alert('2');
                 }
             });
         },

@@ -295,6 +295,7 @@
                     globalProgressNode = $this.find('.fileupload-progress'),
                     extendedProgressNode = globalProgressNode
                         .find('.progress-extended');
+                
                 if (extendedProgressNode.length) {
                     extendedProgressNode.html(
                         ($this.data('blueimp-fileupload') || $this.data('fileupload'))

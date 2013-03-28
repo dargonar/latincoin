@@ -1,15 +1,15 @@
 
 					<div class="span12">
-            <p style="font-size:16px">Con el fin de obtener una <b>cuenta verificada</b> y poder <b>operar por montos mayores a $1000</b>, es necesario verificar su identidad y su domicilio.</p>
+            <p style="">Con el fin de obtener una <b>cuenta verificada</b> y poder <b>operar por montos mayores a $1000</b>, es necesario verificar su identidad y su domicilio.</p>
             <blockquote>
-              <p style="font-size:16px"><b>Prueba de identidad</b></p>
-              <p style="font-size:16px">Escanee y envíenos primer y segunda hoja de su <b>DNI</b> o de su <b>pasaporte</b>.</p>
-              <p style="font-size:16px"><b>Prueba de domicilio</b>
-              <p style="font-size:16px">Puede escanear y enviar una <b>factura mensual de servicio</b> como Internet o telefonía, o un <b>certificado de residencia expedido por autoridad oficial</b>.</p>
+              <p style=""><b>Prueba de identidad</b></p>
+              <p style="">Escanee y envíenos primer y segunda hoja de su <b>DNI</b> o de su <b>pasaporte</b>.</p>
+              <p style=""><b>Prueba de domicilio</b>
+              <p style="">Puede escanear y enviar una <b>factura mensual de servicio</b> como Internet o telefonía, o un <b>certificado de residencia expedido por autoridad oficial</b>.</p>
             </blockquote>
-            <p style="font-size:14px">Tenga en cuenta que los documentos:
+            <p style="">Tenga en cuenta que los documentos:
               <br/>
-              <ul style="text-decoration:none;font-size:14px;color:#636363;">
+              <ul style="text-decoration:none;color:#636363;">
                 <li>Deben ser claros y legibles.</li>
                 <li>No puede ser un estado de cuenta bancario.</li>
                 <li>No puede estar editado o modificado en modo alguno.</li>
@@ -22,7 +22,7 @@
 						<!-- The file upload form used as target for the file upload widget -->
 						<form id="fileupload" action="#" method="POST" enctype="multipart/form-data">
 							<!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
-							<div class="row-fluid fileupload-buttonbar">
+							<div class="row-fluid fileupload-buttonbar" id="file_dragzone">
 								<div class="span7">
 									<!-- The fileinput-button span is used to style the file input field as button -->
 									<span class="btn green fileinput-button">
@@ -50,112 +50,22 @@
 										<div class="bar" style="width:0%;"></div>
 									</div>
 									<!-- The extended global progress information -->
-									<div class="progress-extended">&nbsp;</div>
+									<!--div class="progress-extended">&nbsp;</div -->
 								</div>
 							</div>
 							<!-- The loading indicator is shown during file processing -->
 							<div class="fileupload-loading"></div>
 							<br>
-							<!-- The table listing the files available for upload/download -->
-							<table role="presentation" class="table table-striped">
-								<tbody class="files" data-toggle="modal-gallery" data-target="#modal-gallery"></tbody>
-							</table>
-						</form>
+              
+              <div class="span12"> 
+                <table role="presentation" class="table table-striped" id="files_to_upload">
+                  <tbody class="files" data-toggle="modal-gallery" data-target="#modal-gallery">
+                  </tbody>
+                </table>
+              </div>
+          
+            </form>
 						
           </div>
-          <br />
-          <span class="alert alert-error">No ha subido archivos aún y su identidad no ha sido verificada.</span>
-          <div class="clearfix"></div>
-          <br />
-          <br />
           
-          <div class="span12"> 
-            <table role="presentation" class="table table-striped">
-              <tbody class="files" data-toggle="modal-gallery" data-target="#modal-gallery">
-                <tr class="template-upload fade in">
-                  <td class="preview"><span class="fade"></span></td>
-                  <td class="name"><span>Full page photo.pdf</span></td>
-                  <td class="size"><span>105.33 KB</span></td>
-                  <td>
-                      <div class="progress progress-success progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="bar" style="width:0%;"></div></div>
-                  </td>
-                  <td class="start">
-                      <button class="btn blue">
-                          <i class="icon-upload icon-white"></i>
-                          <span>Subir</span>
-                      </button>
-                  </td>
-                  <td class="cancel">
-                    <button class="btn red">
-                        <i class="icon-ban-circle icon-white"></i>
-                        <span>Cancel</span>
-                    </button>
-                  </td>
-                </tr>
-                <tr class="template-upload fade in">
-                  <td class="preview"><span class="fade"></span></td>
-                  <td class="name"><span>2013-03-15_Monotributo Físicas_5905.pdf</span></td>
-                  <td class="size"><span>14.11 KB</span></td>
-                  <td>
-                    <div class="progress progress-success progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="bar" style="width:0%;"></div></div>
-                  </td>
-                  <td class="start">
-                    <button class="btn blue">
-                      <i class="icon-upload icon-white"></i>
-                      <span>Subir</span>
-                    </button>
-                  </td>
-                  <td class="cancel">
-                    <button class="btn red">
-                      <i class="icon-ban-circle icon-white"></i>
-                      <span>Cancel</span>
-                    </button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-           
-          <br />
-          <br />
-          <br />
-           
-            <div class="span12">
-              <table role="presentation" class="table table-striped">
-                <tbody class="files" data-toggle="modal-gallery" data-target="#modal-gallery">
-                  <tr class="template-upload fade in">
-                    <td class="preview"><span class="fade"></span></td>
-                    <td class="name"><span>BCRA __ Portal del Cliente Bancario.pdf</span></td>
-                    <td class="size"><span>348.16 KB</span></td>
-                    <td class="error" colspan="2"><span class="label label-important">Error</span> Filetype not allowed</td>
-                    <td>
-                      <button class="btn btn-warning red cancel">
-                        <i class="icon-ban-circle icon-white"></i>
-                        <span>Cancel</span>
-                      </button>
-                    </td>
-                  </tr>
-                  <tr class="template-download fade in">
-                    <td class="preview">
-                      <a href="#" title="tuti_250.png" data-gallery="gallery" download="tuti_250.png"><img src="http://lh3.ggpht.com/408X5D8qHB6D3vP6Or0veiGRx5y6U9k9q0YYQtipMsROQXOLfwS9jCJh5F3rrDXuizECK4dMCpSejfisj6e7tjoIwIJTXzE86A=s80"></a>
-                    </td>
-                    <td class="name">
-                      <a href="#" title="tuti_250.png" data-gallery="gallery" download="tuti_250.png">tuti_250.png</a>
-                    </td>
-                    <td class="size"><span>84.21 KB</span></td>
-                    <td colspan="2"></td>
-                    <td>
-                      <button class="btn btn-danger delete" data-type="DELETE" data-url="#delete=true">
-                        <i class="icon-trash icon-white"></i>
-                        <span>Delete</span>
-                      </button>
-                      <input type="checkbox" name="delete" value="1" class="toggle">
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            
-          <br />
-            
-          
+          {% include 'frontend/profile_form_verification_files.html' %}

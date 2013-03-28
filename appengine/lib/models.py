@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import decimal
 
-from google.appengine.ext import db
+from google.appengine.ext import db, blobstore
 from appengine_properties import DecimalProperty
 
 class Dummy(db.Model):
@@ -15,6 +15,9 @@ class Account(db.Model):
   bitcoin_address       = db.StringProperty()
   password              = db.StringProperty(indexed=False)
   time_zone             = db.StringProperty(indexed=False)
+  
+  identity_is_validated = db.BooleanProperty(default=False)
+  address_is_validated  = db.BooleanProperty(default=False)
   
   reset_password_token  = db.StringProperty()
 
@@ -43,6 +46,27 @@ class Account(db.Model):
   created_at            = db.DateTimeProperty(auto_now_add=True)
   updated_at            = db.DateTimeProperty(auto_now=True)
 
+class AccountValidationFile(db.Model):
+  VALIDATION_IDENTITY     = u'identidad'
+  VALIDATION_ADDRESS      = u'domicilio'
+  VALIDATION_UNDEFINED    = u'undefined' 
+  
+  serving_url         = db.StringProperty(required=True)
+  file                = blobstore.BlobReferenceProperty(required=True)
+  filename            = db.StringProperty(required=True)
+  filetype            = db.StringProperty(required=True)
+  filesize            = db.StringProperty()
+  account             = db.ReferenceProperty(Account, required=True)
+  created_at          = db.DateTimeProperty(auto_now_add=True)
+  validation_type     = db.StringProperty(choices=[VALIDATION_IDENTITY, VALIDATION_ADDRESS, VALIDATION_UNDEFINED], required=True)
+  is_valid            = db.BooleanProperty(default=False)
+  not_valid_reason    = db.StringProperty(indexed=False)
+  def __repr__(self):
+    return u'Validación de %s: %s.' % (self.validation_type, ('VALIDO' if self.is_valid else 'INVALIDO'))
+  
+  def isIdentityType(self, _type):
+    return _type==VALIDATION_IDENTITY
+  
 class AccountBalance(db.Model):
   
   def __repr__(self):

@@ -31,8 +31,10 @@ def get_rules():
       ]) ]) ]),
       
       PathPrefixRoute('/profile', [ NamePrefixRoute('profile-', [ HandlerPrefixRoute('apps.frontend.profile_controller', [
-        Route('/personal_info',         name='personal_info',         handler='.ProfileController:personal_info'),
-        Route('/identity_validation',   name='identity_validation',   handler='.ProfileController:identity_validation'),
+        Route('/personal_info',               name='personal_info',         handler='.ProfileController:personal_info'),
+        Route('/identity_validation',         name='identity_validation',   handler='.ProfileController:identity_validation'),
+        Route('/delete_file/<key>',           name='delete_file',           handler='.ProfileController:delete_file'),
+        Route('/identity_validation_files',   name='identity_validation_files',           handler='.ProfileController:identity_validation_files'),
         #Route('/post_info',       name='post_info',     handler='.ProfileController:post_info'),
       ]) ]) ]),
       

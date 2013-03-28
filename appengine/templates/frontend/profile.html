@@ -38,10 +38,10 @@
 						<div class="tabbable tabbable-custom">
 							<ul class="nav nav-tabs">
 								<li class="{{'active' if tab == 'personal_info' else ''}}">
-                  <a href="#personal_info" data-toggle="tab">Info personal</a>
+                  <a href="{{ url_for('profile-personal_info') }}">Info personal</a> <!-- data-toggle="tab" -->
                 </li>
 								<li class="{{'active' if tab == 'identity_validation' else ''}}">
-                  <a href="#identity_validation" data-toggle="tab">Verificación de identidad</a>
+                  <a href="{{ url_for('profile-identity_validation') }}">Verificación de identidad</a> <!-- data-toggle="tab" -->
                 </li>
                 <li><a href="#change_password" data-toggle="tab">Password</a></li>
                 <li><a href="#otp" data-toggle="tab">OTP</a></li>
@@ -118,7 +118,7 @@
 	<!-- The File Upload user interface plugin -->
 	<script src="/assets/jquery-file-upload/js/jquery.fileupload-ui.js"></script>
 	<!-- The main application script -->
-	<!-- script src="/assets/jquery-file-upload/js/main.js"></script -->
+	<script src="/assets/jquery-file-upload/js/main.js"></script>
 
   <script>
 		jQuery(document).ready(function() {			
