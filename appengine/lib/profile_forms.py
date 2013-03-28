@@ -37,6 +37,7 @@ class ChangePasswordForm(Form):
 
   def update_object(self, obj):
     obj.password     = self.new_password.data
+    return obj
     
   password            = PasswordField(u'Contraseña', [
                             validators.Length(message=u'La contraseña debe tener al menos %(min)d caracteres.', min=6),
@@ -44,6 +45,6 @@ class ChangePasswordForm(Form):
                             validators.EqualTo('confirm', message=u'Las contraseñas deben ser iguales.')
                         ])
   
-  confirm             = PasswordField(u'Repetir Contraseña')
-  new_password        = PasswordField('Nuevo Password', [validators.Required(message=u'Debe ingresar una contraseña.')])
+  confirm             = PasswordField(u'Repetir contraseña')
+  new_password        = PasswordField('Nueva contraseña', [validators.Required(message=u'Debe ingresar una contraseña.')])
   

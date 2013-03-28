@@ -43,7 +43,9 @@
 								<li class="{{'active' if tab == 'identity_validation' else ''}}">
                   <a href="{{ url_for('profile-identity_validation') }}">Verificación de identidad</a> <!-- data-toggle="tab" -->
                 </li>
-                <li><a href="#change_password" data-toggle="tab">Password</a></li>
+                <li class="{{'active' if tab == 'change_password' else ''}}">
+                  <a href="{{ url_for('profile-change_password') }}">Password</a>
+                </li>
                 <li><a href="#otp" data-toggle="tab">OTP</a></li>
 								<li><a href="#bank_accounts" data-toggle="tab">Cuentas bancarias</a></li>
 								<li><a href="#btc_address" data-toggle="tab">Direcciones bitcoins</a></li>
@@ -63,8 +65,10 @@
                   {# %endif% #}
                 </div>
                 
-								<div class="tab-pane row-fluid" id="change_password">
-                  {%include "frontend/profile_form_password.html"%}
+								<div class="tab-pane row-fluid {{'active' if tab == 'change_password' else ''}}" id="change_password">
+                  {% if tab == 'change_password' %}
+                    {%include "frontend/profile_form_password.html"%}
+                  {%endif%}  
                 </div>
 								
                 <div class="tab-pane row-fluid" id="otp">

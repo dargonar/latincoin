@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from google.appengine.ext import db, blobstore
 from google.appengine.ext.webapp import blobstore_handlers
 
@@ -9,7 +11,7 @@ from webapp2 import cached_property
 from models import Account, AccountValidationFile
 from utils import FrontendHandler, need_auth, get_or_404, abort
 
-from profile_forms import ProfileForm
+from profile_forms import ProfileForm, ChangePasswordForm
 
 import json, re, urllib
 
@@ -20,15 +22,14 @@ class ProfileController(FrontendHandler, UploadHandler):
   @need_auth()
   def personal_info(self, **kwargs):    
     
+    account = get_or_404(self.user)
     kwargs['tab'] = 'personal_info';
     if self.request.method == 'GET':
-      account = get_or_404(self.user)
       kwargs['form']              = ProfileForm(obj=account)
       return self.render_response('frontend/profile.html', **kwargs)
     
     self.request.charset  = 'utf-8'
     
-    account = get_or_404(self.user)
     is_valid = self.form.validate()
     if not is_valid:
       kwargs['form']         = self.form
@@ -134,3 +135,35 @@ class ProfileController(FrontendHandler, UploadHandler):
     
     self.set_ok('Archivo eliminado satisfactoriamente')
     return self.redirect_to('profile-identity_validation')
+    
+  @need_auth()
+  def change_password(self, **kwargs):    
+    
+    kwargs['tab'] = 'change_password';
+    account = get_or_404(self.user)
+    
+    if self.request.method == 'GET':
+      kwargs['form']              = ChangePasswordForm(obj=account)
+      return self.render_response('frontend/profile.html', **kwargs)
+    
+    self.request.charset  = 'utf-8'
+    
+    is_valid = self.password_form.validate()
+    if not is_valid:
+      kwargs['form']         = self.password_form
+      if self.password_form.errors:
+        kwargs['flash']      = self.build_error(u'Verifique los datos ingresados:')
+      return self.render_response('frontend/profile.html', **kwargs)
+
+    account          = self.password_form.update_object(account)
+    account.save()
+    
+    self.set_ok(u'Contraseña modificada satisfactoriamente.')
+    return self.redirect_to('profile-change_password')
+  
+  @cached_property
+  def password_form(self):
+    my_pwd_form = ChangePasswordForm(self.request.POST)
+    my_pwd_form.user_key = self.user
+    return my_pwd_form
+  
