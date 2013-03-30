@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import logging
 from decimal import Decimal
 
 from wtforms import Form, BooleanField, TextField
@@ -20,12 +21,13 @@ class TradeForm(Form):
       raise ValidationError(u'La cantidad ingresada es inválida')
 
   def validate_ppc(self, field, market):
-    if market.data:
+
+    logging.error('valido %s' % str(self.market()))    
+    if self.market():
       return
 
     if not self.is_decimal(field.data):
       raise ValidationError(u'La cantidad ingresada es inválida')
-
 
 class AskForm(TradeForm):
   ask_amount = TextField()

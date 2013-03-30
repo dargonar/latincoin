@@ -18,7 +18,7 @@
 					<!-- END RESPONSIVE QUICK SEARCH FORM -->
 				</li>
 				<li class="start {{ 'active' if html=='trade' else '' }} ">
-					<a href="{{ url_for('designer-html', html='trade') }}">
+					<a href="{{ url_for('trade-new') }}">
             <i class="icon-money"></i> 
             <span class="title">Comprar / Vender</span>
             <span class="{{ 'selected' if html=='trade' else 'arrow' }}"></span>
@@ -38,11 +38,11 @@
             <span class="{{ 'selected' if html=='retiro' else 'arrow' }}"></span>
 					</a>
 				</li>
-				<li class="has-sub {{ 'active' if html=='operations' else '' }} ">
-					<a href="{{ url_for('designer-html', html='operations') }}">
+				<li class="has-sub {{ 'active' if html=='history' else '' }} ">
+					<a href="{{ url_for('trade-history') }}">
 					<i class="icon-table"></i> 
-					<span class="title">Historial</span>
-					<span class="{{ 'selected' if html=='operations' else 'arrow' }}"></span>
+					<span class="title">{{'Historial'}}</span>
+					<span class="{{ 'selected' if html=='history' else 'arrow' }}"></span>
 					</a>
 				</li>
 			</ul>

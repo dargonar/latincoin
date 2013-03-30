@@ -29,11 +29,11 @@
 									-->
 								</div>
                 {% set hide_items = '' if True else 'display:none;' %}
-								<table id="my_{{type}}_table" class="table table-striped table-bordered table-hover jquery-table" >
+								<table id="my_{{mode}}_{{type}}_table" class="table table-striped table-bordered table-hover jquery-table" >
 									<thead>
 										<tr>
 											<!-- th style="width:8px;"><input type="checkbox" class="group-checkable" data-set="#sample_1 .checkboxes" /></th -->
-											<th></th>
+											<th>{{'Orden Nro.'}}</th>
                       <th>Fecha</th>
 											<th class="hidden-480">Tipo</th>
 											<th class="hidden-480">Cantidad(BTC)</th>
@@ -44,6 +44,7 @@
 										</tr>
 									</thead>
 									<tbody>
+						<!--
 						<tr class="odd gradeX">
                       	<td>#1</td>
 						<td class="center hidden-480">12 Jan 2012</td>
@@ -85,7 +86,7 @@
                       
                       <td><span class="label label-success">Approved</span></td>
                       <td class="hidden-480" style="{{ hide_items }}"><a href="#">Cancelar</a></td>
-										</tr>  	
+										</tr>  -->	
 											
 										
 									</tbody>

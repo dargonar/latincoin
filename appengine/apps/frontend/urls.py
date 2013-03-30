@@ -22,13 +22,15 @@ def get_rules():
       
       PathPrefixRoute('/trade', [ NamePrefixRoute('trade-', [ HandlerPrefixRoute('apps.frontend.trade_controller', [
         Route('/new',             name='new',          handler='.TradeController:new'),
-        Route('/active/<type:(bid|ask)>',  name='active-orders',  handler='.TradeController:active_orders'),
+        Route('/orders/<mode:(active|inactive)>/<type:(bid|ask|any)>',  name='orders',  handler='.TradeController:list_orders'),
+        Route('/history',         name='history',      handler='.TradeController:history'),
         Route('/cancel/<key>',    name='cancel',       handler='.TradeController:cancel_order'),
 
         Route('/match',           name='match',        handler='.TradeController:match_orders'),
         Route('/apply/<key>',     name='apply',        handler='.TradeController:apply_operation'),
 
       ]) ]) ]),
+
       
       PathPrefixRoute('/designer', [ NamePrefixRoute('designer-', [ HandlerPrefixRoute('apps.frontend.designer_controller', [
         Route('/<html>',         name='html',         handler='.DesignerController:verHtmlTemplate'),

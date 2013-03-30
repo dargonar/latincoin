@@ -1996,16 +1996,16 @@ var App = function () {
     }
 
 
-    var handleTablesBidAsk = function (type) {
+    var handleOrderTables = function (mode, type) {
         
         if (!jQuery().dataTable) {
             return;
         }
 
         // begin first table
-        $('#my_'+type+'_table').dataTable({
+        $('#my_'+mode+'_'+type+'_table').dataTable({
             "bProcessing": true,
-            "sAjaxSource": table_ajax_source[type],
+            "sAjaxSource": table_ajax_source[mode+'_'+type],
             "sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
             "sPaginationType": "bootstrap",
             "oLanguage": {
@@ -2882,8 +2882,13 @@ var App = function () {
             }
 
             if (App.isPage("trade_new")) {
-                handleTablesBidAsk('bid'); // handles data tables
-                handleTablesBidAsk('ask'); // handles data tables
+                handleOrderTables('active','bid'); // handles data tables
+                handleOrderTables('active','ask'); // handles data tables
+            }
+
+            if (App.isPage("trade_history")) {
+                handleOrderTables('active','any'); // handles data tables
+                handleOrderTables('inactive','any'); // handles data tables
             }
 
             // global handlers

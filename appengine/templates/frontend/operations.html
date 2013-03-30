@@ -8,7 +8,7 @@
 					<div class="span12">
 						<!-- BEGIN PAGE TITLE & BREADCRUMB-->			
 						<h3 class="page-title">
-							Operaciones <small>Operaciones activas. Historial de operaciones, acciones y accesos.</small>
+							Ordenes <small> Ordenes activas e historial.</small>
 						</h3>
 						<ul class="breadcrumb">
 							<li>
@@ -27,17 +27,21 @@
 					
           <div class="span12">
             <div class="span12" style="margin-left:0;">
-              {% set operations_table_name = 'Operaciones activas'%}
-              {% set collpased = False %}
+              {% set operations_table_name = 'Ordenes activas'%}
+              {% set collpased = True %}
               {% set editable = True %}
+              {% set mode = 'active' %}
+              {% set type = 'any' %}
               {%include "frontend/trade_operations_table.html"%}
             </div>
 						<div class="clearfix"></div>		
                 
             <div class="span12" style="margin-left:0;">
-              {% set operations_table_name = 'Historial de Operaciones'%}
-              {% set collpased = False %}
-              {% set editable = False %}
+              {% set operations_table_name = 'Ordenes completadas o canceladas'%}
+              {% set collpased = True %}
+              {% set editable = True %}
+              {% set mode = 'inactive' %}
+              {% set type = 'any' %}
               {%include "frontend/trade_operations_table.html"%}
             </div>
 					</div>
@@ -48,9 +52,12 @@
   
   {%block javascript_run%}
   <script>
+    var table_ajax_source = {'active_any': '{{url_for('trade-orders', mode='active', type='any')}}',
+                             'inactive_any': '{{url_for('trade-orders', mode='inactive', type='any')}}' };
+
 		jQuery(document).ready(function() {			
 			// initiate layout and plugins
-			App.setPage("table_managed");
+			App.setPage("trade_history");
 			App.init();
 		});
 	</script>
