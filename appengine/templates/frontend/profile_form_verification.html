@@ -1,82 +1,71 @@
-      <form action="#">
-        <div class="span6">
-          <h1><i class="icon-user"></i> Identidad</h1>
-          <p>Necesitamos una prueba de identidad. Puede ser primer y segunda hoja del <b>DNI</b>, <b>pasaporte</b> o <b>carnet de conducir</b>.</p>
-          <br />
-          <center>
-            <div class="controls">
-              <div class="thumbnail" style="width: 291px; height: 288px;">
-                <span style="position:absolute;"span class="label label-important">NO VERIFICADO</span>
-                <img src="/assets/img/profile/pirata.png" alt="" />
+
+					<div class="span12">
+            <p style="">Con el fin de obtener una <b>cuenta verificada</b> y poder <b>operar por montos mayores a $1000</b>, es necesario verificar su identidad y su domicilio.</p>
+            <blockquote>
+              <p style=""><b>Prueba de identidad</b></p>
+              <p style="">Escanee y envíenos primer y segunda hoja de su <b>DNI</b> o de su <b>pasaporte</b>.</p>
+              <p style=""><b>Prueba de domicilio</b>
+              <p style="">Puede escanear y enviar una <b>factura mensual de servicio</b> como Internet o telefonía, o un <b>certificado de residencia expedido por autoridad oficial</b>.</p>
+            </blockquote>
+            <p style="">Tenga en cuenta que los documentos:
+              <br/>
+              <ul style="text-decoration:none;color:#636363;">
+                <li>Deben ser claros y legibles.</li>
+                <li>No puede ser un estado de cuenta bancario.</li>
+                <li>No puede estar editado o modificado en modo alguno.</li>
+                <li>Debe haber sido expedido dentro de los últimos 3 meses.</li>
+                <li>Debe ser en formato JPEG (.jpg), PNG (.png) or PDF (.pdf).</li>
+              </ul>
+            </p>
+            
+						<br />
+						<!-- The file upload form used as target for the file upload widget -->
+						<form id="fileupload" action="#" method="POST" enctype="multipart/form-data">
+							<!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
+							<div class="row-fluid fileupload-buttonbar" id="file_dragzone">
+								<div class="span7">
+									<!-- The fileinput-button span is used to style the file input field as button -->
+									<span class="btn green fileinput-button">
+                    <i class="icon-plus icon-white"></i>
+                    <span>Agregar archivos...</span>
+                    <input type="file" name="files[]" multiple>
+									</span>
+									<button type="submit" class="btn blue start" style="display:none;">
+                    <i class="icon-upload icon-white"></i>
+                    <span>Start upload</span>
+									</button>
+									<button type="reset" class="btn yellow cancel" style="display:none;">
+                    <i class="icon-ban-circle icon-white"></i>
+                    <span>Cancel upload</span>
+									</button>
+									<button type="button" class="btn red delete" style="display:none;">
+                    <i class="icon-trash icon-white"></i>
+                    <span>Delete</span>
+									</button>
+								</div>
+								<!-- The global progress information -->
+								<div class="span5 fileupload-progress fade">
+									<!-- The global progress bar -->
+									<div class="progress progress-success progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+										<div class="bar" style="width:0%;"></div>
+									</div>
+									<!-- The extended global progress information -->
+									<!--div class="progress-extended">&nbsp;</div -->
+								</div>
+							</div>
+							<!-- The loading indicator is shown during file processing -->
+							<div class="fileupload-loading"></div>
+							<br>
+              
+              <div class="span12"> 
+                <table role="presentation" class="table table-striped" id="files_to_upload">
+                  <tbody class="files" data-toggle="modal-gallery" data-target="#modal-gallery">
+                  </tbody>
+                </table>
               </div>
-            </div>
-          </center>
-          <div class="space10"></div>
-          <div class="control-group">
-            <div class="controls">
-              <!--label class="control-label">Seleccionar archivo que valide su <b>identidad</b>.</label-->
-              <div class="fileupload fileupload-new" data-provides="fileupload">
-                <span class="btn btn-file">
-                <span class="fileupload-new">Elegir archivo</span>
-                <span class="fileupload-exists">Cambiar</span>
-                <input type="file" class="default" />
-                </span>&nbsp;<small>JPEG (.jpg), PNG (.png) ó PDF (.pdf).</small>
-                <span class="fileupload-preview"></span>
-                <a href="#" class="close fileupload-exists" data-dismiss="fileupload" style="float: none"></a>
-              </div>
-              <!-- label class="control-label">Puede ser primer y segunda hoja del <b>DNI</b>, <b>pasaporte</b> o <b>carnet de conducir</b>.</label -->
-            </div>
+          
+            </form>
+						
           </div>
-          <div class="clearfix"></div>
-        </div>
-        
-        <div class="span6">
-          <h1><i class="icon-map-marker"></i> Domicilio</h1>
-          <p>Necesitamos una prueba de domicilio. Puede ser una <b>factura a su nombre</b> o un <b>certificado de domicilio</b>.</p>
-          <br />
-          <center>
-            <div class="controls">
-              <div class="thumbnail" style="width: 288px; height: 288px;">
-                <!-- span style="position:absolute;" class="label label-warning">NO VERIFICADO</span -->
-                <span style="position:absolute;" class="label label-success">VERIFICADO</span>
-                <img src="/assets/img/profile/residencia_pirata.png" alt="" />
-              </div>
-            </div>
-          </center>
-          <div class="space10"></div>
-          <div class="control-group">
-            <!--label class="control-label">Seleccionar archivo que valide su <b>domicilio</b>.</label -->
-            <div class="controls">
-               <div class="fileupload fileupload-new" data-provides="fileupload">
-                  <span class="btn btn-file">
-                    <span class="fileupload-new">Elegir archivo</span>
-                    <span class="fileupload-exists">Cambiar</span>
-                    <input type="file" class="default" />
-                  </span>&nbsp;<small>JPEG (.jpg), PNG (.png) ó PDF (.pdf).</small>
-                  <span class="fileupload-preview"></span>
-                  <a href="#" class="close fileupload-exists" data-dismiss="fileupload" style="float: none"></a>
-               </div>
-            </div>
-            <!-- label class="control-label">Puede ser una <b>factura a su nombre</b> o un <b>certificado de domicilio</b>.</label -->
-          </div>
-          <div class="clearfix"></div>
-        </div>
-        
-        <div class="clearfix"></div>
-        
-        <div>
-          <div class="form-actions" style="padding-left: 20px !important;">
-            <button type="submit" class="btn blue btn-block">Guardar datos</button>
-          </div>
-        </div>  
-        <!--div class="span10">
-          <div class="space10"></div>
-          <div class="submit-btn">
-            <div class="span9">
-              <a href="#" class="btn green btn-block">Subir archivos</a>
-            </div>&nbsp;
-            <a href="#" class="btn">Cancelar</a>
-          </div>
-        </div-->
-      </form>
-    
+          
+          {% include 'frontend/profile_form_verification_files.html' %}

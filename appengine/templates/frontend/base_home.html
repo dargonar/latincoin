@@ -1,39 +1,46 @@
   {% extends "frontend/base.html"%}
-  
-  {%block content_body%}
-  
-    <!-- BEGIN CONTAINER -->
-    <div class="page-container row-fluid">
+
+  {%block html_body%}
+    <body class="fixed-top">
+      <!-- BEGIN HEADER -->
+      {%include "frontend/header.html"%}
+      <!-- END HEADER -->
       
-      <!-- BEGIN SIDEBAR -->
-      <div class="page-sidebar nav-collapse collapse">
-        {%include "frontend/sidebar.html"%}
-      </div>
-      <!-- END SIDEBAR -->
-      <!-- BEGIN PAGE -->
-      <div class="page-content">
-        <!-- BEGIN SAMPLE PORTLET CONFIGURATION MODAL FORM-->
-        <div id="portlet-config" class="modal hide">
-          <div class="modal-header">
-            <button data-dismiss="modal" class="close" type="button"></button>
-            <h3>Widget Settings</h3>
+      <!-- BEGIN BODY -->
+        <!-- BEGIN CONTAINER -->
+        <div class="page-container row-fluid">
+          
+          <!-- BEGIN SIDEBAR -->
+          <div class="page-sidebar nav-collapse collapse">
+            {%include "frontend/sidebar.html"%}
           </div>
-          <div class="modal-body">
-            <p>Here will be a configuration form</p>
+          <!-- END SIDEBAR -->
+          <!-- BEGIN PAGE -->
+          <div class="page-content">
+            
+            {%block content%}
+            {%endblock%}
+            
           </div>
+          <!-- END PAGE -->
         </div>
-        <!-- END SAMPLE PORTLET CONFIGURATION MODAL FORM-->
-        
-        {%block content%}
-        {%endblock%}
-        
+        <!-- END CONTAINER -->
+      <!-- BEGIN BODY -->
+      
+      <!-- BEGIN FOOTER -->
+      <div class="footer">
+        {% include "frontend/base_copyright.html"%}
+        <div class="span pull-right">
+          <span class="go-top"><i class="icon-angle-up"></i></span>
+        </div>
       </div>
-      <!-- END PAGE -->
-    </div>
-    <!-- END CONTAINER -->
-	
-  {%endblock%}
-  
-  <!-- END JAVASCRIPTS -->
-  {%block javascript_run%}
+      <!-- END FOOTER -->
+      
+      <!-- BEGIN JAVASCRIPTS -->
+      {%include "frontend/base_javascripts.html"%}
+      <!-- END JAVASCRIPTS -->
+        <!-- END JAVASCRIPTS -->
+      {%block javascript_run%}
+      {%endblock%}
+    </body>
   {%endblock%}

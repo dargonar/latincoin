@@ -4646,4 +4646,17 @@ span.white_ticker {color:#ffffff; font-weight:bold;}
 .form-actions {padding-left: 180px !important;}
 
 /* HACK breadcrumbs */
-.breadcrumb {background-color:#FFFFFF;}
+.breadcrumb {background-color:#f8f8f8;}
+
+/* HACK profile */
+.profile_user_icon {
+  color: #ddd !important;
+  /*display: block !important;
+  position: absolute !important;*/
+  z-index: 1;
+  margin: 9px 2px 4px 10px !important;  
+  width: 16px;
+  height: 16px;
+  font-size: 16px;
+  text-align: left;
+}

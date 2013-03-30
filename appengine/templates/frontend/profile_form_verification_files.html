@@ -1,0 +1,37 @@
+{%if files %}
+  <div class="span12" id="verification_files">
+    <table role="presentation" class="table table-striped">
+      <tbody class="files" data-toggle="modal-gallery" data-target="#modal-gallery">
+        
+        {% for file in files %}
+          <tr class="template-download fade in">
+            <td class="preview">
+              <a href="{{file.serving_url}}=s80" title="tuti_250.png" data-gallery="gallery" download="tuti_250.png"><img src="{{file.serving_url}}=s80"></a>
+            </td>
+            <td class="name">
+              <a href="#" title="{{file.filename}}" data-gallery="gallery" download="{{file.filename}}">{{file.filename}}</a>
+            </td>
+            <td class="size"><span>{{file.filesize}} KB</span></td>
+            <td colspan="2">
+              {% if file.is_valid %}
+                <span class="label label-success">Válido</span>
+              {% else %}
+                {% if file.not_valid_reason == ''%}
+                  <span class="label label-warning">Pendiente</span>
+                {% else %}
+                  <span class="label label-important">No válido</span> {{file.not_valid_reason}}
+                {% endif %}
+              {% endif %}
+            </td>
+            <td>
+              <a href="{{url_for('profile-delete_file', key=file.key()|string)}}" class="btn btn-danger delete"><i class="icon-trash icon-white"></i> Borrar archivo</a>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{%else%}
+  <span id="verification_files" class="alert alert-error">No ha subido archivos aún y su identidad no ha sido verificada.</span>
+  <div class="clearfix"></div>
+{%endif%}  

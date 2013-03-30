@@ -28,11 +28,11 @@ class SignUpForm(Form):
   def __repr__(self):
     return 'SignUpForm'
 
-  def validate_accept_terms(form, field):
+  def validate_accept_terms(self, field):
     if not field.data:
       raise ValidationError(u'Debe aceptar los términos y condiciones.')
       
-  def validate_email(form, field):
+  def validate_email(self, field):
     # Chequeo que el correo no este repetido
     user = Account.all().filter('email =', field.data).get()
 
