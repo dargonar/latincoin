@@ -14,19 +14,12 @@
 
   <div class="span12">
     <div class="portlet">
-      <div class="portlet-body form">
-                      
-        {% if flash %}
-        <div class="alert alert-{{ 'alert' if flash.type=='error' else 'success' }}">
-          <button class="close" data-dismiss="{{ 'alert' if flash.type=='error' else 'success' }}"></button>
-          {{flash.message}}
-        </div>
-        {% endif %}
-          
+      <div class="portlet-body form">          
         <form action="{{url_for('profile-personal_info')}}" method="POST">
           {{ form_input(form.email, label='Correo electrónico', class='m-wrap span8', placeholder='Ej: tu.correo@electrinico.com') }}
           {{ form_input(form.name, label='Nombre', class='m-wrap span8', placeholder='Ej: Juan') }}
           {{ form_input(form.last_name, label='Apellido', class='m-wrap span8', placeholder='Ej: Pérez') }}
+          {{ form_input(form.cuit, label='CUIL/CUIT', class='m-wrap span8', placeholder='20-21234567-1') }}
           {{ form_input(form.telephone, label='Teléfono de contacto', class='m-wrap span8', placeholder='Ej: 011 15 1234 5678') }}
           <div class="form-actions" style="padding-left: 20px !important;">
             <button type="submit" class="btn blue">{{'Guardar datos'}}</button>

@@ -15,6 +15,8 @@ class Account(db.Model):
   bitcoin_address       = db.StringProperty()
   password              = db.StringProperty(indexed=False)
   time_zone             = db.StringProperty(indexed=False)
+
+  cuit                  = db.StringProperty()  
   
   identity_is_validated = db.BooleanProperty(default=False)
   address_is_validated  = db.BooleanProperty(default=False)
@@ -45,6 +47,11 @@ class Account(db.Model):
   commission_rate       = DecimalProperty(required=True, default=decimal.Decimal('0.006'))
   created_at            = db.DateTimeProperty(auto_now_add=True)
   updated_at            = db.DateTimeProperty(auto_now=True)
+  
+  last_password_change_ip           = db.StringProperty()
+  last_password_change_date         = db.DateTimeProperty()
+  last_password_change_failed_ip    = db.StringProperty()
+  last_password_change_failed_date  = db.DateTimeProperty()
 
 class AccountValidationFile(db.Model):
   VALIDATION_IDENTITY     = u'identidad'
@@ -112,15 +119,6 @@ class AccountOperation(db.Model):
   created_at            = db.DateTimeProperty(auto_now_add=True)
   updated_at            = db.DateTimeProperty(auto_now=True)
 
-
-class BankAccount(db.Model):
-  user                  = db.ReferenceProperty(Account, collection_name='bank_accounts')
-  cbu                   = db.StringProperty()
-  account_holder        = db.StringProperty()
-  state                 = db.StringProperty()
-  created_at            = db.DateTimeProperty(auto_now_add=True)
-  updated_at            = db.DateTimeProperty(auto_now=True)
-
 class TradeOrder(db.Model):
   
   def __repr__(self):
@@ -173,3 +171,23 @@ class Operation(db.Model):
   status                = db.StringProperty(required=True, choices=[OPERATION_PENDING, OPERATION_DONE])
   created_at            = db.DateTimeProperty(auto_now_add=True)
   updated_at            = db.DateTimeProperty(auto_now=True)
+
+class BankAccount(db.Model):
+  account               = db.ReferenceProperty(Account, collection_name='bank_accounts')
+  cbu                   = db.StringProperty()
+  description           = db.StringProperty(required=True)
+  account_holder        = db.StringProperty()
+  state                 = db.StringProperty()
+  created_at            = db.DateTimeProperty(auto_now_add=True)
+  updated_at            = db.DateTimeProperty(auto_now=True)
+  
+class BitcoinAddress(db.Model):
+
+  def __repr__(self):
+    return 'op: btc:%.5f cur:%.5f ppc:%.5f ' % (self.traded_btc, self.traded_currency, self.ppc)
+
+  address         = db.StringProperty(required=True)
+  description     = db.StringProperty(required=True)
+  account         = db.ReferenceProperty(Account, required=True)
+  created_at      = db.DateTimeProperty(auto_now_add=True)
+  updated_at      = db.DateTimeProperty(auto_now=True)

@@ -36,6 +36,12 @@ def get_rules():
         Route('/delete_file/<key>',           name='delete_file',                     handler='.ProfileController:delete_file'),
         Route('/identity_validation_files',   name='identity_validation_files',       handler='.ProfileController:identity_validation_files'),
         Route('/change_password',             name='change_password',                 handler='.ProfileController:change_password'),
+        Route('/btc_address',                 name='btc_address',                     handler='.ProfileController:btc_address'),
+        Route('/btc_address_delete/<key>/<referer>',    name='btc_address_delete',              handler='.ProfileController:btc_address_delete'),
+        Route('/btc_address_list',            name='btc_address_list',                handler='.ProfileController:btc_address_list'),
+        Route('/bank_account',                name='bank_account',                    handler='.ProfileController:bank_account'),
+        Route('/bank_account_list',           name='bank_account_list',               handler='.ProfileController:bank_account_list'),
+        Route('/otp',                         name='otp',                             handler='.ProfileController:otp'),
       ]) ]) ]),
       
       PathPrefixRoute('/designer', [ NamePrefixRoute('designer-', [ HandlerPrefixRoute('apps.frontend.designer_controller', [

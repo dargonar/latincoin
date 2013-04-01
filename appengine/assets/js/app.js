@@ -1,3 +1,82 @@
+var oTableBTC;
+var oTableBankAcc;
+$.fn.dataTableExt.oApi.fnReloadAjax = function ( oSettings, sNewSource, fnCallback, bStandingRedraw )
+{
+    if ( sNewSource !== undefined && sNewSource !== null ) {
+        oSettings.sAjaxSource = sNewSource;
+    }
+ 
+    // Server-side processing should just call fnDraw
+    if ( oSettings.oFeatures.bServerSide ) {
+        this.fnDraw();
+        return;
+    }
+ 
+    this.oApi._fnProcessingDisplay( oSettings, true );
+    var that = this;
+    var iStart = oSettings._iDisplayStart;
+    var aData = [];
+ 
+    this.oApi._fnServerParams( oSettings, aData );
+ 
+    oSettings.fnServerData.call( oSettings.oInstance, oSettings.sAjaxSource, aData, function(json) {
+        /* Clear the old information from the table */
+        that.oApi._fnClearTable( oSettings );
+ 
+        /* Got the data - add it to the table */
+        var aData =  (oSettings.sAjaxDataProp !== "") ?
+            that.oApi._fnGetObjectDataFn( oSettings.sAjaxDataProp )( json ) : json;
+ 
+        for ( var i=0 ; i<aData.length ; i++ )
+        {
+            that.oApi._fnAddData( oSettings, aData[i] );
+        }
+         
+        oSettings.aiDisplay = oSettings.aiDisplayMaster.slice();
+ 
+        that.fnDraw();
+ 
+        if ( bStandingRedraw === true )
+        {
+            oSettings._iDisplayStart = iStart;
+            that.oApi._fnCalculateEnd( oSettings );
+            that.fnDraw( false );
+        }
+ 
+        that.oApi._fnProcessingDisplay( oSettings, false );
+ 
+        /* Callback user function - for event handlers etc */
+        if ( typeof fnCallback == 'function' && fnCallback !== null )
+        {
+            fnCallback( oSettings );
+        }
+    }, oSettings );
+};
+
+/*$.fn.dataTableExt.oApi.fnReloadAjax = function ( oSettings, sNewSource, fnCallback ){
+    if ( typeof sNewSource != 'undefined' ){
+        oSettings.sAjaxSource = sNewSource;
+    }
+    this.oApi._fnProcessingDisplay( oSettings, true );
+    var that = this;
+     
+    oSettings.fnServerData( oSettings.sAjaxSource, null, function(json) {
+        that.oApi._fnClearTable( oSettings );
+         
+        for ( var i=0 ; i<json.aaData.length ; i++ ){
+            that.oApi._fnAddData( oSettings, json.aaData[i] );
+        }
+         
+        oSettings.aiDisplay = oSettings.aiDisplayMaster.slice();
+        that.fnDraw( that );
+        that.oApi._fnProcessingDisplay( oSettings, false );
+         
+        if ( typeof fnCallback == 'function' ){
+            fnCallback( oSettings );
+        }
+    });
+}
+*/
 var App = function () {
 
     var isIE8 = false; // IE8 mode
@@ -2001,7 +2080,7 @@ var App = function () {
         if (!jQuery().dataTable) {
             return;
         }
-
+        return;
         // begin first table
         $('#my_'+type+'_table').dataTable({
             "bProcessing": true,
@@ -2044,28 +2123,55 @@ var App = function () {
         function editRow(oTable, nRow) {
             var aData = oTable.fnGetData(nRow);
             var jqTds = $('>td', nRow);
-            jqTds[0].innerHTML = '<input type="text" class="m-wrap small" value="' + aData[0] + '">';
-            jqTds[1].innerHTML = (aData[1]!='')?aData[1]:'<input type="text" class="m-wrap small" value="' + aData[1] + '">';
-            jqTds[2].innerHTML = '<a class="edit" href="">Guardar</a>&nbsp;<a class="cancel" href="">Cancelar</a>';
+            jqTds[0].innerHTML = '<input type="text" class="m-wrap span10" name="bitcoinaddr_address" value="' + aData[0] + '" />';
+            jqTds[1].innerHTML = '<input type="text" class="m-wrap span10" name="bitcoinaddr_desc" value="' + aData[1] + '" />'; //(aData[1]!='')?aData[1]:
+            jqTds[2].innerHTML = '<input type="hidden" name="key" value="'+aData[2]+'" />';
+            jqTds[3].innerHTML = aData[3];//'<a class="edit" href="#">Guardar</a>&nbsp;<a class="cancel" href="#">Cancelar</a>';
+            
         }
         
         function saveRow(oTable, nRow) {
             var jqInputs = $('input', nRow);
             oTable.fnUpdate(jqInputs[0].value, nRow, 0, false);
             oTable.fnUpdate(jqInputs[1].value, nRow, 1, false);
-            oTable.fnUpdate('<a class="edit" href="">Editar</a>', nRow, 2, false);
+            oTable.fnUpdate(jqInputs[2].value, nRow, 2, false);
+            oTable.fnUpdate('<a class="edit" href="">Editar</a>', nRow, 3, false);
             oTable.fnDraw();
         }
 
-         function cancelEditRow(oTable, nRow) {
+        function cancelEditRow(oTable, nRow) {
             var jqInputs = $('input', nRow);
             oTable.fnUpdate(jqInputs[0].value, nRow, 0, false);
             oTable.fnUpdate(jqInputs[1].value, nRow, 1, false);
-            oTable.fnUpdate('<a class="edit" href="">Editar</a>', nRow, 2, false);
+            oTable.fnUpdate(jqInputs[2].value, nRow, 2, false);
+            oTable.fnUpdate('<a class="edit" href="">Editar</a>', nRow, 3, false);
+            
             oTable.fnDraw();
         }
-
-        var oTable = $('#tabla_direcciones_bitcoin').dataTable();
+        
+        var oTable = $('#tabla_direcciones_bitcoin').dataTable({
+            "bProcessing": true,
+            "sAjaxSource": table_ajax_btc_addresses_source,
+            "sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
+            "sPaginationType": "bootstrap",
+            "oLanguage": {
+                "sEmptyTable": "No ha ingresado direcciones",
+                "sInfoEmpty": " ",
+                "sLengthMenu": "_MENU_ direcciones por pág.",
+                "sInfo": "Mostrando _START_ a _END_ de _TOTAL_ direcciones",
+                "oPaginate": {
+                    "sPrevious": "Ant.",
+                    "sNext": "Sig."
+                }
+            },
+            /*"aoColumnDefs": [ 
+                {"bVisible": false, "aTargets": [ 2 ] },
+              ] 
+            */
+        });
+        
+        oTableBTC = oTable;
+        
         //jQuery('#tabla_direcciones_bitcoin_wrapper .dataTables_filter input').addClass("m-wrap medium"); // modify table search input
         //jQuery('#tabla_direcciones_bitcoin_wrapper .dataTables_length select').addClass("m-wrap xsmall"); // modify table per page dropdown
 
@@ -2075,8 +2181,12 @@ var App = function () {
 
         $('#tabla_direcciones_bitcoin_new').click(function (e) {
             e.preventDefault();
-            var aiNew = oTable.fnAddData(['', '',
-                '<a class="edit" href="">Editar</a>&nbsp;<a class="cancel" data-mode="new" href="">Cancelar</a>']);
+            var aiNew = oTable.fnAddData(
+              [ ''
+                , ''
+                , ''
+                , '<a class="edit" href="">Guardar</a>&nbsp;<a class="cancel" data-mode="new" href="">Cancelar</a>']
+            );
             var nRow = oTable.fnGetNodes(aiNew[0]);
             editRow(oTable, nRow);
             xEditing = nRow;
@@ -2120,19 +2230,45 @@ var App = function () {
                 xEditing = nRow;
             } else if (xEditing == nRow && this.innerHTML == "Guardar") {
                 /* Editing this row and want to save it */
-                saveRow(oTable, xEditing);
-                xEditing = null;
-                alert("Updated! Do not forget to do some ajax to sync with backend :)");
+                var inputs = $('input', xEditing);
+                
+                var form = $('<form></form>').css('display','none' ).attr('id','hiddenForm' ).attr("name", 'hiddenForm'); 
+                $.each(inputs,function(key,value){
+                  //console.log($(value).val() + '-' + $(value).attr('name'));
+                  $("<input type='text' value='"+$(value).val()+"' />")
+                    .attr("id", $(value).attr('name'))
+                    .attr("name", $(value).attr('name'))
+                    .appendTo(form);
+                });
+                
+                var serializedData = $(form).serialize();
+                $(form).remove();
+                
+                $.ajax({
+                  type: "POST",
+                  cache: false,
+                  data: serializedData,
+                  url: table_ajax_btc_address_post,
+                  success: (function (data) {
+                    saveRow(oTable, xEditing);
+                    xEditing = null;
+                    var t=setTimeout("oTableBTC.fnReloadAjax();",500);
+                  }),
+                  error: (function (request, status, error) {
+                    //xEditing = null;
+                    console.log(request + status + error);
+                    alert(request.responseText);
+                  })
+                });
+                //alert("Updated! Do not forget to do some ajax to sync with backend :)");
             } else {
                 /* No edit in progress - let's start one */
                 editRow(oTable, nRow);
                 xEditing = nRow;
-                //alert('edit::2');
             }
         });
     }
 
-    
     var handleTablaCuentasBancarias = function () {
 
         function restoreRow(oTable, nRow) {
@@ -2149,78 +2285,70 @@ var App = function () {
         function editRow(oTable, nRow) {
             var aData = oTable.fnGetData(nRow);
             var jqTds = $('>td', nRow);
-            jqTds[0].innerHTML = '<input type="text" class="m-wrap small" value="' + aData[0] + '">';
-            jqTds[1].innerHTML = '<input type="text" class="m-wrap small" value="' + aData[1] + '">';
-            jqTds[2].innerHTML = '<input type="text" class="m-wrap small" value="' + aData[2] + '">';
-            jqTds[3].innerHTML = '<input type="text" class="m-wrap small" value="' + aData[3] + '">';
-            jqTds[4].innerHTML = getCuentaCombo(aData[4]); //'<input type="text" class="m-wrap small" value="' + aData[4] + '">';
+            jqTds[0].innerHTML = '<input type="text" class="m-wrap span10" name="bank_account_cbu" value="' + aData[0] + '" />';
+            jqTds[1].innerHTML = '<input type="text" class="m-wrap span10" name="bank_account_desc" value="' + aData[1] + '" />'; //(aData[1]!='')?aData[1]:
+            jqTds[2].innerHTML = '<input type="hidden" name="key" value="'+aData[2]+'" />';
+            jqTds[3].innerHTML = aData[3];//'<a class="edit" href="#">Guardar</a>&nbsp;<a class="cancel" href="#">Cancelar</a>';
             
-            jqTds[5].innerHTML = '<a class="edit" href="">Guardar</a>&nbsp;<a class="cancel" href="">Cancelar</a>';
         }
         
-        function getCuentaCombo(value){
-          var cuenta = '';
-          var caja = '';
-          if(value=='Cuenta Corriente')
-          {
-            cuenta = 'selected';
-          }
-          if(value=='Caja de Ahorro')
-          {
-            caja = 'selected';
-          }
-          return '<select class="medium m-wrap" tabindex="1"><option value="1" '+cuenta+'>Cuenta Corriente</option><option value="2" '+caja+'>Caja de Ahorro</option></select>';
-        }
-
         function saveRow(oTable, nRow) {
             var jqInputs = $('input', nRow);
             oTable.fnUpdate(jqInputs[0].value, nRow, 0, false);
             oTable.fnUpdate(jqInputs[1].value, nRow, 1, false);
             oTable.fnUpdate(jqInputs[2].value, nRow, 2, false);
-            oTable.fnUpdate(jqInputs[3].value, nRow, 3, false);
-            //oTable.fnUpdate(jqInputs[4].value, nRow, 4, false);
-            oTable.fnUpdate('<a class="edit" href="">Editar</a>&nbsp;<a class="delete" href="">Borrar</a>', nRow, 5, false);
+            oTable.fnUpdate('<a class="edit" href="">Editar</a>', nRow, 3, false);
             oTable.fnDraw();
         }
 
-         function cancelEditRow(oTable, nRow) {
+        function cancelEditRow(oTable, nRow) {
             var jqInputs = $('input', nRow);
             oTable.fnUpdate(jqInputs[0].value, nRow, 0, false);
             oTable.fnUpdate(jqInputs[1].value, nRow, 1, false);
             oTable.fnUpdate(jqInputs[2].value, nRow, 2, false);
-            oTable.fnUpdate(jqInputs[3].value, nRow, 3, false);
-            //oTable.fnUpdate(jqInputs[4].value, nRow, 4, false);
-            oTable.fnUpdate('<a class="edit" href="">Editar</a>', nRow, 5, false);
+            oTable.fnUpdate('<a class="edit" href="">Editar</a>', nRow, 3, false);
+            
             oTable.fnDraw();
         }
-
-        var oTable = $('#tabla_cuentas_bancarias').dataTable();
-        // jQuery('#tabla_cuentas_bancarias_wrapper .dataTables_filter input').addClass("m-wrap medium"); // modify table search input
-        // jQuery('#tabla_cuentas_bancarias_wrapper .dataTables_length select').addClass("m-wrap xsmall"); // modify table per page dropdown
-
+        
+        var oTable = $('#tabla_cuentas_bancarias').dataTable({
+            "bProcessing": true,
+            "sAjaxSource": table_ajax_bank_accounts_source,
+            "sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
+            "sPaginationType": "bootstrap",
+            "oLanguage": {
+                "sEmptyTable": "No ha ingresado CBUs",
+                "sInfoEmpty": " ",
+                "sLengthMenu": "_MENU_ CBUs por pág.",
+                "sInfo": "Mostrando _START_ a _END_ de _TOTAL_ CBUs",
+                "oPaginate": {
+                    "sPrevious": "Ant.",
+                    "sNext": "Sig."
+                }
+            },
+            /*"aoColumnDefs": [ 
+                {"bVisible": false, "aTargets": [ 2 ] },
+              ] 
+            */
+        });
+        
+        oTableBankAcc = oTable;
+        
         jQuery('#tabla_cuentas_bancarias_wrapper .row-fluid').remove(); // modify table search input
         
-        var nEditing = null;
+        var xEditing = null;
 
         $('#tabla_cuentas_bancarias_new').click(function (e) {
             e.preventDefault();
-            var aiNew = oTable.fnAddData(['', '', '', '', '',
-                '<a class="edit" href="">Editar</a>&nbsp;<a class="cancel" data-mode="new" href="">Cancelar</a>']);
+            var aiNew = oTable.fnAddData(
+              [ ''
+                , ''
+                , ''
+                , '<a class="edit" href="">Guardar</a>&nbsp;<a class="cancel" data-mode="new" href="">Cancelar</a>']
+            );
             var nRow = oTable.fnGetNodes(aiNew[0]);
             editRow(oTable, nRow);
-            nEditing = nRow;
-        });
-
-        $('#tabla_cuentas_bancarias a.delete').live('click', function (e) {
-            e.preventDefault();
-
-            if (confirm("Are you sure to delete this row ?") == false) {
-                return;
-            }
-
-            var nRow = $(this).parents('tr')[0];
-            oTable.fnDeleteRow(nRow);
-            alert("Deleted! Do not forget to do some ajax to sync with backend :)");
+            xEditing = nRow;
         });
 
         $('#tabla_cuentas_bancarias a.cancel').live('click', function (e) {
@@ -2229,8 +2357,8 @@ var App = function () {
                 var nRow = $(this).parents('tr')[0];
                 oTable.fnDeleteRow(nRow);
             } else {
-                restoreRow(oTable, nEditing);
-                nEditing = null;            
+                restoreRow(oTable, xEditing);
+                xEditing = null;            
             }
         });
 
@@ -2239,24 +2367,53 @@ var App = function () {
 
             /* Get the row as a parent of the link that was clicked on */
             var nRow = $(this).parents('tr')[0];
-
-            if (nEditing !== null && nEditing != nRow) {
+            
+            if (xEditing !== null && xEditing != nRow) {
                 /* Currently editing - but not this row - restore the old before continuing to edit mode */
-                restoreRow(oTable, nEditing);
+                restoreRow(oTable, xEditing);
                 editRow(oTable, nRow);
-                nEditing = nRow;
-            } else if (nEditing == nRow && this.innerHTML == "Guardar") {
+                xEditing = nRow;
+            } else if (xEditing == nRow && this.innerHTML == "Guardar") {
                 /* Editing this row and want to save it */
-                saveRow(oTable, nEditing);
-                nEditing = null;
-                alert("Updated! Do not forget to do some ajax to sync with backend :)");
+                var inputs = $('input', xEditing);
+                
+                var form = $('<form></form>').css('display','none' ).attr('id','hiddenForm' ).attr("name", 'hiddenForm'); 
+                $.each(inputs,function(key,value){
+                  //console.log($(value).val() + '-' + $(value).attr('name'));
+                  $("<input type='text' value='"+$(value).val()+"' />")
+                    .attr("id", $(value).attr('name'))
+                    .attr("name", $(value).attr('name'))
+                    .appendTo(form);
+                });
+                
+                var serializedData = $(form).serialize();
+                $(form).remove();
+                
+                $.ajax({
+                  type: "POST",
+                  cache: false,
+                  data: serializedData,
+                  url: table_ajax_bank_account_post,
+                  success: (function (data) {
+                    saveRow(oTable, xEditing);
+                    xEditing = null;
+                    var t=setTimeout("oTableBankAcc.fnReloadAjax();",500);
+                  }),
+                  error: (function (request, status, error) {
+                    //xEditing = null;
+                    console.log(request + status + error);
+                    alert(request.responseText);
+                  })
+                });
+                //alert("Updated! Do not forget to do some ajax to sync with backend :)");
             } else {
                 /* No edit in progress - let's start one */
                 editRow(oTable, nRow);
-                nEditing = nRow;
+                xEditing = nRow;
             }
         });
     }
+
 
     var handleTagsInput = function () {
         if (!jQuery().tagsInput) {

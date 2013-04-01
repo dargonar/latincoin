@@ -19,7 +19,7 @@ $(function () {
     $('#fileupload').fileupload({
         // Uncomment the following to send cross-domain cookies:
         //xhrFields: {withCredentials: true},
-        url: '/profile/identity_validation',
+        url: identity_validation_post, // '/profile/identity_validation',
         dropZone: $('#file_dragzone'),
         // Obtengo el evento de agregado de archivo
         add: function (e, data) {
@@ -54,19 +54,16 @@ $(function () {
         done: function (e, data) {
                 //alert('success'+data);
                 data.context.find('div.progress:first').parents('tr:first').remove();
-                // data.context.find('div.progress:first').remove();
-                // data.context.find('button.canceler_button:first').remove();
-                // data.context.find('button.uploader_button:first').remove();
                 
                 $.ajax({
                   type: "GET",
                   cache: false,
-                  url: '/profile/profile_form_verification_files',
+                  url: identity_validation_files, // '/profile/profile_form_verification_files',
                   success: (function (data) {
                     $('#verification_files').html(data);
                   }),
                   error: (function (data) {
-                   window.location='/profile/identity_validation';
+                   window.location=identity_validation_post; // '/profile/identity_validation';
                   })
                 });
                 

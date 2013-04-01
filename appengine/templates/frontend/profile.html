@@ -46,12 +46,24 @@
                 <li class="{{'active' if tab == 'change_password' else ''}}">
                   <a href="{{ url_for('profile-change_password') }}">Password</a>
                 </li>
-                <li><a href="#otp" data-toggle="tab">OTP</a></li>
-								<li><a href="#bank_accounts" data-toggle="tab">Cuentas bancarias</a></li>
-								<li><a href="#btc_address" data-toggle="tab">Direcciones bitcoins</a></li>
+                <li class="{{'active' if tab == 'otp' else ''}}">
+                  <a href="{{ url_for('profile-otp') }}">OTP</a>
+                </li>
+								<li class="{{'active' if tab == 'bank_account' else ''}}">
+                  <a href="{{ url_for('profile-bank_account') }}">Cuentas bancarias</a>
+                </li>
+								<li class="{{'active' if tab == 'btc_address' else ''}}">
+                  <a href="{{ url_for('profile-btc_address') }}">Direcciones bitcoins</a>
+                </li>
 							</ul>
 							<div class="tab-content">
                 
+                {% if flash %}
+                <div class="alert alert-{{ 'alert' if flash.type=='error' else 'success' }}">
+                  <button class="close" data-dismiss="{{ 'alert' if flash.type=='error' else 'success' }}" onclick="$(this).parent().remove();"></button>
+                  {{flash.message}}
+                </div>
+                {% endif %}
                 
                 <div class="tab-pane row-fluid {{'active' if tab == 'personal_info' else ''}}" id="personal_info">
                   {% if tab == 'personal_info' %}
@@ -71,25 +83,30 @@
                   {%endif%}  
                 </div>
 								
-                <div class="tab-pane row-fluid" id="otp">
-                  {%include "frontend/profile_form_otp.html"%}
+                <div class="tab-pane row-fluid {{'active' if tab == 'otp' else ''}}" id="otp">
+                  {% if tab == 'otp' %}
+                    {%include "frontend/profile_form_otp.html"%}
+                  {%endif%}  
                 </div>
                 
-                <div class="tab-pane" id="bank_accounts">
-                  <div class="row-fluid">
-                    <div class="span12">
-                      {%include "frontend/profile_cuentasbancos_table.html"%}
+                <div class="tab-pane row-fluid {{'active' if tab == 'bank_account' else ''}}" id="bank_account">
+                  {% if tab == 'bank_account' %}
+                    <div class="row-fluid">
+                      <div class="span12">
+                        {%include "frontend/profile_cuentasbancos_table.html"%}
+                      </div>
                     </div>
-                  </div>
-        
+                  {% endif %}
                 </div>
 								
-                <div class="tab-pane" id="btc_address">
-                  <div class="row-fluid">
-                    <div class="span12">
-                      {%include "frontend/profile_cuentasbitcoin_table.html"%}
+                <div class="tab-pane row-fluid {{'active' if tab == 'btc_address' else ''}}" id="btc_address">
+                  {% if tab == 'btc_address' %}
+                    <div class="row-fluid">
+                      <div class="span12">
+                        {%include "frontend/profile_cuentasbitcoin_table.html"%}
+                      </div>
                     </div>
-                  </div>
+                  {% endif %}
                 </div>
 								
                 <!--end tab-pane-->
@@ -125,11 +142,23 @@
 	<script src="/assets/jquery-file-upload/js/main.js"></script>
 
   <script>
-		jQuery(document).ready(function() {			
+    // Identity validation urls
+    var identity_validation_post = '{{ url_for('profile-identity_validation')}}'; // /profile/profile_form_verification_files
+    var identity_validation_files = '{{ url_for('profile-identity_validation_files')}}'; // /profile/profile_form_verification_files
+    
+    // BTC Address & Bank Accounts urls
+		var table_ajax_btc_addresses_source = '{{ url_for('profile-btc_address_list')}}';
+    var table_ajax_btc_address_post     = '{{ url_for('profile-btc_address')}}';
+    
+    var table_ajax_bank_accounts_source = '{{ url_for('profile-bank_account_list')}}';
+    var table_ajax_bank_account_post    = '{{ url_for('profile-bank_account')}}';
+    
+    jQuery(document).ready(function() {			
 			// initiate layout and plugins
       App.setPage("profile");
       App.init();
       App.initUniform('.fileupload-toggle-checkbox'); // initialize uniform checkboxes
+      
 		});
 	</script>
   {%endblock%}
