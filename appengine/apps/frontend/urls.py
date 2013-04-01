@@ -7,6 +7,7 @@ def get_rules():
     rules = [
       # hacks
       Route('/init', name='a8', handler='apps.frontend.account_controller.AccountController:init_all'),
+      Route('/test1', name='a9', handler='apps.frontend.account_controller.AccountController:test_1'),
 
 
       Route('/', name='home', handler='apps.frontend.main_controller.MainController:home'),
