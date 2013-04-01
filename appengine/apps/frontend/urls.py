@@ -7,6 +7,7 @@ def get_rules():
     rules = [
       # hacks
       Route('/init', name='a8', handler='apps.frontend.account_controller.AccountController:init_all'),
+      Route('/test1', name='a9', handler='apps.frontend.account_controller.AccountController:test_1'),
 
 
       Route('/', name='home', handler='apps.frontend.main_controller.MainController:home'),
@@ -22,13 +23,15 @@ def get_rules():
       
       PathPrefixRoute('/trade', [ NamePrefixRoute('trade-', [ HandlerPrefixRoute('apps.frontend.trade_controller', [
         Route('/new',             name='new',          handler='.TradeController:new'),
-        Route('/active/<type:(bid|ask)>',  name='active-orders',  handler='.TradeController:active_orders'),
+        Route('/orders/<mode:(active|inactive)>/<type:(bid|ask|any)>',  name='orders',  handler='.TradeController:list_orders'),
+        Route('/history',         name='history',      handler='.TradeController:history'),
         Route('/cancel/<key>',    name='cancel',       handler='.TradeController:cancel_order'),
 
         Route('/match',           name='match',        handler='.TradeController:match_orders'),
         Route('/apply/<key>',     name='apply',        handler='.TradeController:apply_operation'),
 
       ]) ]) ]),
+
       
       PathPrefixRoute('/profile', [ NamePrefixRoute('profile-', [ HandlerPrefixRoute('apps.frontend.profile_controller', [
         Route('/personal_info',               name='personal_info',                   handler='.ProfileController:personal_info'),

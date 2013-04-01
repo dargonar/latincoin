@@ -172,6 +172,11 @@ class Operation(db.Model):
   created_at            = db.DateTimeProperty(auto_now_add=True)
   updated_at            = db.DateTimeProperty(auto_now=True)
 
+class BitcoinAddress(db.Model):
+  user                  = db.ReferenceProperty(Account, collection_name='bitcoin_addresses', required=True)
+  address               = db.StringProperty(required=True)
+  private_key           = db.StringProperty(required=True)
+
 class BankAccount(db.Model):
   account               = db.ReferenceProperty(Account, collection_name='bank_accounts')
   cbu                   = db.StringProperty()
@@ -181,13 +186,18 @@ class BankAccount(db.Model):
   created_at            = db.DateTimeProperty(auto_now_add=True)
   updated_at            = db.DateTimeProperty(auto_now=True)
   
-class BitcoinAddress(db.Model):
-
-  def __repr__(self):
-    return 'op: btc:%.5f cur:%.5f ppc:%.5f ' % (self.traded_btc, self.traded_currency, self.ppc)
-
+class UserBitcoinAddress(db.Model):
   address         = db.StringProperty(required=True)
   description     = db.StringProperty(required=True)
   account         = db.ReferenceProperty(Account, required=True)
   created_at      = db.DateTimeProperty(auto_now_add=True)
+  updated_at      = db.DateTimeProperty(auto_now=True)
+
+class Ticker(db.Model):
+  #last_price      = DecimalProperty(required=True) #lo traemos de la ultima operacion
+  avg_price       = DecimalProperty(required=True)
+  high_price      = DecimalProperty(required=True)
+  low_price       = DecimalProperty(required=True)
+  volume          = DecimalProperty(required=True)
+  created_at      = db.DateTimeProperty(auto_now_add=True) # uno por dia? que tiene la data de las ultimas 24h?
   updated_at      = db.DateTimeProperty(auto_now=True)

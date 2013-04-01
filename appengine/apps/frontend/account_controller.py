@@ -7,13 +7,14 @@ from google.appengine.ext import db
 from webapp2 import cached_property
 from webapp2_extras.security import generate_password_hash, generate_random_string, check_password_hash
 
-from models import Account, AccountBalance
+from models import Account, AccountBalance, BitcoinAddress
 
 from config import config
 from utils import FrontendHandler
 from account_forms import SignUpForm, ForgetPasswordForm, ResetPasswordForm
 
-from mailer import send_welcome_email, send_resetpassword_email
+from mailer import send_welcome_email, send_resetpassword_email, mail_contex_for
+from bitcoin_helper import generate_new_address,encrypt_private
 
 class AccountController(FrontendHandler):
 
@@ -40,7 +41,7 @@ class AccountController(FrontendHandler):
     user.put()
 
     # Mandamos email de confirmacion
-    deferred.defer(send_welcome_email, user, self.request.host)
+    deferred.defer(send_welcome_email, mail_contex_for('send_welcome_email', user))
 
     return self.render_response('frontend/signup_success.html')
 
@@ -52,12 +53,25 @@ class AccountController(FrontendHandler):
     @db.transactional(xg=True)
     def _tx():
       if user and (datetime.now() - user.confirmation_sent_at).seconds < 3600 and user.confirmed_at is None:
+
         user.confirmed_at = datetime.now()
         user.confirmation_token = ''
+
         balance_curr = AccountBalance(parent=user, account=user, currency='ARS')
         balance_btc  = AccountBalance(parent=user, account=user, currency='BTC')
+        
+        addr = generate_new_address()
+        if not addr[0]:
+          # TODO: Log!!
+          return False
 
-        db.put([user, balance_curr, balance_btc])
+        btc_addr = BitcoinAddress(key_name    = addr[1],
+                                  parent      = user,
+                                  user        = user,
+                                  address     = addr[1], 
+                                  private_key = encrypt_private(addr[2],user.password))
+
+        db.put([user, balance_curr, balance_btc, btc_addr])
         return True
 
       return False
@@ -111,8 +125,8 @@ class AccountController(FrontendHandler):
     if user:
       user.reset_password_token = generate_random_string(length=40)
       user.put()
-      
-      deferred.defer(send_resetpassword_email, user, self.request.host)
+
+      deferred.defer(send_resetpassword_email, mail_contex_for('send_resetpassword_email',user))
 
     self.set_ok(u'Si su correo existe en nuestro sitio, recibirá un enlace para crear un nuevo password en su correo.')
     return self.redirect_to('account-login')
@@ -154,7 +168,56 @@ class AccountController(FrontendHandler):
     return SignUpForm(self.request.POST)
 
 
-# DELETE
+  # DELETE
+  def test_1(self):
+    from electrum.bitcoin import *
+    from decimal import Decimal
+
+    seed = random_seed(128)
+    #seed = 'd61a1a11fa622ec57b6047c1e203b5ceda522819ee59ffd2b2e9d4b32bf5556f'
+
+    self.response.write(seed + '</br>')
+    ss = int('0x%s' % seed,16)
+    self.response.write( str(ss) + '</br>')
+    pkey = EC_KEY(ss)
+
+    private_key = GetPrivKey(pkey)
+    public_key = GetPubKey(pkey.pubkey)
+    address = public_key_to_bc_address(public_key)
+
+    sec = PrivKeyToSecret(private_key)
+    asec =  SecretToASecret(sec)
+
+    self.response.write(address+ '</br>')
+    self.response.write( str(is_valid(address)) + '</br>')
+
+    addy = address_from_private_key(asec)
+    self.response.write(str(address == addy) + '</br>')
+
+    ##----
+    src_add = '1CC63cRz5qQMEYB4SiQRugnhs5VHzEMuM2'
+    dst_add = '14UbWFC3aafN2CF1Pt4wutop3EfJR8XQRh'
+
+    tx_hash = '5f5d7bdeab9ba19f1ce209d498e188b3b1f270da82b0b712f1a15c6ff3c2a235'
+
+    hash_160 = bc_address_to_hash_160(src_add)[1]
+
+    script = '76a9'                                      # op_dup, op_hash_160
+    script += '14'                                       # push 0x14 bytes
+    script += hash_160.encode('hex')
+    script += '88ac'
+
+    inputs  = [{'tx_hash':tx_hash, 'index':0,'raw_output_script':script, 'address': 0}]
+    outputs = [(dst_add, int(Decimal('0.1')*Decimal(1e8)))]
+
+    tx = Transaction.from_io(inputs, outputs)
+
+    tx.sign(['L4J68a3t7EUKNfaKzyDBhUSeywFpUR6WMdsAGEzMdhgDKRkKws5q'])
+
+    self.response.write( str(tx.as_dict()) + '</br>')
+
+
+
 
   def init_all(self):
     from models import Dummy

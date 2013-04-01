@@ -83,6 +83,7 @@
                   
                   <div class="span12" style="margin-left:0;">
                     {% set operations_table_name = 'Ordenes de compra activas'%}
+                    {% set mode = 'active' %}
                     {%include "frontend/trade_operations_table.html"%}
                   </div>
 								</div>
@@ -131,7 +132,8 @@
                   
                   <div class="span12" style="margin-left:0;">
                     {% set operations_table_name = 'Operaciones de venta activas'%}
-                    {% set collpased = True %}
+                    {% set collpased  = True %}
+                    {% set mode = 'active' %}
                     {%include "frontend/trade_operations_table.html"%}
                   </div>
                   
@@ -153,8 +155,8 @@
   {%block javascript_run%}
   <script>
 
-    var table_ajax_source = {'bid': '{{url_for('trade-active-orders', type='bid')}}',
-                             'ask': '{{url_for('trade-active-orders', type='ask')}}' };
+    var table_ajax_source = {'active_bid': '{{url_for('trade-orders', mode='active', type='bid')}}',
+                             'active_ask': '{{url_for('trade-orders', mode='active', type='ask')}}' };
 
     function update_total(mo) {
       
@@ -173,11 +175,12 @@
 
 		jQuery(document).ready(function() {			
 			
-      $('#market_order_bid').change(function(){
+      $('#bid_market, #ask_market').change(function(){
+        var type = $(this).attr('name').substr(0,3);
         if($(this).is(':checked'))
-          $('#form-bid .control-group:gt(1)').hide();
+          $('#form-'+type+' .control-group:gt(1)').hide();
         else
-          $('#form-bid .control-group:gt(1)').show();        
+          $('#form-'+type+' .control-group:gt(1)').show();        
       });
 
       $('input#bid_amount, input#bid_ppc, input#ask_amount, input#ask_ppc').keyup(function() {

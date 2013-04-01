@@ -327,6 +327,10 @@ class Trader:
       user    = Account.get(db.Key(user_key))
       balance = get_account_balance(user)  
 
+      # Quiere vender mas de lo que tiene?
+      if bid_ask == TradeOrder.ASK_ORDER and amount > balance['BTC'].available():
+        return [None, u'No tiene esa cantidad disponible para vender (balance disponible %.5f)' % balance['BTC'].available()]
+
       to = TradeOrder(parent          = parent_to, 
                       user            = user,
                       original_amount = amount,
@@ -406,6 +410,9 @@ class Trader:
         # 3) el balance del usuario modificado
         if abs(amount) < Decimal(1e-8):
           
+          to.ppc     = total_currency/amount_wanted
+          to.ppc_int = int(to.ppc*Decimal('100'))
+
           to_save = [to]
 
           if bid_ask == TradeOrder.ASK_ORDER:
@@ -425,9 +432,12 @@ class Trader:
           res = [to, u'ok']
           break
 
-      # Borramos el market order
+      # Borramos el market order si lo habiamos creado
       if res[1] != u'ok':
-        res[0].delete()
+        
+        if res[0]:
+          res[0].delete()
+
         res[0] = None
 
       return res

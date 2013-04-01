@@ -10,7 +10,7 @@ from google.appengine.api.images import get_serving_url
 from webapp2 import cached_property
 from webapp2_extras.security import generate_password_hash, generate_random_string, check_password_hash
 
-from models import Account, AccountValidationFile, BitcoinAddress, BankAccount
+from models import Account, AccountValidationFile, UserBitcoinAddress, BankAccount
 
 from config import config
 from utils import FrontendHandler, need_auth, get_or_404, abort, is_valid_bitcoin_address, is_valid_cbu
@@ -262,7 +262,7 @@ class ProfileController(FrontendHandler, UploadHandler):
     btc_addr = None
     
     if key is None or key.strip()=='':
-      btc_addr = BitcoinAddress(account     = account,
+      btc_addr = UserBitcoinAddress(account     = account,
                               address     = address,
                               description = description)
     else:
@@ -294,7 +294,7 @@ class ProfileController(FrontendHandler, UploadHandler):
   def btc_address_list(self, **kwargs):  
     addrs = {'aaData':[]}
 
-    for addr in BitcoinAddress.all() \
+    for addr in UserBitcoinAddress.all() \
               .filter('account =', db.Key(self.user)) \
               .order('-created_at'):
 

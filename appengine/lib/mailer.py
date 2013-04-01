@@ -1,42 +1,38 @@
 # -*- coding: utf-8 -*-
 from google.appengine.api import mail
 
-from webapp2 import uri_for as url_for, get_app
+from webapp2 import uri_for as url_for, get_app, get_request
 from webapp2_extras import jinja2
 
 from config import config
 from utils import Jinja2Mixin
 
-def send_resetpassword_email(user, host):
+def mail_contex_for(fnc, user):
   
-  context = {
-    'reset_link' : url_for('account-reset', token=user.reset_password_token, _full=True),
-  }
-  
-  send_user_email(user, 'reset_password', context, host)
+  base_context = {}
 
+  if fnc == 'send_resetpassword_email':
+    base_context['reset_link'] = url_for('account-reset', token=user.reset_password_token, _full=True)
 
+  if fnc == 'send_welcome_email':
+    base_context['confirm_link'] = url_for('account-confirm', token=user.confirmation_token, _full=True)
 
-def send_welcome_email(user, host):
-  
-  context = {
-    'confirm_link' : url_for('account-confirm', token=user.confirmation_token, _full=True),
-  }
-  
-  send_user_email(user, 'welcome', context, host)
+  # Add global 
+  base_context['site_name']   = config['my']['site_name']
+  base_context['domain_name'] = config['my']['domain_name']
+  base_context['server_url']  = 'http://%s' % get_request().host
+  base_context['support_url'] = 'http://%s' % get_request().host
+  base_context['user_email']  = user.email
 
+  return base_context
 
+def send_resetpassword_email(context):
+  send_user_email('reset_password', context)
 
-def send_user_email(user, email_type, params, host):
+def send_welcome_email(context):
+  send_user_email('welcome', context)
 
-  fullurl = 'http://%s' % host
-
-  tmp =     { 'site_name'    : config['my']['site_name'],
-              'domain_name'  : config['my']['domain_name'],
-              'server_url'   : fullurl,        
-              'support_url'  : fullurl }
-
-  context = dict(params.items() + tmp.items())
+def send_user_email(email_type, context):
 
   template = config['my']['mail'][email_type]['template']
   sender   = config['my']['mail'][email_type]['sender']
@@ -52,7 +48,7 @@ def send_user_email(user, email_type, params, host):
 
   # Envío el correo.
   mail.send_mail(sender="%s <%s@%s>" % (context['domain_name'], sender, context['site_name']), 
-                 to=user.email,
+                 to=context['user_email'],
                  subject="%s - %s" % (context['site_name'], subject),
                  body=body,
                  html=html)
