@@ -173,3 +173,8 @@ class Operation(db.Model):
   status                = db.StringProperty(required=True, choices=[OPERATION_PENDING, OPERATION_DONE])
   created_at            = db.DateTimeProperty(auto_now_add=True)
   updated_at            = db.DateTimeProperty(auto_now=True)
+
+class BitcoinAddress(db.Model):
+  user                  = db.ReferenceProperty(Account, collection_name='bitcoin_addresses', required=True)
+  address               = db.StringProperty(required=True)
+  private_key           = db.StringProperty(required=True)

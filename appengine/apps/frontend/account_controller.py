@@ -7,13 +7,14 @@ from google.appengine.ext import db
 from webapp2 import cached_property
 from webapp2_extras.security import generate_password_hash, generate_random_string, check_password_hash
 
-from models import Account, AccountBalance
+from models import Account, AccountBalance, BitcoinAddress
 
 from config import config
 from utils import FrontendHandler
 from account_forms import SignUpForm, ForgetPasswordForm, ResetPasswordForm
 
 from mailer import send_welcome_email, send_resetpassword_email, mail_contex_for
+from bitcoin_helper import generate_new_address,encrypt_private
 
 class AccountController(FrontendHandler):
 
@@ -52,12 +53,25 @@ class AccountController(FrontendHandler):
     @db.transactional(xg=True)
     def _tx():
       if user and (datetime.now() - user.confirmation_sent_at).seconds < 3600 and user.confirmed_at is None:
+
         user.confirmed_at = datetime.now()
         user.confirmation_token = ''
+
         balance_curr = AccountBalance(parent=user, account=user, currency='ARS')
         balance_btc  = AccountBalance(parent=user, account=user, currency='BTC')
+        
+        addr = generate_new_address()
+        if not addr[0]:
+          # TODO: Log!!
+          return False
 
-        db.put([user, balance_curr, balance_btc])
+        btc_addr = BitcoinAddress(key_name    = addr[1],
+                                  parent      = user,
+                                  user        = user,
+                                  address     = addr[1], 
+                                  private_key = encrypt_private(addr[2],user.password))
+
+        db.put([user, balance_curr, balance_btc, btc_addr])
         return True
 
       return False

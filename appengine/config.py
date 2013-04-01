@@ -27,6 +27,7 @@ config['my'] = {
   'site_name'   : 'BTC-XChange',
   'domain_name' : 'www.btc-xchange.com.ar',
   'secret_key'  : 'x-ray X-RAY ] % # ~ * QUEBEC kilo . bravo $ [ whiskey # ! whiskey " @ / 1 $ = + 8',
+  'secret_key_2': '% 4 [space] 1 $ > _ . } ] 8 ] ROMEO | ECHO ^ 6 tango 5 ZULU $ 0 % _ 1 1 8 3 { 4',
   'mail': {
     'welcome':        {'sender':'noreply', 'subject': 'Bienvenido', 'template':'email/welcome'},
     'reset_password': {'sender':'noreply', 'subject': 'Recuperación de contraseña', 'template':'email/reset_password'},

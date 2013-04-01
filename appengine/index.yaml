@@ -10,6 +10,11 @@ indexes:
 # automatically uploaded to the admin console when you next deploy
 # your application using appcfg.py.
 
+- kind: AccountValidationFile
+  properties:
+  - name: account
+  - name: created_at
+
 - kind: TradeOrder
   properties:
   - name: bid_ask
