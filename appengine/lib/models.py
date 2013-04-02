@@ -194,10 +194,17 @@ class UserBitcoinAddress(db.Model):
   updated_at      = db.DateTimeProperty(auto_now=True)
 
 class Ticker(db.Model):
-  #last_price      = DecimalProperty(required=True) #lo traemos de la ultima operacion
+  last_price      = DecimalProperty(required=True) #lo traemos de la ultima operacion
   avg_price       = DecimalProperty(required=True)
   high_price      = DecimalProperty(required=True)
   low_price       = DecimalProperty(required=True)
   volume          = DecimalProperty(required=True)
+  
+  last_price_slope  = db.IntegerProperty(default=0) #lo traemos de la ultima operacion
+  avg_price_slope   = db.IntegerProperty(default=0)
+  high_price_slope  = db.IntegerProperty(default=0)
+  low_price_slope   = db.IntegerProperty(default=0)
+  volume_slope      = db.IntegerProperty(default=0)
+  
   created_at      = db.DateTimeProperty(auto_now_add=True) # uno por dia? que tiene la data de las ultimas 24h?
   updated_at      = db.DateTimeProperty(auto_now=True)

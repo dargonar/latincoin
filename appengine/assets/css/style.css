@@ -2896,7 +2896,7 @@ Styler Panel
 .color-panel {
   z-index: 999;
   position:relative;
-}
+`}
 
 .color-panel .color-mode-icons {
   top:4px;
@@ -3911,6 +3911,11 @@ Profile Page
 .sale-summary li i.icon-img-down, .maket_arrow_down /*HACK*/{
   background:url(../img/icon-img-down.png) no-repeat !important;
 }
+
+.maket_arrow_even /*HACK*/{
+  background:url(../img/icon-img-even.png) no-repeat !important;
+}
+
 
 .sale-summary .portlet-title h4 {
   color:#383839;
