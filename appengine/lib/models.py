@@ -1,8 +1,17 @@
 # -*- coding: utf-8 -*-
 import decimal
+from datetime import datetime, timedelta
 
 from google.appengine.ext import db, blobstore
+
+from webapp2_extras.security import generate_password_hash, generate_random_string, check_password_hash
+
+from config import config
 from appengine_properties import DecimalProperty
+
+class ImportInfo(db.Model):
+  last_block            = db.IntegerProperty()
+  updated_at            = db.DateTimeProperty(auto_now=True)
 
 class Dummy(db.Model):
   pass
@@ -22,6 +31,8 @@ class Account(db.Model):
   address_is_validated  = db.BooleanProperty(default=False)
   
   reset_password_token  = db.StringProperty()
+  last_resetpass_at     = db.DateTimeProperty()
+  last_resetpass_ip     = db.StringProperty()
 
   confirmation_token    = db.StringProperty()
   confirmation_sent_at  = db.DateTimeProperty()
@@ -32,6 +43,9 @@ class Account(db.Model):
   last_sign_in_at       = db.DateTimeProperty()
   current_sign_in_ip    = db.StringProperty()
   last_sign_in_ip       = db.StringProperty()
+  
+  last_failed_at        = db.DateTimeProperty()
+  last_failed_ip        = db.StringProperty()
   failed_attempts       = db.IntegerProperty(default=0)
   
   unlock_token          = db.StringProperty()
@@ -48,10 +62,77 @@ class Account(db.Model):
   created_at            = db.DateTimeProperty(auto_now_add=True)
   updated_at            = db.DateTimeProperty(auto_now=True)
   
-  last_password_change_ip           = db.StringProperty()
-  last_password_change_date         = db.DateTimeProperty()
-  last_password_change_failed_ip    = db.StringProperty()
-  last_password_change_failed_date  = db.DateTimeProperty()
+  last_changepass_at    = db.DateTimeProperty()
+  last_changepass_ip    = db.StringProperty()
+  last_bad_changepass_at= db.DateTimeProperty()
+  last_bad_changepass_ip= db.StringProperty()
+
+  def fail_change_pass(self, remote_addr):
+    self.last_bad_changepass_at = datetime.now()
+    self.last_bad_changepass_ip = remote_addr
+
+  def change_password(self, new_password, remote_addr, is_reset=False):
+    from bitcoin_helper import encrypt_all_keys
+    old_password = self.password
+  
+    self.password = generate_password_hash(new_password, method='sha256', pepper=config['my']['secret_key'])
+    self.failed_attempts = 0
+    
+    if is_reset:
+      self.reset_password_token = ''
+      self.last_reset_at        = datetime.now()
+      self.last_reset_ip        = remote_addr
+    else:
+      self.last_changepass_at   = datetime.now()
+      self.last_changepass_ip   = remote_addr
+
+    # Re-encriptamos todas las llaves privadas del usuario
+    to_save = encrypt_all_keys(self, old_password)
+
+    to_save.append(self)
+    return to_save
+
+  def create_reset_token(self):
+    self.reset_password_token = generate_random_string(length=40)
+
+  def login(self, remote_addr):
+    self.sign_in_count        = self.sign_in_count + 1
+    self.last_sign_in_at      = self.current_sign_in_at
+    self.current_sign_in_at   = datetime.now()
+    self.last_sign_in_ip      = self.current_sign_in_ip
+    self.current_sign_in_ip   = remote_addr
+    self.reset_password_token = ''
+    self.failed_attempts      = 0
+
+  def failed_login(self, remote_addr):
+    self.failed_attempts = self.failed_attempts + 1
+    self.last_failed_at  = datetime.now()
+    self.last_failed_ip  = remote_addr
+
+  def has_password(self, password):
+    return check_password_hash(password, self.password, config['my']['secret_key'])
+
+  def is_active(self):
+    return self.confirmed_at != None
+
+  def user_need_captcha(self):
+    return self.failed_attempts > 5
+
+  def can_confirm(self):
+    return ((datetime.now() - self.confirmation_sent_at).seconds < 3600 and self.confirmed_at is None)
+
+  def confirm(self):
+    self.confirmed_at = datetime.now()
+    self.confirmation_token = ''
+
+  @classmethod
+  def new_user(klass, email, password):
+    user = Account()
+    user.email                 = email
+    user.password              = generate_password_hash(password, method='sha256', pepper=config['my']['secret_key'])
+    user.confirmation_token    = generate_random_string(length=40)
+    user.confirmation_sent_at  = datetime.now()
+    return user
 
 class AccountValidationFile(db.Model):
   VALIDATION_IDENTITY     = u'identidad'

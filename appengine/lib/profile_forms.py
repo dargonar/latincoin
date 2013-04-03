@@ -48,7 +48,7 @@ class ChangePasswordForm(Form):
     return obj
     
   password            = PasswordField(u'Contraseña', [
-                            validators.Required(message=u'Debe ingresar una contraseña.'),
+                            validators.Required(message=u'Debe ingresar la contraseña actual.'),
                         ])
   new_password        = PasswordField('Nueva contraseña', [
                             validators.Length(message=u'La contraseña debe tener al menos %(min)d caracteres.', min=6),

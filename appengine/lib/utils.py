@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 import logging
 import urllib
-from datetime import datetime
+from datetime import datetime, timedelta
 from decimal import Decimal
 
 import re
-#from Crypto.Hash import SHA256
+
 import hashlib
 
 from google.appengine.ext import db
@@ -15,6 +15,8 @@ from webapp2_extras import jinja2, sessions, json
 
 from models import AccountBalance
 from account_functions import get_account_balance
+
+from bitcoin_helper import encrypt_all_keys
 
 class need_auth(object):
   def __init__(self, code=0, url='account-login'):
@@ -92,8 +94,6 @@ class Jinja2Mixin(object):
     env.globals['ars_balance']  = self.ars_balance
     env.globals['btc_balance']  = self.btc_balance
     env.globals['user_name']    = self.user_name
-    
-    pass
           
   def render_response(self, _template, **context):
     # Renders a template and writes the result to the response.
@@ -150,30 +150,18 @@ class FrontendHandler(MyBaseHandler):
 
   def do_login(self, user):
 
-    user.sign_in_count        = user.sign_in_count + 1
-    user.last_sign_in_at      = user.current_sign_in_at
-    user.current_sign_in_at   = datetime.now()
-    user.last_sign_in_ip      = user.current_sign_in_ip
-    user.current_sign_in_ip   = self.request.remote_addr
-    user.reset_password_token = ''
-    user.put()
-
-    balance = get_account_balance(user)
-    
     # BORRAR -----
-    from random import uniform
-    balance['BTC'].amount += Decimal('%.5f'% uniform(10,100))
-    balance['BTC'].put();
-    balance['ARS'].amount += Decimal('%.2f'% uniform(10,10000))
-    balance['ARS'].put();
-
+    # from random import uniform
+    # balance['BTC'].amount += Decimal('%.5f'% uniform(10,100))
+    # balance['BTC'].put();
+    # balance['ARS'].amount += Decimal('%.2f'% uniform(10,10000))
+    # balance['ARS'].put();
     # BORRAR ----
-
-    self.session['account.user'] = str(user.key())
+    balance = get_account_balance(user)
     self.session['account.btc']  = str(balance['BTC'].key())
     self.session['account.ars']  = str(balance['ARS'].key())
-    self.session['account.name'] = user.email
-
+    self.session['account.user'] = str(user.key())
+    self.session['account.name'] = user.name if user.name and len(user.name) else user.email
     self.session['account.logged'] = True
 
   def do_logout(self):
@@ -204,7 +192,7 @@ class FrontendHandler(MyBaseHandler):
     if tmp is None:
       return Decimal('0')
 
-    balance = db.get(tmp)
+    balance = AccountBalance.get(tmp)
     return (balance.amount - balance.amount_comp)
 
   def session_value(self, key, default=None):
@@ -212,7 +200,14 @@ class FrontendHandler(MyBaseHandler):
 
   def mine_or_404(self, key):
     obj = get_or_404(key)
-    if str(obj.user.key()) != self.user:
+
+    if not hasattr('user') and not hasattr('account'):
+      abort(404)
+
+    if hasattr(obj,'user') and str(obj.user.key()) != self.user:
+      abort(404)
+
+    if hasattr(obj,'account') and str(obj.account.key()) != self.account:
       abort(404)
     
     return obj
@@ -224,77 +219,5 @@ def is_valid_cbu(cbu):
   return True
     
 def is_valid_bitcoin_address(address):
-  value = address.strip()
-  if re.match(r"[a-zA-Z1-9]{27,35}$", value) is None:
-    return False
-  version = get_bcaddress_version(value)
-  if version is None:
-    return False
-  return True
-  
-import math
-
-__b58chars = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz'
-__b58base = len(__b58chars)
-
-def b58encode(v):
-  """ encode v, which is a string of bytes, to base58.                                                                                                               
-  """
-
-  long_value = 0L
-  for (i, c) in enumerate(v[::-1]):
-    long_value += (256**i) * ord(c)
-
-  result = ''
-  while long_value >= __b58base:
-    div, mod = divmod(long_value, __b58base)
-    result = __b58chars[mod] + result
-    long_value = div
-  result = __b58chars[long_value] + result
-
-  # Bitcoin does a little leading-zero-compression:                                                                                                                  
-  # leading 0-bytes in the input become leading-1s                                                                                                                   
-  nPad = 0
-  for c in v:
-    if c == '\0': nPad += 1
-    else: break
-
-  return (__b58chars[0]*nPad) + result
-
-def b58decode(v, length):
-  """ decode v into a string of len bytes                                                                                                                            
-  """
-  long_value = 0L
-  for (i, c) in enumerate(v[::-1]):
-    long_value += __b58chars.find(c) * (__b58base**i)
-
-  result = ''
-  while long_value >= 256:
-    div, mod = divmod(long_value, 256)
-    result = chr(mod) + result
-    long_value = div
-  result = chr(long_value) + result
-
-  nPad = 0
-  for c in v:
-    if c == __b58chars[0]: nPad += 1
-    else: break
-
-  result = chr(0)*nPad + result
-  if length is not None and len(result) != length:
-    return None
-
-  return result
-
-def get_bcaddress_version(strAddress):
-  # Returns None if strAddress is invalid.  Otherwise returns integer version of address.
-  addr = b58decode(strAddress,25)
-  if addr is None: return None
-  version = addr[0]
-  checksum = addr[-4:]
-  vh160 = addr[:-4] # Version plus hash160 is what is checksummed                                                                                                    
-  #h3=SHA256.new(SHA256.new(vh160).digest()).digest()
-  h3=hashlib.sha256(hashlib.sha256(vh160).digest()).digest() #hexdigest
-  if h3[0:4] == checksum:
-    return ord(version)
-  return None
+  from electrum import bitcoin
+  return bitcoin.is_valid(address)

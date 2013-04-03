@@ -15,6 +15,12 @@ indexes:
   - name: account
   - name: created_at
 
+- kind: BankAccount
+  properties:
+  - name: account
+  - name: created_at
+    direction: desc
+
 - kind: TradeOrder
   properties:
   - name: bid_ask
@@ -62,4 +68,10 @@ indexes:
   - name: order_type
   - name: status
   - name: ppc_int
+    direction: desc
+
+- kind: UserBitcoinAddress
+  properties:
+  - name: account
+  - name: created_at
     direction: desc

@@ -1,15 +1,29 @@
 # -*- coding: utf-8 -*-
-
 from electrum.bitcoin import *
+from aes import encryptData, decryptData
 from config import config
+from hashlib import sha256
 
-def decrypt_private(key, passwd):
-  #config['my']['secret_key_2']
-  return key
+from models import BitcoinAddress
 
-def encrypt_private(key, passwd):
-  #config['my']['secret_key_2']
-  return key
+def encrypt_all_keys(user, old_password):
+
+  to_save = []
+  for addy in BitcoinAddress.all().ancestor(user):
+    addy.private_key = decrypt_private(addy.private_key, old_password)
+    addy.private_key = encrypt_private(addy.private_key, user.password)
+    to_save.append(addy)
+
+  return to_save
+
+def get_key_for_passwd(passwd):
+  return sha256('%s%s' % (sha256(passwd).digest().encode('hex'), sha256(config['my']['secret_key_2']).digest().encode('hex'))).digest()
+
+def decrypt_private(crypt_priv_key, user_password):
+  return decryptData(get_key_for_passwd(user_password), crypt_priv_key.decode('hex'))
+
+def encrypt_private(plain_priv_key, user_password):
+  return encryptData(get_key_for_passwd(user_password), plain_priv_key).encode('hex')
 
 def generate_new_address():
 
@@ -27,4 +41,4 @@ def generate_new_address():
 
   tmp = address_from_private_key(asec)
 
-  return [ is_valid(address) and address==tmp, address, asec]
+  return { 'result': is_valid(address) and address==tmp, 'public': address, 'private': asec }

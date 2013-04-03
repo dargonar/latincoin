@@ -37,7 +37,6 @@ class ProfileController(FrontendHandler, UploadHandler):
       kwargs['form']              = ProfileForm(obj=account)
       return self.render_response('frontend/profile.html', **kwargs)
     
-    self.request.charset  = 'utf-8'
     
     is_valid = self.form.validate()
     if not is_valid:
@@ -108,9 +107,8 @@ class ProfileController(FrontendHandler, UploadHandler):
   
   @need_auth()
   def delete_file(self, **kwargs):
-    validation_file = db.get(db.Key(kwargs['key']))
-    if str(validation_file.account.key()) != self.user:
-      abort(404)
+    
+    validation_file = self.mine_or_404(kwargs['key'])
     
     file_was_valid  = validation_file.is_valid
     file_type       = validation_file.filetype
@@ -146,37 +144,39 @@ class ProfileController(FrontendHandler, UploadHandler):
   def change_password(self, **kwargs):    
     
     kwargs['tab'] = 'change_password';
-    account = get_or_404(self.user)
     
-    if self.request.method == 'GET':
-      kwargs['form']              = ChangePasswordForm(obj=account)
+    kwargs['form'] = self.password_form
+
+    if self.request.method == 'GET':      
       return self.render_response('frontend/profile.html', **kwargs)
     
-    self.request.charset  = 'utf-8'
-    
+    user = Account.get(db.Key(self.user))
+
     new_password  = self.password_form.new_password.data
     password      = self.password_form.password.data
     
     is_valid = self.password_form.validate() # valido que el nuevo password este confirmado.
-    
-    # repitio correctamente? el password viejo es correcto?
-    if not is_valid or check_password_hash(password, account.password, config['my']['secret_key'])==False:
-      account.last_password_change_ip     = self.request.remote_addr
-      account.last_password_change_date   = datetime.now()
-      kwargs['form']         = self.password_form
-      if self.password_form.errors:
-        kwargs['flash']      = self.build_error(u'Verifique los datos ingresados:')
-      else:
-        kwargs['flash']      = self.build_error(u'El password ingresado no es válido.')
-      return self.render_response('frontend/profile.html', **kwargs)
 
-    account.last_password_change_date   = datetime.now()
-    account.last_password_change_ip     = self.request.remote_addr
-    account.password = generate_password_hash(self.password_form.new_password.data, method='sha256', pepper=config['my']['secret_key'])
-    account.save()
-    
-    self.set_ok(u'La contraseña fue modificada con éxito.')
-    return self.redirect_to('profile-change_password')
+    # repitio correctamente? el password viejo es correcto?
+    if is_valid and user.has_password(password):
+      @db.transactional(xg=True)
+      def _tx():
+        to_save = user.change_password(new_password, self.request.remote_addr)
+        db.put(to_save)
+
+      _tx()
+      
+      self.set_ok(u'La contraseña fue modificada con éxito.')
+      return self.redirect_to('profile-change_password')
+
+    # Solo guardamos si password viejo incorrecto (is_valid = True)
+    # Pero mostramos el mismo mensaje en los dos casos, para no avivarlo que puso mal     
+    if is_valid:
+      user.fail_change_pass(self.request.remote_addr)
+      user.put()
+
+    kwargs['flash'] = self.build_error(u'Verifique los datos ingresados.')
+    return self.render_response('frontend/profile.html', **kwargs)
   
   @cached_property
   def password_form(self):
@@ -191,7 +191,6 @@ class ProfileController(FrontendHandler, UploadHandler):
     
     if self.request.method == 'GET':
       return self.render_response('frontend/profile.html', **kwargs)
-    self.request.charset  = 'utf-8'
     
     cbu         = self.request.POST['bank_account_cbu'] 
     description = self.request.POST['bank_account_desc'] 
@@ -247,7 +246,6 @@ class ProfileController(FrontendHandler, UploadHandler):
     
     if self.request.method == 'GET':
       return self.render_response('frontend/profile.html', **kwargs)
-    self.request.charset  = 'utf-8'
     
     address     = self.request.POST['bitcoinaddr_address'] 
     description = self.request.POST['bitcoinaddr_desc'] 
