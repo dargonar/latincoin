@@ -8,15 +8,17 @@ import re
 
 import hashlib
 
+from google.appengine.api import memcache
 from google.appengine.ext import db
 
 from webapp2 import abort, cached_property, RequestHandler, Response, HTTPException, uri_for as url_for, get_app
 from webapp2_extras import jinja2, sessions, json
 
-from models import AccountBalance
+from models import AccountBalance, Ticker
 from account_functions import get_account_balance
 
 from bitcoin_helper import encrypt_all_keys
+from myfilters import do_marketarrowfy
 
 class need_auth(object):
   def __init__(self, code=0, url='account-login'):
@@ -94,6 +96,10 @@ class Jinja2Mixin(object):
     env.globals['ars_balance']  = self.ars_balance
     env.globals['btc_balance']  = self.btc_balance
     env.globals['user_name']    = self.user_name
+    
+    # cargamos el ticker
+    env.globals['ticker']         = self.ticker
+    env.filters['marketarrowfy']  = do_marketarrowfy
           
   def render_response(self, _template, **context):
     # Renders a template and writes the result to the response.
@@ -163,7 +169,22 @@ class FrontendHandler(MyBaseHandler):
     self.session['account.user'] = str(user.key())
     self.session['account.name'] = user.name if user.name and len(user.name) else user.email
     self.session['account.logged'] = True
-
+    
+  
+  @property
+  def ticker(self):
+    data = memcache.get('ticker')
+    if data is None:
+      last_ticker = Ticker.all() \
+              .order('created_at') \
+              .get()
+      
+      data = SessionTicker(last_ticker)
+      memcache.add('ticker', data, 60)
+      
+    return data 
+      
+      
   def do_logout(self):
     self.session.clear()
 
@@ -211,7 +232,42 @@ class FrontendHandler(MyBaseHandler):
       abort(404)
     
     return obj
+  
+class SessionTicker(object):
+  def __init__(self, last_ticker=None):
+    self.ticker_data = last_ticker
     
+  # Ticker Data
+  @property
+  def lastprice(self):
+    return '%.5f' % self.ticker_data.lastprice if self.ticker_data is not None else Decimal('0')
+
+  @property
+  def lastprice_slope(self):
+    return self.ticker_data.lastprice_slope if self.ticker_data is not None else 0
+    
+  @property
+  def high(self):
+    return '%.5f' % self.ticker_data.high if self.ticker_data is not None else Decimal('0')
+  @property
+  def high_slope(self):
+    return self.ticker_data.high_slope if self.ticker_data is not None else 0
+  
+  @property
+  def low(self):
+    return '%.5f' % self.ticker_data.low if self.ticker_data is not None else Decimal('0')
+  @property
+  def low_slope(self):
+    return self.ticker_data.low_slope if self.ticker_data is not None else 0
+  
+  @property
+  def volume(self):
+    return self.ticker_data.volume if self.ticker_data is not None else Decimal('0')
+  @property
+  def volume_slope(self):
+    return self.ticker_data.volume_slope if self.ticker_data is not None else 0  
+  
+
 def is_valid_cbu(cbu):
   value = cbu.strip()
   if re.match(r"[0-9]{22}$", value) is None:
