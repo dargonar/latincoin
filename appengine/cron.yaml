@@ -1,4 +1,5 @@
 cron:
 - description: interroga el bitcoind en EC2
   url: /tasks/import_block
-  schedule: every 24 hours
+  #schedule: every 5000 hours
+  schedule: every 1 minutes

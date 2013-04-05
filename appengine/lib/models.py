@@ -9,12 +9,21 @@ from webapp2_extras.security import generate_password_hash, generate_random_stri
 from config import config
 from appengine_properties import DecimalProperty
 
-class ImportInfo(db.Model):
-  last_block            = db.IntegerProperty()
-  updated_at            = db.DateTimeProperty(auto_now=True)
-
 class Dummy(db.Model):
   pass
+
+class SystemConfig(db.Model):
+  remote_rpc            = db.StringProperty(choices=['ec2', 'blockchain'], default='ec2')
+  read_only             = db.StringProperty(default='N')
+
+class Block(db.Model):
+  number                = db.IntegerProperty(required=True)
+  hash                  = db.StringProperty(required=True)
+  txs                   = db.IntegerProperty(required=True)
+  data                  = blobstore.BlobReferenceProperty()
+  processed             = db.StringProperty(default='N')
+  updated_at            = db.DateTimeProperty(auto_now=True)
+  created_at            = db.DateTimeProperty(auto_now_add=True)
 
 class Account(db.Model):
   name                  = db.StringProperty() 
@@ -257,6 +266,14 @@ class BitcoinAddress(db.Model):
   user                  = db.ReferenceProperty(Account, collection_name='bitcoin_addresses', required=True)
   address               = db.StringProperty(required=True)
   private_key           = db.StringProperty(required=True)
+
+class ForwardTx(db.Model):
+  tx                    = db.StringProperty(required=True)
+  user                  = db.ReferenceProperty(Account)
+  address               = db.ReferenceProperty(BitcoinAddress)
+  value                 = DecimalProperty(required=True)
+  index                 = db.IntegerProperty(required=True)
+  forwarded             = db.StringProperty(default='N')
 
 class BankAccount(db.Model):
   account               = db.ReferenceProperty(Account, collection_name='bank_accounts')

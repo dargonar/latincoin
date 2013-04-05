@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
+from __future__ import with_statement
+
 import logging
 import urllib
+import time
+
 from datetime import datetime, timedelta
 from decimal import Decimal
 
@@ -9,7 +13,8 @@ import re
 import hashlib
 
 from google.appengine.api import memcache
-from google.appengine.ext import db
+from google.appengine.ext import db, blobstore
+from google.appengine.api import files
 
 from webapp2 import abort, cached_property, RequestHandler, Response, HTTPException, uri_for as url_for, get_app
 from webapp2_extras import jinja2, sessions, json
@@ -19,6 +24,44 @@ from account_functions import get_account_balance
 
 from bitcoin_helper import encrypt_all_keys
 from myfilters import do_marketarrowfy
+
+def read_blobstore_file(blob_key):
+  
+  value = memcache.get(str(blob_key))
+  
+  if not value:
+    logging.error('no esta en cache %s' % str(blob_key))
+    blob_reader = blobstore.BlobReader(blob_key)
+    value = blob_reader.read()
+    memcache.set(str(blob_key), value)
+  else:
+    logging.error('esta! en cache %s' % str(blob_key))
+
+  return value
+
+def create_blobstore_file(data, name, mime_type='application/octet-stream'):
+
+  file_name = files.blobstore.create(mime_type=mime_type,_blobinfo_uploaded_filename=name)
+  
+  with files.open(file_name, 'a') as f:
+    f.write(data)
+
+  files.finalize(file_name)
+
+  blob_key = files.blobstore.get_blob_key(file_name)
+
+  # ------ BEGIN HACK -------- #
+  # GAE BUG => http://code.google.com/p/googleappengine/issues/detail?id=5142
+  for i in range(1,10):
+    if not blob_key:
+      time.sleep(0.5)
+      blob_key = files.blobstore.get_blob_key(file_name)
+    else:
+      break
+  
+  return blob_key
+  # ------ END HACK -------- #
+
 
 class need_auth(object):
   def __init__(self, code=0, url='account-login'):

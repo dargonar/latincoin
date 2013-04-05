@@ -62,6 +62,12 @@ class AccountController(FrontendHandler):
       if not addr['result']:
         raise(BaseException('no se puede generar direccion btc'))
 
+      #HACK BORRAR
+      if user.email == 'm@m.com':
+        addr['public']  = '1Hentff2dAtBtzwqpsRFXcnpMWeYov8VvD'
+        addr['private'] = '5HpHagT65TZzG1PH3CSu63k9NmovqAZNQs8s8VAXLZFRbhnEhZU'
+      #----
+
       btc_addr = BitcoinAddress(key_name    = addr['public'],
                                 user        = user,
                                 address     = addr['public'], 
@@ -255,9 +261,14 @@ class AccountController(FrontendHandler):
     b_btc = AccountBalance.get_or_insert('xchg-btc',account=xchg, currency='BTC')
     b_btc.put()
 
-    from models import ImportInfo
-    info = ImportInfo.get_or_insert('import_info')
-    info.last_block = 229422
-    info.put()
+    from models import Block
+    b = Block( key=db.Key.from_path('Block',229700), processed='Y', number=229700, hash='n/a', txs=0)
+    b.put()
+
+    from models import SystemConfig
+    s = SystemConfig.get_or_insert('system-config', \
+          remote_rpc='blockchain', trade_enable='Y')
+
+    s.put()
 
     self.response.write('lito')

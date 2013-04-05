@@ -19,8 +19,6 @@ def add_secure_config(config):
   config['my']['bd_port'] = '52234'
   config['my']['bd_user'] = 'bitcoinrpc'
   config['my']['bd_pass'] = 'GveWduSEmAAsSBHWRYKkUsCcbm6HR4xbVRFKNmGmYChL'
- 
-  import logging
-  logging.error('ACA ESTOY')
+
 
   return config

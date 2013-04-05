@@ -22,15 +22,12 @@ config['webapp2_extras.jinja2'] = {
   }
 }
 
-#HpHagT65TZzG1PH3CSu63kALBKSaSYEEpvGqazC9yw2qhcStbA
-#1DB76UHba8xzsyG1powjo7CLfENQRC8Djy
-
 config['my'] = {
   'site_name'      : 'BTC-XChange',
   'domain_name'    : 'www.btc-xchange.com.ar',
   'secret_key'     : 'x-ray X-RAY ] % # ~ * QUEBEC kilo . bravo $ [ whiskey # ! whiskey " @ / 1 $ = + 8',
   'secret_key_2'   : '% 4 [space] 1 $ > _ . } ] 8 ] ROMEO | ECHO ^ 6 tango 5 ZULU $ 0 % _ 1 1 8 3 { 4',
-  'cold_wallet'    : '1DB76UHba8xzsyG1powjo7CLfENQRC8Djy',
+  'cold_wallet'    : '19eE72sBA5WUNvcXWpH5pn3Cg8mfUj3wQS',
   'recaptcha_pub'  : '6LfYP98SAAAAALlOdUQF1BmgAHAWreZzzn822mMj',
   'mail': {
     'welcome':        {'sender':'noreply', 'subject': 'Bienvenido', 'template':'email/welcome'},

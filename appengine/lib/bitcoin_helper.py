@@ -3,6 +3,7 @@ from electrum.bitcoin import *
 from aes import encryptData, decryptData
 from config import config
 from hashlib import sha256
+from decimal import Decimal
 
 from models import BitcoinAddress
 
@@ -42,3 +43,25 @@ def generate_new_address():
   tmp = address_from_private_key(asec)
 
   return { 'result': is_valid(address) and address==tmp, 'public': address, 'private': asec }
+
+
+def generate_forward_transaction(src_add, src_priv, dst_add, tx_hash, amount, index, fee=Decimal('0.0005')):
+  
+  amount -= fee
+  if abs(amount) < Decimal(1e-8):
+    return [False, u'Couldnt set fee']
+
+  hash_160 = bc_address_to_hash_160(src_add)[1]
+
+  script = '76a9'                                      # op_dup, op_hash_160
+  script += '14'                                       # push 0x14 bytes
+  script += hash_160.encode('hex')
+  script += '88ac'
+
+  inputs  = [{'tx_hash':tx_hash, 'index':index,'raw_output_script':script, 'address': 0}]
+  outputs = [(dst_add, int(amount*Decimal(1e8)))]
+
+  tx = Transaction.from_io(inputs, outputs)
+
+  tx.sign([src_priv])
+  return [True, tx.as_dict()['hex']]
