@@ -482,7 +482,7 @@ class Trader:
       # y mandamos a guardar las dos cosas juntas.
       # Si el usuario modifico su balance de alguna manera (retiro, otra order, etc)
       # la transaccion se vuelve a ejecutar y si no da el balance no se mete.
-
+      
       to = TradeOrder(parent = Dummy.get_by_key_name('trade_orders'), 
             user             = db.Key(user),
             original_amount  = amount,

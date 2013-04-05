@@ -9,6 +9,9 @@ from webapp2_extras.security import generate_password_hash, generate_random_stri
 from config import config
 from appengine_properties import DecimalProperty
 
+def create_password(password):
+  return generate_password_hash(password, method='sha256', pepper=config['my']['secret_key'])
+
 class ImportInfo(db.Model):
   last_block            = db.IntegerProperty()
   updated_at            = db.DateTimeProperty(auto_now=True)
@@ -275,17 +278,24 @@ class UserBitcoinAddress(db.Model):
   updated_at      = db.DateTimeProperty(auto_now=True)
 
 class Ticker(db.Model):
-  last_price      = DecimalProperty(required=True) #lo traemos de la ultima operacion
-  avg_price       = DecimalProperty(required=True)
-  high_price      = DecimalProperty(required=True)
-  low_price       = DecimalProperty(required=True)
-  volume          = DecimalProperty(required=True)
+  IN_PROGRESS           = 'InProgress'
+  DONE                  = 'Done'
+  status                = db.StringProperty(required=True, choices=[IN_PROGRESS, DONE])
   
-  last_price_slope  = db.IntegerProperty(default=0) #lo traemos de la ultima operacion
-  avg_price_slope   = db.IntegerProperty(default=0)
-  high_price_slope  = db.IntegerProperty(default=0)
-  low_price_slope   = db.IntegerProperty(default=0)
-  volume_slope      = db.IntegerProperty(default=0)
+  last_price            = DecimalProperty(required=True) #lo traemos de la ultima operacion
+  avg_price             = DecimalProperty(required=True)
+  high_price            = DecimalProperty(required=True)
+  low_price             = DecimalProperty(required=True)
+  volume                = DecimalProperty(required=True)
   
-  created_at      = db.DateTimeProperty(auto_now_add=True) # uno por dia? que tiene la data de las ultimas 24h?
-  updated_at      = db.DateTimeProperty(auto_now=True)
+  open                  = DecimalProperty(required=True)
+  close                 = DecimalProperty(required=True)
+  
+  last_price_slope      = db.IntegerProperty(default=0) #lo traemos de la ultima operacion
+  avg_price_slope       = db.IntegerProperty(default=0)
+  high_price_slope      = db.IntegerProperty(default=0)
+  low_price_slope       = db.IntegerProperty(default=0)
+  volume_slope          = db.IntegerProperty(default=0)
+  
+  created_at            = db.DateTimeProperty(auto_now_add=True) # uno por HORA
+  updated_at            = db.DateTimeProperty(auto_now=True)

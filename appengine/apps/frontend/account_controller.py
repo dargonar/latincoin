@@ -249,10 +249,10 @@ class AccountController(FrontendHandler):
     xchg.confirmation_sent_at  = datetime.now()
     xchg.put()
 
-    b_ars = AccountBalance.get_or_insert('xchg-ars',account=xchg, currency='ARS')
+    b_ars = AccountBalance.get_or_insert('xchg-ars',account=xchg, currency='ARS', parent=xchg)
     b_ars.put()
 
-    b_btc = AccountBalance.get_or_insert('xchg-btc',account=xchg, currency='BTC')
+    b_btc = AccountBalance.get_or_insert('xchg-btc',account=xchg, currency='BTC', parent=xchg)
     b_btc.put()
 
     from models import ImportInfo
