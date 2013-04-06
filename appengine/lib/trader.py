@@ -277,7 +277,10 @@ class Trader:
       # Se crea una nueva operation Operation.OPERATION_PENDING
       # Luego, cuando se generen los 6 AccountOperations y la actualizacion de
       # los balances se pasa a OPERATION_DONE
-
+      
+      # if best_ask is None or best_ask.user is None or best_bid is None or best_bid.user is None:
+        # return [None, u'user en order is none']
+        
       op = Operation(parent=Dummy.get_by_key_name('operations'),
                      purchase_order    = best_bid,
                      sale_order        = best_ask,

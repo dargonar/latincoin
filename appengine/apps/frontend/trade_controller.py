@@ -100,10 +100,8 @@ class TradeController(FrontendHandler):
     owner = kwargs['owner']
     orders = {'aaData':[]}
 
-    query  = TradeOrder.all()
-    
-    if owner == 'user'
-      query = query.filter('user =', db.Key(self.user))
+    query  = TradeOrder.all() \
+              query.filter('user =', db.Key(self.user))
 
     if mode == 'active':
       query = query.filter('status =', TradeOrder.ORDER_ACTIVE)
@@ -119,10 +117,8 @@ class TradeController(FrontendHandler):
 
       row = []
       row.append('#%d' % order.key().id())
-      if owner == 'user'
-        row.append(order.created_at.strftime("%Y-%m-%d %H:%M"))
-      if owner == 'user'
-        row.append('%s%s' % ( 'Compra' if order.bid_ask == TradeOrder.BID_ORDER else 'Venta', '' if order.order_type == TradeOrder.LIMIT_ORDER else ' (inmediata)' ))
+      row.append(order.created_at.strftime("%Y-%m-%d %H:%M"))
+      row.append('%s%s' % ( 'Compra' if order.bid_ask == TradeOrder.BID_ORDER else 'Venta', '' if order.order_type == TradeOrder.LIMIT_ORDER else ' (inmediata)' ))
 
       if order.order_type == TradeOrder.LIMIT_ORDER:
         temp = order.original_amount-order.amount
@@ -136,8 +132,7 @@ class TradeController(FrontendHandler):
       
       
       row.append(self.label_for_order(order))
-      if owner == 'user'
-        row.append('<a href="' + self.url_for('trade-cancel', key=str(order.key())) + '">Cancelar</a>')
+      row.append('<a href="' + self.url_for('trade-cancel', key=str(order.key())) + '">Cancelar</a>')
 
       orders['aaData'].append(row)
 
@@ -145,7 +140,7 @@ class TradeController(FrontendHandler):
 
   def label_for_order(self, order):
     
-    tmp = '<span class="label %s" style="padding: 0;width:100%%"><span class="label label-success" style="float: left; width: %d%%; padding: 2px 0 2px 0;">%s</span></span>'
+    tmp = '<span class="label %s" style="padding: 0;width:100%;"><span class="label label-success" style="float: left; width: %d%%; padding: 2px 0 2px 0;">%s</span></span>'
     percent = int(Decimal('100')*(Decimal('1') - order.amount/order.original_amount))
 
     if order.status == TradeOrder.ORDER_ACTIVE:

@@ -2074,44 +2074,12 @@ var App = function () {
         
     }
 
-    
-    var handleIndexOrderTables = function (id, url_index) {
-        
-        if (!jQuery().dataTable) {
-            return;
-        }
-        return;
-        // begin first table
-        $('#'+id).dataTable({
-            "bProcessing": true,
-            "sAjaxSource": table_ajax_source[url_index],
-            "sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
-            "sPaginationType": "bootstrap",
-            "oLanguage": {
-                "sEmptyTable": "Sin ordenes activas",
-                "sInfoEmpty": " ",
-                "sLengthMenu": "_MENU_ ordenes por pág.",
-                "sInfo": "Mostrando _START_ a _END_ de _TOTAL_ ordenes",
-                "oPaginate": {
-                    "sPrevious": "Ant.",
-                    "sNext": "Sig."
-                }
-            },
-            "aoColumnDefs": [{
-                'bSortable': false,
-                'aTargets': [0]
-            }]
-        });
-
-        jQuery('.dataTables_filter').parent(".span6 ").remove(); // delete table search input
-    }
-    
     var handleOrderTables = function (mode, type) {
         
         if (!jQuery().dataTable) {
             return;
         }
-        return;
+        
         // begin first table
         $('#my_'+mode+'_'+type+'_table').dataTable({
             "bProcessing": true,
@@ -3067,11 +3035,6 @@ var App = function () {
 
             if (App.isPage("table_managed")) {
                 handleTables(); // handles data tables
-            }
-
-            if (App.isPage("index_orders_table")) {
-                handleIndexOrderTables ('all_asks_table', 'orders_bid');
-                handleIndexOrderTables ('all_bids_table', 'orders_ask');
             }
             
             if (App.isPage("trade_new")) {

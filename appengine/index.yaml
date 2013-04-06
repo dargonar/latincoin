@@ -16,6 +16,13 @@ indexes:
   - name: number
 
 - kind: TradeOrder
+  properties:
+  - name: bid_ask
+  - name: order_type
+  - name: status
+  - name: created_at
+
+- kind: TradeOrder
   ancestor: yes
   properties:
   - name: bid_ask

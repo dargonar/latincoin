@@ -23,7 +23,7 @@ from models import AccountBalance, Ticker
 from account_functions import get_account_balance
 
 from bitcoin_helper import encrypt_all_keys
-from myfilters import do_marketarrowfy
+from myfilters import do_marketarrowfy, do_label_for_order, do_orderamountfy, do_time_distance_in_words, do_label_for_oper
 
 def read_blobstore_file(blob_key):
   
@@ -143,7 +143,10 @@ class Jinja2Mixin(object):
     # cargamos el ticker
     env.globals['ticker']         = self.ticker
     env.filters['marketarrowfy']  = do_marketarrowfy
-          
+    env.filters['label_for_order']= do_label_for_order
+    env.filters['orderamountfy']  = do_orderamountfy
+    env.filters['time_distance_in_words']  = do_time_distance_in_words
+    env.filters['label_for_oper'] = do_label_for_oper
   def render_response(self, _template, **context):
     # Renders a template and writes the result to the response.
     rv = self.jinja2.render_template(_template, **context)
@@ -322,14 +325,4 @@ def is_valid_bitcoin_address(address):
   from electrum import bitcoin
   return bitcoin.is_valid(address)
 
-def ticker(self):
-  data = memcache.get('ticker')
-  if data is None:
-    last_ticker = Ticker.all() \
-            .order('created_at') \
-            .get()
-    
-    data = SessionTicker(last_ticker)
-    memcache.add('ticker', data, 60)
-    
-  return data 
+  

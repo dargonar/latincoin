@@ -26,16 +26,16 @@ class RunTickerMapper(RequestHandler):
     for user in Account.all():
       if str(user.key()) not in ['ag9kZXZ-YnRjLXhjaGFuZ2VyDQsSB0FjY291bnQYAww', 'ag9kZXZ-YnRjLXhjaGFuZ2VyEQsSB0FjY291bnQiBHhjaGcM']:
         db.delete(user)
-    for accoper in AccountOperation.all():
-      db.delete(accoper)
     for accbal in AccountBalance.all():
       if accbal.key().name()=='xchg-ars' or accbal.key().name()=='xchg-btc':
         continue
       db.delete(accbal)
-    for oper in Operation.all():
-      db.delete(oper)
+    for accoper in AccountOperation.all():
+      db.delete(accoper)
     for trade in TradeOrder.all():
       db.delete(trade)
+    for oper in Operation.all():
+      db.delete(oper)
     if delete_ticker:
       for ticker in Ticker.all():
         db.delete(ticker)
@@ -43,7 +43,7 @@ class RunTickerMapper(RequestHandler):
   
   def build_ticker(self, **kwargs):
     
-    #self.delete_all(False)
+    self.delete_all(False)
     for ticker in Ticker.all().filter('status =', Ticker.IN_PROGRESS):
       db.delete(ticker)
       logging.info('Ticker IN-PROGRESS borrado')

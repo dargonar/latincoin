@@ -1,0 +1,40 @@
+        <div class="row-fluid">
+					<div class="span12">
+						<!-- BEGIN CONDENSED TABLE PORTLET-->
+						<div class="portlet box green">
+							<div class="portlet-title">
+								<h4><i class="icon-shopping-cart"></i>Operaciones</h4>
+							</div>
+							<div class="portlet-body">
+								<table class="table">
+								<!--table class="table table-condensed table-hover" -->
+									<thead>
+										<tr>
+											<th>#</th>
+                      <th>Fecha</th>
+											<th>Tipo</th>
+											<th>Precio/BTC</th>
+											<th>Cantidad(BTC)</th>
+											<th>Total(Pesos)</th>
+                      <th></th>
+										</tr>
+									</thead>
+									<tbody>
+										{% for oper in opers.run(limit=10) %}
+                    <tr class="{{ loop.cycle('odd', 'even') }}">
+											<td>#{{oper.key().id()|string}}</td>
+                      <td>{{oper.created_at|time_distance_in_words}}</td>
+											<td>Compra|Venta</td>
+                      <td>${{'%0.2f'|format(oper.ppc|float)}}</td>
+											<td>{{'%0.5f'|format(oper.traded_btc|float)}}</td>
+											<td class="hidden-480">{{'%0.2f'|format((oper.ppc*oper.traded_btc)|float)}}</td>
+											<td>{{oper|label_for_oper}}</td>
+										</tr>
+										{% endfor %}
+									</tbody>
+								</table>
+							</div>
+						</div>
+						<!-- END CONDENSED TABLE PORTLET-->
+					</div>
+        </div>

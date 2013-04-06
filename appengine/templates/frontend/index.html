@@ -108,11 +108,13 @@
             
             <br/><br/>
             
-            {%include "frontend/market_orders.html" %}
+            {# %include "frontend/market_orders.html" % #}
+            {{ _tables['orders'] }}
             <div class="clearfix"></div>
             <br/><br/>
             
-            {%include "frontend/market_operations.html" %}
+            {# %include "frontend/market_operations.html" % #}
+            {{ _tables['operations'] }}
             <div class="clearfix"></div>
             
           <!-- END PAGE CONTENT-->
@@ -123,18 +125,11 @@
       </div>
       <!-- END CONTAINER -->
 	
-      {%block javascript_run%}
-      <script>
-
-        var table_ajax_source = {'orders_bid': '{{url_for('trade-orders', mode='active', type='bid', owner='any')}}',
-                                 'orders_ask': '{{url_for('trade-orders', mode='active', type='ask', owner='any')}}' };
-
+      {%include "frontend/base_javascripts.html"%}
+      <script type="text/javascript">
         jQuery(document).ready(function() {			
           // initiate layout and plugins
-          App.setPage('index_orders_table');
-          App.setPage("calendar");
           App.init();
         });
       </script>
-      {%endblock%}
     {%endblock%}

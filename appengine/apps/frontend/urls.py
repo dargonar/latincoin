@@ -27,7 +27,7 @@ def get_rules():
       
       PathPrefixRoute('/trade', [ NamePrefixRoute('trade-', [ HandlerPrefixRoute('apps.frontend.trade_controller', [
         Route('/new',             name='new',          handler='.TradeController:new'),
-        Route('/orders/<mode:(active|inactive)>/<type:(bid|ask|any)>/<owner:(user|any)>',  name='orders',  handler='.TradeController:list_orders'),
+        Route('/orders/<mode:(active|inactive)>/<type:(bid|ask|any)>',  name='orders',  handler='.TradeController:list_orders'),
         Route('/history',         name='history',      handler='.TradeController:history'),
         Route('/cancel/<key>',    name='cancel',       handler='.TradeController:cancel_order'),
 
