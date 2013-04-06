@@ -25,14 +25,14 @@
 					</a>
 				</li>
 				<li class="has-sub {{ 'active' if html=='deposito' else '' }} ">
-					<a href="{{ url_for('designer-html', html='deposito') }}">
+					<a href="{{ url_for('deposito') }}">
             <i class="icon-signin"></i> 
             <span class="title">Depósito</span>
             <span class="{{ 'selected' if html=='deposito' else '' }}"></span>
 					</a>
 				</li>
         <li class="has-sub {{ 'active' if html=='retiro' else '' }} ">
-					<a href="{{ url_for('designer-html', html='retiro') }}">
+					<a href="{{ url_for('retiro') }}">
             <i class=" icon-signout"></i> 
             <span class="title">Retiro</span>
             <span class="{{ 'selected' if html=='retiro' else '' }}"></span>

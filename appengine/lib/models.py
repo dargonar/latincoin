@@ -301,8 +301,8 @@ class Ticker(db.Model):
   
   last_price            = DecimalProperty(required=True) #lo traemos de la ultima operacion
   avg_price             = DecimalProperty(required=True)
-  high_price            = DecimalProperty(required=True)
-  low_price             = DecimalProperty(required=True)
+  high                  = DecimalProperty(required=True)
+  low                   = DecimalProperty(required=True)
   volume                = DecimalProperty(required=True)
   
   open                  = DecimalProperty(required=True)
@@ -310,8 +310,8 @@ class Ticker(db.Model):
   
   last_price_slope      = db.IntegerProperty(default=0) #lo traemos de la ultima operacion
   avg_price_slope       = db.IntegerProperty(default=0)
-  high_price_slope      = db.IntegerProperty(default=0)
-  low_price_slope       = db.IntegerProperty(default=0)
+  high_slope            = db.IntegerProperty(default=0)
+  low_slope             = db.IntegerProperty(default=0)
   volume_slope          = db.IntegerProperty(default=0)
   
   created_at            = db.DateTimeProperty(auto_now_add=True) # uno por HORA

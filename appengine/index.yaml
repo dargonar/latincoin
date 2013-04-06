@@ -14,3 +14,20 @@ indexes:
   properties:
   - name: processed
   - name: number
+
+- kind: TradeOrder
+  ancestor: yes
+  properties:
+  - name: bid_ask
+  - name: order_type
+  - name: status
+  - name: ppc_int
+
+- kind: TradeOrder
+  ancestor: yes
+  properties:
+  - name: bid_ask
+  - name: order_type
+  - name: status
+  - name: ppc_int
+    direction: desc

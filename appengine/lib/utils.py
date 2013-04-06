@@ -287,7 +287,7 @@ class SessionTicker(object):
 
   @property
   def lastprice_slope(self):
-    return self.ticker_data.lastprice_slope if self.ticker_data is not None else 0
+    return self.ticker_data.last_price_slope if self.ticker_data is not None else 0
     
   @property
   def high(self):
@@ -306,6 +306,7 @@ class SessionTicker(object):
   @property
   def volume(self):
     return self.ticker_data.volume if self.ticker_data is not None else Decimal('0')
+  
   @property
   def volume_slope(self):
     return self.ticker_data.volume_slope if self.ticker_data is not None else 0  
@@ -320,3 +321,15 @@ def is_valid_cbu(cbu):
 def is_valid_bitcoin_address(address):
   from electrum import bitcoin
   return bitcoin.is_valid(address)
+
+def ticker(self):
+  data = memcache.get('ticker')
+  if data is None:
+    last_ticker = Ticker.all() \
+            .order('created_at') \
+            .get()
+    
+    data = SessionTicker(last_ticker)
+    memcache.add('ticker', data, 60)
+    
+  return data 

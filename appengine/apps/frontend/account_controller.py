@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime, timedelta
-
+from decimal import Decimal
 from google.appengine.ext import deferred
 from google.appengine.ext import db
 
 from webapp2 import cached_property
 from webapp2_extras.security import generate_password_hash, generate_random_string, check_password_hash
 
-from models import Account, AccountBalance, BitcoinAddress
+from models import Account, AccountBalance, BitcoinAddress, Ticker
 
 from utils import FrontendHandler
 from account_forms import SignUpForm, ForgetPasswordForm, ResetPasswordForm
@@ -271,4 +271,20 @@ class AccountController(FrontendHandler):
 
     s.put()
 
+    dummy_ticker = Ticker( status                = Ticker.DONE,
+                          last_price            = Decimal('0.0'),
+                          avg_price             = Decimal('0.0'),
+                          high                  = Decimal('0.0'),
+                          low                   = Decimal('0.0'),
+                          volume                = Decimal('0.0'),  
+                          last_price_slope      = 0,
+                          avg_price_slope       = 0,
+                          high_slope            = 0,
+                          low_slope             = 0,
+                          volume_slope          = 0,
+                          open                  = Decimal('0.0'),  
+                          close                 = Decimal('0.0'), 
+                        )
+    dummy_ticker.put()
+    
     self.response.write('lito')

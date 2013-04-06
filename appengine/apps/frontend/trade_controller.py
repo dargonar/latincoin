@@ -95,13 +95,15 @@ class TradeController(FrontendHandler):
   @need_auth()
   def list_orders(self, **kwargs):
 
-    type = kwargs['type']
-    mode = kwargs['mode']
-
+    type  = kwargs['type']
+    mode  = kwargs['mode']
+    owner = kwargs['owner']
     orders = {'aaData':[]}
 
-    query  = TradeOrder.all() \
-              .filter('user =', db.Key(self.user))
+    query  = TradeOrder.all()
+    
+    if owner == 'user'
+      query = query.filter('user =', db.Key(self.user))
 
     if mode == 'active':
       query = query.filter('status =', TradeOrder.ORDER_ACTIVE)
@@ -117,8 +119,10 @@ class TradeController(FrontendHandler):
 
       row = []
       row.append('#%d' % order.key().id())
-      row.append(order.created_at.strftime("%Y-%m-%d %H:%M"))
-      row.append('%s%s' % ( 'Compra' if order.bid_ask == TradeOrder.BID_ORDER else 'Venta', '' if order.order_type == TradeOrder.LIMIT_ORDER else ' (inmediata)' ))
+      if owner == 'user'
+        row.append(order.created_at.strftime("%Y-%m-%d %H:%M"))
+      if owner == 'user'
+        row.append('%s%s' % ( 'Compra' if order.bid_ask == TradeOrder.BID_ORDER else 'Venta', '' if order.order_type == TradeOrder.LIMIT_ORDER else ' (inmediata)' ))
 
       if order.order_type == TradeOrder.LIMIT_ORDER:
         temp = order.original_amount-order.amount
@@ -130,8 +134,10 @@ class TradeController(FrontendHandler):
       row.append('%.2f' % order.ppc)
       row.append('%.2f' % (order.ppc*temp) )
       
+      
       row.append(self.label_for_order(order))
-      row.append('<a href="' + self.url_for('trade-cancel', key=str(order.key())) + '">Cancelar</a>')
+      if owner == 'user'
+        row.append('<a href="' + self.url_for('trade-cancel', key=str(order.key())) + '">Cancelar</a>')
 
       orders['aaData'].append(row)
 

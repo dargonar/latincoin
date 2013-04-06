@@ -31,7 +31,7 @@ def do_marketarrowfy(value):
     return 'maket_arrow_up'
   if value<0:
     return 'maket_arrow_down'
-  return 'maket_arrow_even'
+  return '' #'maket_arrow_even'
   
 def do_time_distance_in_words(from_date, since_date = None, target_tz=None, include_seconds=False):
   '''

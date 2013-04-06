@@ -6,33 +6,15 @@
 									<a href="javascript:;" class="{{ 'expand' if collapsed else 'colllapse' }}"></a>
 									<!-- a href="#portlet-config" data-toggle="modal" class="config"></a -->
 									<a href="javascript:;" class="reload"></a>
-									<!--a href="javascript:;" class="remove"></a-->
 								</div>
 							</div>
 							<div class="portlet-body">
 								<div class="clearfix">
-									<!-- div class="btn-group">
-										<button id="sample_editable_1_new" href="javascript:;" class="btn green">
-										Add New <i class="icon-plus"></i>
-										</button>
-									</div-->
-									<!--
-									<div class="btn-group pull-right">
-										<button class="btn dropdown-toggle" data-toggle="dropdown">Acciones <i class="icon-angle-down"></i>
-										</button>
-										<ul class="dropdown-menu">
-											<li><a href="#">Imprimir</a></li>
-											<li><a href="#">Descargar PDF</a></li>
-											<li><a href="#">Exportar Excel</a></li>
-										</ul>
-									</div>
-									-->
-								</div>
+                </div>
                 {% set hide_items = '' if True else 'display:none;' %}
 								<table id="my_{{mode}}_{{type}}_table" class="table table-striped table-bordered table-hover jquery-table" >
 									<thead>
 										<tr>
-											<!-- th style="width:8px;"><input type="checkbox" class="group-checkable" data-set="#sample_1 .checkboxes" /></th -->
 											<th>{{'Orden Nro.'}}</th>
                       <th>Fecha</th>
 											<th class="hidden-480">Tipo</th>
@@ -44,51 +26,6 @@
 										</tr>
 									</thead>
 									<tbody>
-						<!--
-						<tr class="odd gradeX">
-                      	<td>#1</td>
-						<td class="center hidden-480">12 Jan 2012</td>
-						<td >Venta</td>
-                      	<td class="hidden-480">120</td>
-                      	<td class="hidden-480">120</td>
-                      	<td class="hidden-480">120</td>
-                      	<td ><span class="label label-success">Approved</span></td>
-                      	<td class="hidden-480" style="{{ hide_items }}"><a href="#">Cancelar</a></td>
-						</tr>
-										<tr class="even gradeX">
-											<td>#2</td>
-											<td class="center hidden-480">12 Jan 2012</td>
-											<td >Compra</td>
-                      <td class="hidden-480">20</td>
-                      <td class="hidden-480">120</td>
-                      <td class="hidden-480">90</td>
-                      <td ><span class="label label-warning">Suspended</span></td>
-                      <td class="hidden-480" style="{{ hide_items }}"><a href="#">Cancelar</a></td>
-										</tr>
-                    <tr class="odd gradeX">
-											<td>#3</td>
-											<td class="center hidden-480">12 Jan 2012</td>
-											<td >Venta</td>
-                      <td class="hidden-480">20</td>
-                      <td class="hidden-480">120</td>
-                      <td class="hidden-480">90</td>
-                      
-                      <td><span class="label label-inverse">Blocked</span></td>
-                      <td class="hidden-480" style="{{ hide_items }}"><a href="#">Cancelar</a></td>
-										</tr>  
-										<tr class="odd gradeX">
-											<td>#4</td>
-											<td class="center hidden-480">12 Jan 2012</td>
-											<td >Venta</td>
-                      <td class="hidden-480">20</td>
-                      <td class="hidden-480">120</td>
-                      <td class="hidden-480">90</td>
-                      
-                      <td><span class="label label-success">Approved</span></td>
-                      <td class="hidden-480" style="{{ hide_items }}"><a href="#">Cancelar</a></td>
-										</tr>  -->	
-											
-										
 									</tbody>
 								</table>
 							</div>
