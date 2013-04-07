@@ -261,15 +261,19 @@ class AccountController(FrontendHandler):
     b_btc = AccountBalance.get_or_insert('xchg-btc',account=xchg, currency='BTC', parent=xchg)
     b_btc.put()
 
-    from models import Block
-    b = Block( key=db.Key.from_path('Block',229700), processed='Y', number=229700, hash='n/a', txs=0)
-    b.put()
-
     from models import SystemConfig
     s = SystemConfig.get_or_insert('system-config', \
           remote_rpc='blockchain', trade_enable='Y')
 
     s.put()
+
+    from bitcoinrpc.connection import get_proxy
+    
+    last_block = 230099 #get_proxy(s.remote_rpc).getblockcount()
+
+    from models import Block
+    b = Block( key=db.Key.from_path('Block',last_block), processed='Y', number=last_block, hash='n/a', txs=0)
+    b.put()
 
     dummy_ticker = Ticker( status                = Ticker.DONE,
                           last_price            = Decimal('0.0'),

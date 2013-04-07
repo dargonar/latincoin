@@ -64,4 +64,4 @@ def generate_forward_transaction(src_add, src_priv, dst_add, tx_hash, amount, in
   tx = Transaction.from_io(inputs, outputs)
 
   tx.sign([src_priv])
-  return [True, tx.as_dict()['hex']]
+  return [True, tx]
