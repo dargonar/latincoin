@@ -23,7 +23,7 @@ from models import AccountBalance, Ticker
 from account_functions import get_account_balance
 
 from bitcoin_helper import encrypt_all_keys
-from myfilters import do_marketarrowfy
+from myfilters import do_marketarrowfy, do_label_for_order, do_orderamountfy, do_time_distance_in_words, do_label_for_oper, do_operation_type
 
 def read_blobstore_file(blob_key):  
   blob_reader = blobstore.BlobReader(blob_key)
@@ -137,7 +137,12 @@ class Jinja2Mixin(object):
     # cargamos el ticker
     env.globals['ticker']         = self.ticker
     env.filters['marketarrowfy']  = do_marketarrowfy
-          
+    env.filters['label_for_order']= do_label_for_order
+    env.filters['orderamountfy']  = do_orderamountfy
+    env.filters['time_distance_in_words']  = do_time_distance_in_words
+    env.filters['label_for_oper'] = do_label_for_oper
+    env.filters['operation_type'] = do_operation_type
+    
   def render_response(self, _template, **context):
     # Renders a template and writes the result to the response.
     rv = self.jinja2.render_template(_template, **context)
@@ -281,7 +286,7 @@ class SessionTicker(object):
 
   @property
   def lastprice_slope(self):
-    return self.ticker_data.lastprice_slope if self.ticker_data is not None else 0
+    return self.ticker_data.last_price_slope if self.ticker_data is not None else 0
     
   @property
   def high(self):
@@ -300,6 +305,7 @@ class SessionTicker(object):
   @property
   def volume(self):
     return self.ticker_data.volume if self.ticker_data is not None else Decimal('0')
+  
   @property
   def volume_slope(self):
     return self.ticker_data.volume_slope if self.ticker_data is not None else 0  
@@ -314,3 +320,5 @@ def is_valid_cbu(cbu):
 def is_valid_bitcoin_address(address):
   from electrum import bitcoin
   return bitcoin.is_valid(address)
+
+  

@@ -95,13 +95,13 @@ class TradeController(FrontendHandler):
   @need_auth()
   def list_orders(self, **kwargs):
 
-    type = kwargs['type']
-    mode = kwargs['mode']
-
+    type  = kwargs['type']
+    mode  = kwargs['mode']
+    owner = kwargs['owner']
     orders = {'aaData':[]}
 
     query  = TradeOrder.all() \
-              .filter('user =', db.Key(self.user))
+              query.filter('user =', db.Key(self.user))
 
     if mode == 'active':
       query = query.filter('status =', TradeOrder.ORDER_ACTIVE)
@@ -130,6 +130,7 @@ class TradeController(FrontendHandler):
       row.append('%.2f' % order.ppc)
       row.append('%.2f' % (order.ppc*temp) )
       
+      
       row.append(self.label_for_order(order))
       row.append('<a href="' + self.url_for('trade-cancel', key=str(order.key())) + '">Cancelar</a>')
 
@@ -139,7 +140,7 @@ class TradeController(FrontendHandler):
 
   def label_for_order(self, order):
     
-    tmp = '<span class="label %s" style="padding: 0;width:100%%"><span class="label label-success" style="float: left; width: %d%%; padding: 2px 0 2px 0;">%s</span></span>'
+    tmp = '<span class="label %s" style="padding: 0;width:100%;"><span class="label label-success" style="float: left; width: %d%%; padding: 2px 0 2px 0;">%s</span></span>'
     percent = int(Decimal('100')*(Decimal('1') - order.amount/order.original_amount))
 
     if order.status == TradeOrder.ORDER_ACTIVE:

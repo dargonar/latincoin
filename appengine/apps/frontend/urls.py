@@ -10,8 +10,12 @@ def get_rules():
       Route('/test1', name='a9', handler='apps.frontend.account_controller.AccountController:test_1'),
 
 
-      Route('/', name='home', handler='apps.frontend.main_controller.MainController:home'),
-
+      Route('/', name='home',         handler='apps.frontend.main_controller.MainController:home'),
+      Route('/', name='terms',        handler='apps.frontend.main_controller.MainController:terms'), # mover donde corresponda
+      Route('/', name='contact',      handler='apps.frontend.main_controller.MainController:contact'), # mover donde corresponda
+      Route('/', name='deposito',     handler='apps.frontend.main_controller.MainController:deposito'), # mover donde corresponda
+      Route('/', name='retiro',       handler='apps.frontend.main_controller.MainController:retiro'), # mover donde corresponda
+      
       PathPrefixRoute('/account', [ NamePrefixRoute('account-', [ HandlerPrefixRoute('apps.frontend.account_controller', [
         Route('/signup',          name='signup',          handler='.AccountController:signup'),
         Route('/login',           name='login',           handler='.AccountController:login'),
@@ -47,9 +51,6 @@ def get_rules():
         Route('/otp',                         name='otp',                             handler='.ProfileController:otp'),
       ]) ]) ]),
       
-      PathPrefixRoute('/designer', [ NamePrefixRoute('designer-', [ HandlerPrefixRoute('apps.frontend.designer_controller', [
-        Route('/<html>',         name='html',         handler='.DesignerController:verHtmlTemplate'),
-      ]) ]) ]),
     ]
     
     return rules

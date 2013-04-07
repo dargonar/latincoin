@@ -277,7 +277,10 @@ class Trader:
       # Se crea una nueva operation Operation.OPERATION_PENDING
       # Luego, cuando se generen los 6 AccountOperations y la actualizacion de
       # los balances se pasa a OPERATION_DONE
-
+      
+      # if best_ask is None or best_ask.user is None or best_bid is None or best_bid.user is None:
+        # return [None, u'user en order is none']
+        
       op = Operation(parent=Dummy.get_by_key_name('operations'),
                      purchase_order    = best_bid,
                      sale_order        = best_ask,
@@ -287,7 +290,8 @@ class Trader:
                      currency          = 'ARS',
                      seller            = best_ask.user,
                      buyer             = best_bid.user,
-                     status            = Operation.OPERATION_PENDING
+                     status            = Operation.OPERATION_PENDING,
+                     type              = Operation.OPERATION_BUY if best_bid.created_at<best_ask.created_at else Operation.OPERATION_SELL
             );
 
       # Acomodamos los valores de los TradeOrders y los marcamos como completos en caso 
@@ -398,6 +402,7 @@ class Trader:
                        currency          = 'ARS',
                        seller            = user if bid_ask == TradeOrder.ASK_ORDER else TradeOrder.user.get_value_for_datastore(order),
                        buyer             = user if bid_ask == TradeOrder.BID_ORDER else TradeOrder.user.get_value_for_datastore(order),
+                       type              = Operation.OPERATION_BUY if bid_ask == TradeOrder.BID_ORDER else Operation.OPERATION_SELL,
                        status            = Operation.OPERATION_PENDING
               );
 

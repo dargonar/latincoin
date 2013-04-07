@@ -2074,13 +2074,12 @@ var App = function () {
         
     }
 
-
     var handleOrderTables = function (mode, type) {
         
         if (!jQuery().dataTable) {
             return;
         }
-        return;
+        
         // begin first table
         $('#my_'+mode+'_'+type+'_table').dataTable({
             "bProcessing": true,
@@ -3037,12 +3036,12 @@ var App = function () {
             if (App.isPage("table_managed")) {
                 handleTables(); // handles data tables
             }
-
+            
             if (App.isPage("trade_new")) {
                 handleOrderTables('active','bid'); // handles data tables
                 handleOrderTables('active','ask'); // handles data tables
             }
-
+            
             if (App.isPage("trade_history")) {
                 handleOrderTables('active','any'); // handles data tables
                 handleOrderTables('inactive','any'); // handles data tables

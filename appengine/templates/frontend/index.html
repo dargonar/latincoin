@@ -108,11 +108,13 @@
             
             <br/><br/>
             
-            {%include "frontend/market_orders.html" %}
+            {# %include "frontend/market_orders.html" % #}
+            {{ _tables['orders'] }}
             <div class="clearfix"></div>
             <br/><br/>
             
-            {%include "frontend/market_history.html" %}
+            {# %include "frontend/market_operations.html" % #}
+            {{ _tables['operations'] }}
             <div class="clearfix"></div>
             
           <!-- END PAGE CONTENT-->
@@ -122,13 +124,13 @@
         <!-- END PAGE -->	 	
       </div>
       <!-- END CONTAINER -->
-	
-      {%include "frontend/base_javascripts.html"%}
       
+      {% include "frontend/base_footer.html"%}
+      
+      {%include "frontend/base_javascripts.html"%}
       <script type="text/javascript">
         jQuery(document).ready(function() {			
           // initiate layout and plugins
-          App.setPage("calendar");
           App.init();
         });
       </script>

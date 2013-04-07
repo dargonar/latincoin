@@ -252,7 +252,11 @@ class Operation(db.Model):
 
   OPERATION_PENDING = 'P'
   OPERATION_DONE    = 'D'
-
+  
+  OPERATION_BUY     = 'BUY'
+  OPERATION_SELL    = 'SELL'
+  OPERATION_UNKNOWN = 'NA'
+  
   purchase_order        = db.ReferenceProperty(TradeOrder, collection_name='purchases')
   sale_order            = db.ReferenceProperty(TradeOrder, collection_name='sales')
   traded_btc            = DecimalProperty(required=True)
@@ -264,6 +268,7 @@ class Operation(db.Model):
   status                = db.StringProperty(required=True, choices=[OPERATION_PENDING, OPERATION_DONE])
   created_at            = db.DateTimeProperty(auto_now_add=True)
   updated_at            = db.DateTimeProperty(auto_now=True)
+  type                  = db.StringProperty(required=True, choices=[OPERATION_BUY, OPERATION_SELL, OPERATION_UNKNOWN])
 
 class BitcoinAddress(db.Model):
   user                  = db.ReferenceProperty(Account, collection_name='bitcoin_addresses', required=True)
@@ -306,8 +311,8 @@ class Ticker(db.Model):
   
   last_price            = DecimalProperty(required=True) #lo traemos de la ultima operacion
   avg_price             = DecimalProperty(required=True)
-  high_price            = DecimalProperty(required=True)
-  low_price             = DecimalProperty(required=True)
+  high                  = DecimalProperty(required=True)
+  low                   = DecimalProperty(required=True)
   volume                = DecimalProperty(required=True)
   
   open                  = DecimalProperty(required=True)
@@ -315,8 +320,8 @@ class Ticker(db.Model):
   
   last_price_slope      = db.IntegerProperty(default=0) #lo traemos de la ultima operacion
   avg_price_slope       = db.IntegerProperty(default=0)
-  high_price_slope      = db.IntegerProperty(default=0)
-  low_price_slope       = db.IntegerProperty(default=0)
+  high_slope            = db.IntegerProperty(default=0)
+  low_slope             = db.IntegerProperty(default=0)
   volume_slope          = db.IntegerProperty(default=0)
   
   created_at            = db.DateTimeProperty(auto_now_add=True) # uno por HORA
