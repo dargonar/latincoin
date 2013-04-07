@@ -25,19 +25,13 @@ from account_functions import get_account_balance
 from bitcoin_helper import encrypt_all_keys
 from myfilters import do_marketarrowfy
 
-def read_blobstore_file(blob_key):
-  
-  value = memcache.get(str(blob_key))
-  
-  if not value:
-    logging.error('no esta en cache %s' % str(blob_key))
-    blob_reader = blobstore.BlobReader(blob_key)
-    value = blob_reader.read()
-    memcache.set(str(blob_key), value)
-  else:
-    logging.error('esta! en cache %s' % str(blob_key))
-
+def read_blobstore_file(blob_key):  
+  blob_reader = blobstore.BlobReader(blob_key)
+  value = blob_reader.read()
   return value
+
+def remove_blobstore_file(blob_key):
+  blobstore.delete(blob_key)
 
 def create_blobstore_file(data, name, mime_type='application/octet-stream'):
 

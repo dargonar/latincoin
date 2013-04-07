@@ -60,7 +60,7 @@ class BlockChainProxy():
     resp = resp.read()
     resp = resp.decode('utf8')
 
-    if resp.startswith('Transaction Submitted'):
+    if not resp.startswith('Transaction Submitted'):
       raise JSONRPCException({'code' : 617, 'message' : 'unable to push tx: %s' % resp})
 
   def get_url(self, url):

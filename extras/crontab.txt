@@ -1,0 +1,3 @@
+0-59/1 * * * * curl -s http://localhost:8080/tasks/import_block
+0-59/1 * * * * curl -s http://localhost:8080/tasks/process_block
+0-59/1 * * * * curl -s http://localhost:8080/tasks/forward_txs

@@ -272,11 +272,16 @@ class BitcoinAddress(db.Model):
 
 class ForwardTx(db.Model):
   tx                    = db.StringProperty(required=True)
+  tx_fw                 = db.StringProperty()
+  in_block              = db.IntegerProperty()
+  out_block             = db.IntegerProperty()
   user                  = db.ReferenceProperty(Account)
   address               = db.ReferenceProperty(BitcoinAddress)
   value                 = DecimalProperty(required=True)
-  index                 = db.IntegerProperty(required=True)
+  index                 = db.StringProperty(required=True)
   forwarded             = db.StringProperty(default='N')
+  created_at            = db.DateTimeProperty(auto_now_add=True)
+  updated_at            = db.DateTimeProperty(auto_now=True)
 
 class BankAccount(db.Model):
   account               = db.ReferenceProperty(Account, collection_name='bank_accounts')
