@@ -290,7 +290,8 @@ class Trader:
                      currency          = 'ARS',
                      seller            = best_ask.user,
                      buyer             = best_bid.user,
-                     status            = Operation.OPERATION_PENDING
+                     status            = Operation.OPERATION_PENDING,
+                     type              = Operation.OPERATION_BUY if best_bid.created_at<best_ask.created_at else Operation.OPERATION_SELL
             );
 
       # Acomodamos los valores de los TradeOrders y los marcamos como completos en caso 
@@ -401,6 +402,7 @@ class Trader:
                        currency          = 'ARS',
                        seller            = user if bid_ask == TradeOrder.ASK_ORDER else TradeOrder.user.get_value_for_datastore(order),
                        buyer             = user if bid_ask == TradeOrder.BID_ORDER else TradeOrder.user.get_value_for_datastore(order),
+                       type              = Operation.OPERATION_BUY if bid_ask == TradeOrder.BID_ORDER else Operation.OPERATION_SELL,
                        status            = Operation.OPERATION_PENDING
               );
 

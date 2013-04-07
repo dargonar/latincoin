@@ -23,7 +23,7 @@ from models import AccountBalance, Ticker
 from account_functions import get_account_balance
 
 from bitcoin_helper import encrypt_all_keys
-from myfilters import do_marketarrowfy, do_label_for_order, do_orderamountfy, do_time_distance_in_words, do_label_for_oper
+from myfilters import do_marketarrowfy, do_label_for_order, do_orderamountfy, do_time_distance_in_words, do_label_for_oper, do_operation_type
 
 def read_blobstore_file(blob_key):
   
@@ -147,6 +147,8 @@ class Jinja2Mixin(object):
     env.filters['orderamountfy']  = do_orderamountfy
     env.filters['time_distance_in_words']  = do_time_distance_in_words
     env.filters['label_for_oper'] = do_label_for_oper
+    env.filters['operation_type'] = do_operation_type
+    
   def render_response(self, _template, **context):
     # Renders a template and writes the result to the response.
     rv = self.jinja2.render_template(_template, **context)

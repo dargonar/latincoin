@@ -11,7 +11,7 @@ class MainController(FrontendHandler):
     data = memcache.get('index_html_tables')
     if data is None:
       index_html_tables = {}
-      index_html_tables['orders']         = self.render_template('frontend/market_orders.html', bids=self.get_trade_orders('active','bid'),  asks=self.get_trade_orders('active','ask'))
+      index_html_tables['orders']         = self.render_template('frontend/market_orders.html', bids=self.get_trade_orders('active','bid', '-'),  asks=self.get_trade_orders('active','ask',''))
       index_html_tables['operations']     = self.render_template('frontend/market_operations.html', opers = self.get_operations())
       data = index_html_tables
       memcache.add('index_html_tables', data, 60)
@@ -20,25 +20,27 @@ class MainController(FrontendHandler):
   
   
   def get_operations(self):
-    return Operation.all().order('updated_at')
+    #return Operation.all().order('-updated_at')
+    return Operation.all().filter('status =', Operation.OPERATION_DONE).order('-created_at')
     
-  def get_trade_orders(self, mode, type):
+  def get_trade_orders(self, mode, type, sort):
 
     # type  = kwargs['type']
     # mode  = kwargs['mode']
-    
+    sort = '%sppc' % sort
     query  = TradeOrder.all() 
 
     if mode == 'active':
       query = query.filter('status =', TradeOrder.ORDER_ACTIVE)
-      query = query.order('created_at')
     else:
       query = query.filter('status !=', TradeOrder.ORDER_ACTIVE)
     
     if type != 'any':
       query = query.filter('bid_ask =', TradeOrder.BID_ORDER if type =='bid' else TradeOrder.ASK_ORDER)
       query = query.filter('order_type =', TradeOrder.LIMIT_ORDER)
-
+    
+    #query = query.order('-created_at')
+    query = query.order(sort)
     return query
     
     for order in query:

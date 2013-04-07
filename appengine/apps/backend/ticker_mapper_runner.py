@@ -43,7 +43,7 @@ class RunTickerMapper(RequestHandler):
   
   def build_ticker(self, **kwargs):
     
-    self.delete_all(False)
+    #self.delete_all(False)
     for ticker in Ticker.all().filter('status =', Ticker.IN_PROGRESS):
       db.delete(ticker)
       logging.info('Ticker IN-PROGRESS borrado')
@@ -57,6 +57,7 @@ class RunTickerMapper(RequestHandler):
     if b:
       self.response.write('deberiamos haber creado todo :)')
     
+    return
     mapper = TickerMapper(str(last_ticker.key()))
     
     deferred.defer(mapper.run)

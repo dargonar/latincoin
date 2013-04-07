@@ -12,6 +12,13 @@ from re import *
 _slugify_strip_re = compile(r'[^\w\s-]')
 _slugify_hyphenate_re = compile(r'[-\s]+')
 
+def do_operation_type(oper):
+  if oper.type == oper.OPERATION_BUY:
+    return 'Compra'
+  if oper.type == oper.OPERATION_SELL:
+    return 'Venta'
+  return 'NA'
+
 def do_label_for_oper(oper):
   tmp = '<span class="label %s">%s</span>'
   
@@ -35,7 +42,7 @@ def do_label_for_order(order):
   percent = 0#int(Decimal('100')*(Decimal('1') - order.amount/order.original_amount))
 
   if order.status == TradeOrder.ORDER_ACTIVE:
-    return tmp % ('', percent, 'Activa')
+    return tmp % ('label-info', percent, 'Activa')
   elif order.status == TradeOrder.ORDER_COMPLETED:
     return tmp % ('label-success', 100, 'Completada')
   elif order.status == TradeOrder.ORDER_CANCELED:

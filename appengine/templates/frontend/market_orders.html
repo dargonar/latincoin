@@ -1,7 +1,7 @@
         <div class="row-fluid">
 					<div class="span6">
 						<!-- BEGIN CONDENSED TABLE PORTLET-->
-						<div class="portlet box yellow">
+						<div class="portlet box grey">
 							<div class="portlet-title">
 								<h4><i class="icon-shopping-cart"></i>Ordenes de venta - Asks</h4>
 							</div>
@@ -20,10 +20,10 @@
 									<tbody>
 										{% for ask in asks.run(limit=10) %}
                     <tr class="tooltips {{ loop.cycle('odd', 'even') }}" data-original-title="Hace {{ask.created_at|time_distance_in_words}}">
-											<td>#{{ ask.key().id()|string }}</td>
+											<td>{{ ask.key().id()|string }}</td>
 											<td>${{'%0.2f'|format(ask.ppc|float)}}</td>
 											<td>{{'%0.5f'|format(ask.amount|float)}}</td>
-											<td class="hidden-480">{{'%0.2f'|format((ask.ppc*ask.amount)|float)}}</td>
+											<td class="hidden-480">${{'%0.2f'|format((ask.ppc*ask.amount)|float)}}</td>
 											<td>{{ask|label_for_order}}</td>
 										</tr>
 										{% endfor%}
@@ -36,7 +36,7 @@
           
 					<div class="span6">
 						<!-- BEGIN CONDENSED TABLE PORTLET-->
-						<div class="portlet box blue">
+						<div class="portlet box grey">
 							<div class="portlet-title">
 								<h4><i class="icon-shopping-cart"></i>Ordenes de compra - Bids</h4>
 							</div>
@@ -55,10 +55,10 @@
 									<tbody>
 										{% for bid in bids.run(limit=10) %}
                     <tr class="tooltips {{ loop.cycle('odd', 'even') }}" data-original-title="Hace {{bid.created_at|time_distance_in_words}}">
-											<td>#{{ bid.key().id()|string }}</td>
+											<td>{{ bid.key().id()|string }}</td>
 											<td>${{'%0.2f'|format(bid.ppc|float)}}</td>
 											<td>{{'%0.5f'|format(bid.amount|float)}}</td>
-											<td class="hidden-480">{{'%0.2f'|format((bid.ppc*bid.amount)|float)}}</td>
+											<td class="hidden-480">${{'%0.2f'|format((bid.ppc*bid.amount)|float)}}</td>
 											<td>{{bid|label_for_order}}</td>
 										</tr>
 										{% endfor%}
