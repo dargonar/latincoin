@@ -1,0 +1,85 @@
+  {%- macro form_input(field, label='', symbol='', disabled=False, hide=False, data_source='') -%}
+    <div class="control-group {{'error' if field.errors else ''}}" {{'style="display:none"' if hide else '' }} >
+      {{'<span class="help-inline">'+field.errors.0+'</span>' if field.errors else ''}}
+      <label class="control-label">{{label}}</label>
+      <div class="controls">
+        {% if symbol!='' %}
+          <div class="input-prepend span10">
+            <span class="add-on">{{symbol}}</span>
+              {{ form_input_field(field, disabled=disabled, data_source=data_source, class='span9') }}
+          </div>
+        {% else %}
+          {{ form_input_field(field, disabled=disabled, data_source=data_source, class='span10') }}
+        {% endif %}
+      </div>
+    </div>
+  {%- endmacro -%}
+
+  {%- macro form_input_field(field, disabled=False, data_source='', class='') -%}
+    {% if disabled %}
+      {{field(class='m-wrap '+class, readonly='readonly', **{'data-source':data_source, 'data-provide':'typeahead'})}}
+    {% else %}
+      {{field(class='m-wrap '+class, **{'data-source':data_source, 'data-provide':'typeahead'})}}
+    {% endif %}
+  {%- endmacro -%}
+
+<div class="span8">
+  <div>
+    <!-- BEGIN GENERAL PORTLET-->
+    <div class="portlet">
+      <div class="portlet-title">
+        <h4><i class="icon-minus-sign"></i></h4>
+      </div>
+      <div class="portlet-body form">
+ 
+        <!-- BEGIN FORM-->
+        <form action="{{ url_for('withdraw-bitcoins')}}" method="POST" class="form-horizontal">
+          <div class="row-fluid">
+            <div class="span8">
+              
+              {{form_input(form.btc_address, hide=False, symbol='', label='Dirección bitcoin', data_source=data_source)}}
+              {{form_input(form.btc_amount, hide=False, symbol='BTC', label='Cantidad de bitcoins ' )}}
+             
+             <!-- div class="control-group">
+                <label class="control-label">PIN de seguridad</label>
+                <div class="controls">
+                   <div class="input-prepend">
+                      <span class="add-on">PIN</span><input class="m-wrap " type="text" />
+                   </div>
+                </div>
+              </div -->
+            </div>
+          </div>
+        
+          <div class="form-actions">
+            <button type="submit" class="btn blue">Retirar bitcoins</button>
+          </div>
+        </form>
+      
+      </div>
+    </div>
+  </div>
+  
+</div>
+
+<div class="span4">
+  <div>
+    <div class="portlet">
+      <!--div class="portlet-title">
+        <h4><i class=" icon-question-sign"></i></h4>
+      </div-->
+      <div class="portlet-body">
+        <div class="well">
+          <h4>Instrucciones</h4>
+          <p>Para realizar uma retirada de bitcoins basta informar um endereço Bitcoin válido e o valor desejado.</p>
+          <p>Como alternativa você poderá também utilizar endereços já cadastrados em sua página de configurações na opção <i>Endereços bitcoin</i>.</p>
+          <p><strong>A quantia mínima para retirada é de <span class="highlight">BTC 0,01</span></strong>.</p>
+          <p>Dependendo da rede bitcoin a sua retirada poderá demorar de vários minutos até algumas horas.</p>  
+          <p>Qualquer dúvida entre em contato com o <a href="/suporte/">suporte</a>.</p>
+          
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- END WELLS PORTLET-->
+</div>

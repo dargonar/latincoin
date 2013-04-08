@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import logging
 from decimal import Decimal
 from google.appengine.ext import db
 
@@ -31,12 +32,24 @@ class Trader:
     return _tx()
 
 
-  def add_widthdraw_order(self, user, currency, amount):
+  # validamos el cbu
+  def add_widthdraw_currency_order(self, user, amount, bank_account_key):
+    assert(isinstance(bank_account_key, basestring) and len(bank_account_key) > 0 ), u'CBU inválido'
+    return self.add_widthdraw_order(user, 'ARS', amount, db.get(db.Key(bank_account_key)), None)
+    
+  # validamos que la direccion sea valida
+  def add_widthdraw_btc_order(self, user, amount, address):
+    logging.info('add_widthdraw_btc_order addr[%s] amount[%s]', address, str(amount))
+    assert(isinstance(address, basestring) and len(address) > 0 ), u'Direccion no valida'
+    return self.add_widthdraw_order(user, 'BTC', amount, None, address)
+    
+  def add_widthdraw_order(self, user, currency, amount, bank_account = None, btc_address=None):
 
     # TODO: assert input
-    assert(isinstance(user, basestring) and len(user) > 0 ), u'Key de orden inválida'
+    assert(isinstance(user, basestring) and len(user) > 0 ), u'Key de usuario inválida'
     assert(isinstance(currency, basestring) and currency in ['ARS','BTC']), u'Moneda inválida'
     assert(isinstance(amount, Decimal) and amount > Decimal('0')), u'Cantidad inválida'
+    
     
     @db.transactional(xg=True)
     def _tx():
@@ -54,9 +67,15 @@ class Trader:
                                      account        = user_key,
                                      amount         = -amount,
                                      currency       = currency,
-                                     state          = AccountOperation.STATE_PENDING)
-
+                                     state          = AccountOperation.STATE_PENDING, 
+                                     bank_account   = bank_account,
+                                     address        = btc_address)
+      
+      # withdraw_op.bank_account  = bank_account
+      # withdraw_op.address       = btc_address
+      
       balance[currency].amount -= amount
+      
       db.put([balance[currency], withdraw_op])
 
       return [withdraw_op, u'ok']

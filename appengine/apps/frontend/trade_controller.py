@@ -100,8 +100,7 @@ class TradeController(FrontendHandler):
     owner = kwargs['owner']
     orders = {'aaData':[]}
 
-    query  = TradeOrder.all() \
-              query.filter('user =', db.Key(self.user))
+    query  = TradeOrder.all().query.filter('user =', db.Key(self.user))
 
     if mode == 'active':
       query = query.filter('status =', TradeOrder.ORDER_ACTIVE)

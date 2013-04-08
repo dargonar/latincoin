@@ -31,11 +31,11 @@
             <span class="{{ 'selected' if html=='deposito' else '' }}"></span>
 					</a>
 				</li>
-        <li class="has-sub {{ 'active' if html=='retiro' else '' }} ">
-					<a href="{{ url_for('retiro') }}">
-            <i class=" icon-signout"></i> 
+        <li class="has-sub {{ 'active' if html=='withdraw' else '' }} ">
+					<a href="{{ url_for('withdraw-bitcoins') }}">
+            <i class="icon-signout"></i> 
             <span class="title">Retiro</span>
-            <span class="{{ 'selected' if html=='retiro' else '' }}"></span>
+            <span class="{{ 'selected' if html=='withdraw' else '' }}"></span>
 					</a>
 				</li>
 				<li class="has-sub {{ 'active' if html=='history' else '' }} ">
@@ -43,6 +43,13 @@
 					<i class="icon-table"></i> 
 					<span class="title">Historial</span>
 					<span class="{{ 'selected' if html=='history' else '' }}"></span>
+					</a>
+				</li>
+        <li class="has-sub {{ 'active' if html=='profile' else '' }} ">
+					<a href="{{ url_for('profile-personal_info') }}">
+					<i class="icon-user"></i> 
+					<span class="title">Perfil</span>
+					<span class="{{ 'selected' if html=='profile' else '' }}"></span>
 					</a>
 				</li>
 			</ul>

@@ -79,5 +79,5 @@ class MainController(FrontendHandler):
   def deposito(self, **kwargs):
     return self.render_response('frontend/deposito.html', **kwargs)
     
-  def retiro(self, **kwargs):
+  def withdraw(self, **kwargs):
     return self.render_response('frontend/retiro.html', **kwargs)

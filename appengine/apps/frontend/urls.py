@@ -11,10 +11,15 @@ def get_rules():
 
 
       Route('/', name='home',         handler='apps.frontend.main_controller.MainController:home'),
-      Route('/', name='terms',        handler='apps.frontend.main_controller.MainController:terms'), # mover donde corresponda
-      Route('/', name='contact',      handler='apps.frontend.main_controller.MainController:contact'), # mover donde corresponda
-      Route('/', name='deposito',     handler='apps.frontend.main_controller.MainController:deposito'), # mover donde corresponda
-      Route('/', name='retiro',       handler='apps.frontend.main_controller.MainController:retiro'), # mover donde corresponda
+      Route('/terms', name='terms',        handler='apps.frontend.main_controller.MainController:terms'), # mover donde corresponda
+      Route('/contact', name='contact',      handler='apps.frontend.main_controller.MainController:contact'), # mover donde corresponda
+      Route('/deposito', name='deposito',     handler='apps.frontend.main_controller.MainController:deposito'), # mover donde corresponda
+      
+      PathPrefixRoute('/withdraw', [ NamePrefixRoute('withdraw-', [ HandlerPrefixRoute('apps.frontend.withdraw_controller', [
+      #Route('/withdraw_bitcoin', name='withdraw',     handler='apps.frontend.main_controller.MainController:withdraw'), # mover donde corresponda
+        Route('/bitcoins',                  name='bitcoins',          handler='.WithdrawController:new_btc'),
+        Route('/currency/<currency>',       name='currency',          handler='.WithdrawController:new_currency'),
+      ]) ]) ]),
       
       PathPrefixRoute('/account', [ NamePrefixRoute('account-', [ HandlerPrefixRoute('apps.frontend.account_controller', [
         Route('/signup',          name='signup',          handler='.AccountController:signup'),

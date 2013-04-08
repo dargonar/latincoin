@@ -2180,6 +2180,8 @@ var App = function () {
 
         $('#tabla_direcciones_bitcoin_new').click(function (e) {
             e.preventDefault();
+            if($("a[data-mode='new']").length!=0)
+              return;
             var aiNew = oTable.fnAddData(
               [ ''
                 , ''
@@ -2339,6 +2341,8 @@ var App = function () {
 
         $('#tabla_cuentas_bancarias_new').click(function (e) {
             e.preventDefault();
+            if($("a[data-mode='new']").length!=0)
+              return;
             var aiNew = oTable.fnAddData(
               [ ''
                 , ''
