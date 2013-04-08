@@ -16,9 +16,10 @@ def get_rules():
       Route('/deposito', name='deposito',     handler='apps.frontend.main_controller.MainController:deposito'), # mover donde corresponda
       
       PathPrefixRoute('/withdraw', [ NamePrefixRoute('withdraw-', [ HandlerPrefixRoute('apps.frontend.withdraw_controller', [
-      #Route('/withdraw_bitcoin', name='withdraw',     handler='apps.frontend.main_controller.MainController:withdraw'), # mover donde corresponda
-        Route('/bitcoins',                  name='bitcoins',          handler='.WithdrawController:new_btc'),
-        Route('/currency/<currency>',       name='currency',          handler='.WithdrawController:new_currency'),
+        Route('/bitcoins',                                      name='bitcoins',                  handler='.WithdrawController:new_btc'),
+        Route('/currency/<currency>',                           name='currency',                  handler='.WithdrawController:new_currency'),
+        Route('/cancel_account_operation/<key>/<referer>',      name='cancel_account_operation',  handler='.WithdrawController:cancel_account_operation'),
+        Route('/account_operations/<state>/<type>/<currency>',   name='account_operations',  handler='.WithdrawController:account_operations'),
       ]) ]) ]),
       
       PathPrefixRoute('/account', [ NamePrefixRoute('account-', [ HandlerPrefixRoute('apps.frontend.account_controller', [

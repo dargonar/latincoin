@@ -69,12 +69,22 @@
 			</div>
   {%endblock%}
   
+  
   {%block javascript_run%}
   <script>
-		jQuery(document).ready(function() {			
+		
+    // BTC & Bank operation urls
+		var table_ajax_btc_acc_opers_source = '{{ url_for('withdraw-account_operations', currency='BTC', type='MO', state='any')}}';
+    var table_ajax_bank_acc_opers_source = '{{ url_for('withdraw-account_operations', currency='ARS', type='MO', state='any')}}';
+    
+    
+    jQuery(document).ready(function() {			
 			// initiate layout and plugins
-			App.setPage("table_managed");
-			App.init();
-		});
+      App.setPage("withdraw");
+      App.init();
+    });
 	</script>
   {%endblock%}
+  
+  
+  

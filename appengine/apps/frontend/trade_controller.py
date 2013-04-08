@@ -97,7 +97,7 @@ class TradeController(FrontendHandler):
 
     type  = kwargs['type']
     mode  = kwargs['mode']
-    owner = kwargs['owner']
+
     orders = {'aaData':[]}
 
     query  = TradeOrder.all().query.filter('user =', db.Key(self.user))

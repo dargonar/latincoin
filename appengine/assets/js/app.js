@@ -2105,7 +2105,37 @@ var App = function () {
         jQuery('.dataTables_filter').parent(".span6 ").remove(); // delete table search input
     }
 
+    var handleAccOperationTables = function (id, source) {
+        
+        if (!jQuery().dataTable) {
+            return;
+        }
+        
+        // begin first table
+        $('#'+id).dataTable({
+            "bProcessing": true,
+            "sAjaxSource": source,
+            "sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
+            "sPaginationType": "bootstrap",
+            "oLanguage": {
+                "sEmptyTable": "Sin retiros",
+                "sInfoEmpty": " ",
+                "sLengthMenu": "_MENU_ retiros por pág.",
+                "sInfo": "Mostrando _START_ a _END_ de _TOTAL_ retiro\s",
+                "oPaginate": {
+                    "sPrevious": "Ant.",
+                    "sNext": "Sig."
+                }
+            },
+            "aoColumnDefs": [{
+                'bSortable': false,
+                'aTargets': [0]
+            }]
+        });
 
+        jQuery('.dataTables_filter').parent(".span6 ").remove(); // delete table search input
+    }
+    
     var handleTablaBitcoins = function () {
 
         function restoreRow(oTable, nRow) {
@@ -3036,7 +3066,12 @@ var App = function () {
                 handleTablaCuentasBancarias(); // handle editable tables
                 handleTablaBitcoins(); // handle editable tables
             }
-
+            
+            if (App.isPage("withdraw")) {
+                handleAccOperationTables('acc_opers_btc_table', table_ajax_btc_acc_opers_source); // handle editable tables
+                handleAccOperationTables('acc_opers_bank_table', table_ajax_bank_acc_opers_source); // handle editable tables
+            }
+            
             if (App.isPage("table_managed")) {
                 handleTables(); // handles data tables
             }

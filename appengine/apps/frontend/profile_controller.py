@@ -201,7 +201,6 @@ class ProfileController(FrontendHandler, UploadHandler):
     if is_valid_cbu(cbu)==False:
       self.response.write(u'El CBU no es válido.')
       self.response.set_status(500)
-      #self.error(500)
       return
       
     key       = self.request.POST['key'] 

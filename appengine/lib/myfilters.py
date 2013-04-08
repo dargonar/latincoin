@@ -24,7 +24,7 @@ def do_label_for_oper(oper):
   
   if oper.status == Operation.OPERATION_DONE:
     return tmp % ('label-success', 'Completada')
-  elif order.status == TradeOrder.ORDER_CANCELED:
+  elif order.status == Operation.OPERATION_PENDING:
     return tmp % ('label-info', 'Pendiente')
 
     

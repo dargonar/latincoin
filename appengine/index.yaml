@@ -10,6 +10,13 @@ indexes:
 # automatically uploaded to the admin console when you next deploy
 # your application using appcfg.py.
 
+- kind: AccountOperation
+  properties:
+  - name: account
+  - name: currency
+  - name: operation_type
+  - name: created_at
+
 - kind: BankAccount
   properties:
   - name: account

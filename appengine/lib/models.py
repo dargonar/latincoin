@@ -155,7 +155,9 @@ class BankAccount(db.Model):
   created_at            = db.DateTimeProperty(auto_now_add=True)
   updated_at            = db.DateTimeProperty(auto_now=True)
   active                = db.BooleanProperty(default=True)
-  
+  def __repr__(self):
+    return u'%s [%s]%s' % (self.description, self.cbu, ('' if self.active else ' - DESACTIVADA'))
+    
 class UserBitcoinAddress(db.Model):
   address         = db.StringProperty(required=True)
   description     = db.StringProperty(required=True)
@@ -163,7 +165,9 @@ class UserBitcoinAddress(db.Model):
   created_at      = db.DateTimeProperty(auto_now_add=True)
   updated_at      = db.DateTimeProperty(auto_now=True)
   active          = db.BooleanProperty(default=True)
-  
+  def __repr__(self):
+    return u'%s [%s]%s' % (self.description, self.address, ('' if self.active else ' - DESACTIVADA'))
+    
 class AccountValidationFile(db.Model):
   VALIDATION_IDENTITY     = u'identidad'
   VALIDATION_ADDRESS      = u'domicilio'
