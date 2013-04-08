@@ -264,7 +264,7 @@ class FrontendHandler(MyBaseHandler):
   def mine_or_404(self, key):
     obj = get_or_404(key)
 
-    if not hasattr('user') and not hasattr('account'):
+    if not hasattr(obj, 'user') and not hasattr(obj, 'account'):
       abort(404)
 
     if hasattr(obj,'user') and str(obj.user.key()) != self.user:

@@ -2074,6 +2074,38 @@ var App = function () {
         
     }
 
+    var handleDepositTables = function (mode) {
+        
+        if (!jQuery().dataTable) {
+            return;
+        }
+        
+        // begin first table
+        $('#my_'+mode+'_in_table').dataTable({
+            "bProcessing": true,
+            "sAjaxSource": table_ajax_source[mode+'_in'],
+            "sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
+            "sPaginationType": "bootstrap",
+            "oLanguage": {
+                "sEmptyTable": "No hay depositos",
+                "sInfoEmpty": " ",
+                "sLengthMenu": "_MENU_ depositos por pág.",
+                "sInfo": "Mostrando _START_ a _END_ de _TOTAL_ depositos",
+                "oPaginate": {
+                    "sPrevious": "Ant.",
+                    "sNext": "Sig."
+                }
+            },
+            "aoColumnDefs": [{
+                'bSortable': true,
+                'aTargets': [1]
+            }]
+        });
+
+        jQuery('.dataTables_filter').parent(".span6 ").remove(); // delete table search input
+    }
+
+
     var handleOrderTables = function (mode, type) {
         
         if (!jQuery().dataTable) {
@@ -3045,6 +3077,10 @@ var App = function () {
             if (App.isPage("trade_history")) {
                 handleOrderTables('active','any'); // handles data tables
                 handleOrderTables('inactive','any'); // handles data tables
+            }
+            
+            if (App.isPage("deposit_btc")) {
+                handleDepositTables('btc');
             }
 
             // global handlers

@@ -15,6 +15,8 @@ from trader import Trader
 from account_functions import get_account_balance
 from my_test_utils import TestUtilMixin
 
+from bitcoin_helper import zero_btc
+
 class TestMarketTrade(unittest.TestCase, TestUtilMixin):
 
   def setUp(self):
@@ -103,8 +105,8 @@ class TestMarketTrade(unittest.TestCase, TestUtilMixin):
     print 
     print res['in']['ARS']
     print res['sumbal']['ARS']
-    self.assertTrue( abs(res['in']['ARS'] - res['sumbal']['ARS']) < Decimal(1e-8))
-    self.assertTrue( abs(res['in']['BTC'] - res['sumbal']['BTC']) < Decimal(1e-8))
+    self.assertTrue( zero_btc(res['in']['ARS'] - res['sumbal']['ARS']) )
+    self.assertTrue( zero_btc(res['in']['BTC'] - res['sumbal']['BTC']) )
 
 
   def test_MarketTradeBID(self):
@@ -139,8 +141,8 @@ class TestMarketTrade(unittest.TestCase, TestUtilMixin):
     print 
     print res['in']['ARS']
     print res['sumbal']['ARS']
-    self.assertTrue( abs(res['in']['ARS'] - res['sumbal']['ARS']) < Decimal(1e-8))
-    self.assertTrue( abs(res['in']['BTC'] - res['sumbal']['BTC']) < Decimal(1e-8))
+    self.assertTrue( zero_btc(res['in']['ARS'] - res['sumbal']['ARS']) )
+    self.assertTrue( zero_btc(res['in']['BTC'] - res['sumbal']['BTC']) )
 
 
 

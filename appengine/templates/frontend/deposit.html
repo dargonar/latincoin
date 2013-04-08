@@ -1,0 +1,71 @@
+  {% extends "frontend/base_home.html"%}
+  
+  {%block content%}
+    <!-- BEGIN PAGE CONTAINER-->
+			<div class="container-fluid">
+				<!-- BEGIN PAGE HEADER-->
+				<div class="row-fluid">
+					<div class="span12">
+						<!-- BEGIN PAGE TITLE & BREADCRUMB-->			
+						<h3 class="page-title">
+							Depósito de fondos <small>Deposite pesos y bitcoins</small>
+						</h3>
+						<ul class="breadcrumb">
+							<li>
+								<i class="icon-home"></i>
+								<a href="trade.html">Inicio</a> 
+								<i class="icon-angle-right"></i>
+							</li>
+							<li><a href="#">Depósito</a></li>
+						</ul>
+						<!-- END PAGE TITLE & BREADCRUMB-->
+					</div>
+				</div>
+				<!-- END PAGE HEADER-->
+				<!-- BEGIN PAGE CONTENT-->
+				<div class="row-fluid profile">
+					<div class="span12">
+						<!--BEGIN TABS-->
+						<div class="tabbable tabbable-custom">
+							<ul class="nav nav-tabs">
+								<li class="{{'active' if tab == 'btc' else ''}}" ><a href="{{url_for('deposit-btc')}}">Agregar bitcoins</a></li>
+								<li class="{{'active' if tab == 'currency' else ''}}" ><a href="{{url_for('deposit-currency')}}">Agregar pesos</a></li>
+							</ul>
+							<div class="tab-content">
+								
+                <!-- TAB #1 -->
+                <div class="tab-pane row-fluid {{'active' if tab == 'btc' else ''}}" id="btc">
+                  {% if tab == 'btc' %}
+                    {%include "frontend/deposit_btc.html"%}
+                  {%endif%}
+								</div>
+								
+                <!--end tab-pane-->
+								<!-- TAB #2 -->
+                <div class="tab-pane profile-classic row-fluid {{'active' if tab == 'currency' else ''}}" id="currency">
+                  {% if tab == 'currency' %}
+                    {%include "frontend/deposit_currency.html"%}
+                  {%endif%}
+								</div>
+								
+							</div>
+						</div>
+						<!--END TABS-->
+					</div>
+				</div>
+				<!-- END PAGE CONTENT-->
+			</div>
+  {%endblock%}
+  
+  {%block javascript_run%}
+  <script>
+		
+	    var table_ajax_source = {'btc_in': '{{url_for('deposit-list', type='btc')}}'};
+
+		jQuery(document).ready(function() {			
+			// initiate layout and plugins
+			App.setPage('deposit_btc');
+			App.init();
+		});
+	</script>
+  {%endblock%}

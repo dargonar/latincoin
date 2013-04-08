@@ -16,8 +16,21 @@ class Dummy(db.Model):
   pass
 
 class SystemConfig(db.Model):
-  remote_rpc            = db.StringProperty(choices=['ec2', 'blockchain'], default='ec2')
-  read_only             = db.StringProperty(default='N')
+  remote_rpc              = db.StringProperty(choices=['ec2', 'blockchain'], default='ec2')
+  confirmations           = db.StringProperty(default='6')
+  import_delay            = db.StringProperty(default='0')
+  trade_enable            = db.StringProperty(default='N')
+  import_enable           = db.StringProperty(default='Y')
+  forward_enable          = db.StringProperty(default='Y')
+
+  def can_trade(self):
+    return self.trade_enable == 'Y'
+    
+  def can_import(self):
+    return self.import_enable == 'Y'
+
+  def can_forward(self):
+    return self.forward_enable == 'Y'
 
 class Block(db.Model):
   number                = db.IntegerProperty(required=True)
@@ -274,10 +287,12 @@ class BitcoinAddress(db.Model):
   user                  = db.ReferenceProperty(Account, collection_name='bitcoin_addresses', required=True)
   address               = db.StringProperty(required=True)
   private_key           = db.StringProperty(required=True)
+  created_at            = db.DateTimeProperty(auto_now_add=True)
 
 class ForwardTx(db.Model):
   tx                    = db.StringProperty(required=True)
   tx_fw                 = db.StringProperty()
+  tx_raw                = db.TextProperty()
   in_block              = db.IntegerProperty()
   out_block             = db.IntegerProperty()
   user                  = db.ReferenceProperty(Account)

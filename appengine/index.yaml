@@ -10,6 +10,29 @@ indexes:
 # automatically uploaded to the admin console when you next deploy
 # your application using appcfg.py.
 
+- kind: AccountOperation
+  properties:
+  - name: account
+  - name: currency
+  - name: operation_type
+  - name: created_at
+
+- kind: AccountValidationFile
+  properties:
+  - name: account
+  - name: created_at
+
+- kind: BankAccount
+  properties:
+  - name: account
+  - name: created_at
+    direction: desc
+
+- kind: BitcoinAddress
+  properties:
+  - name: user
+  - name: created_at
+
 - kind: Block
   properties:
   - name: processed
@@ -52,6 +75,25 @@ indexes:
     direction: desc
 
 - kind: TradeOrder
+  properties:
+  - name: bid_ask
+  - name: order_type
+  - name: status
+  - name: user
+  - name: created_at
+
+- kind: TradeOrder
+  properties:
+  - name: status
+  - name: user
+  - name: created_at
+
+- kind: TradeOrder
+  properties:
+  - name: user
+  - name: status
+
+- kind: TradeOrder
   ancestor: yes
   properties:
   - name: bid_ask
@@ -66,4 +108,10 @@ indexes:
   - name: order_type
   - name: status
   - name: ppc_int
+    direction: desc
+
+- kind: UserBitcoinAddress
+  properties:
+  - name: account
+  - name: created_at
     direction: desc

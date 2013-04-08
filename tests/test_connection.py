@@ -7,7 +7,7 @@ from google.appengine.datastore import datastore_stub_util
 
 from bitcoinrpc.connection_helper import BlockChainProxy,EC2Proxy
 
-class TestMarketTrade(unittest.TestCase):
+class TestDualConnection(unittest.TestCase):
 
   def setUp(self):
     

@@ -12,18 +12,6 @@ from trade_forms import BidForm, AskForm
 
 class TradeController(FrontendHandler):
   
-  def apply_operation(self, **kwargs):
-    trader = Trader()
-    tmp = trader.apply_operation(kwargs['key'])
-
-    self.response.write(tmp)
-
-  def match_orders(self, **kwargs):
-    trader = Trader()
-    tmp = trader.match_orders()
-
-    self.response.write(tmp)
-
   @need_auth()
   def new(self, **kwargs):
     kwargs['html']     = 'trade'
@@ -62,6 +50,8 @@ class TradeController(FrontendHandler):
       return self.render_response('frontend/trade.html', active_tab=bid_ask, **kwargs)
 
     self.set_ok(u'La orden fue %s con éxito. (#%d)' % ('ingresada' if form.market() else 'completada',trade[0].key().id()) )
+    if not form.market():
+      taskqueue.execute()
 
     return self.redirect(self.url_for('trade-new') + ('?active_tab=%s' % bid_ask))
 
@@ -97,11 +87,11 @@ class TradeController(FrontendHandler):
 
     type  = kwargs['type']
     mode  = kwargs['mode']
-    owner = kwargs['owner']
+
     orders = {'aaData':[]}
 
-    query  = TradeOrder.all() \
-              query.filter('user =', db.Key(self.user))
+    query  = TradeOrder.all()
+    query.filter('user =', db.Key(self.user))
 
     if mode == 'active':
       query = query.filter('status =', TradeOrder.ORDER_ACTIVE)
@@ -140,7 +130,7 @@ class TradeController(FrontendHandler):
 
   def label_for_order(self, order):
     
-    tmp = '<span class="label %s" style="padding: 0;width:100%;"><span class="label label-success" style="float: left; width: %d%%; padding: 2px 0 2px 0;">%s</span></span>'
+    tmp = '<span class="label %s" style="padding: 0;width:100%%;"><span class="label label-success" style="float: left; width: %d%%; padding: 2px 0 2px 0;">%s</span></span>'
     percent = int(Decimal('100')*(Decimal('1') - order.amount/order.original_amount))
 
     if order.status == TradeOrder.ORDER_ACTIVE:

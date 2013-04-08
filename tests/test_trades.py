@@ -11,6 +11,8 @@ from google.appengine.datastore import datastore_stub_util
 from models import Account, TradeOrder, AccountBalance
 from trader import Trader
 
+from bitcoin_helper import zero_btc
+
 class DemoTestCase(unittest.TestCase):
 
   def setUp(self):

@@ -262,8 +262,14 @@ class AccountController(FrontendHandler):
     b_btc.put()
 
     from models import SystemConfig
-    s = SystemConfig.get_or_insert('system-config', \
-          remote_rpc='blockchain', trade_enable='Y')
+    s = SystemConfig.get_or_insert('system-config',
+          remote_rpc      = 'blockchain', 
+          confirmations   = '0',
+          trade_enable    = 'Y', 
+          import_enable   = 'Y',
+          process_enable  = 'Y',
+          forward_enable  = 'Y',
+          update_balance_enable = 'Y')
 
     s.put()
 

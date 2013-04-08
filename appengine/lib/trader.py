@@ -2,10 +2,43 @@
 from decimal import Decimal
 from google.appengine.ext import db
 
-from models import TradeOrder, Operation, Account, AccountOperation, Dummy
+from models import TradeOrder, Operation, Account, AccountOperation, Dummy, ForwardTx
 from account_functions import get_account_balance
 
+from bitcoin_helper import zero_btc
+
 class Trader:
+
+  def add_btc_balance(self, ftx_key):
+
+    # TODO: assert input
+    assert(isinstance(ftx_key, basestring) and len(ftx_key) > 0 ), u'Key de forwardtx inválida'
+    @db.transactional(xg=True)
+    def _tx():
+
+      ftx = ForwardTx.get(ftx_key)
+      if ftx.forwarded != 'Y':
+        return
+
+      ftx.forwarded = 'D'
+      
+      balance = get_account_balance(ftx.user)
+      balance['BTC'].amount += ftx.value
+
+      add_btc_op = AccountOperation( parent         = ftx.user, 
+                                     operation_type = AccountOperation.MONEY_IN, 
+                                     account        = ftx.user,
+                                     amount         = ftx.value,
+                                     currency       = 'BTC',
+                                     bt_tx_id       = ftx.tx,
+                                     state          = AccountOperation.STATE_DONE)
+
+      db.put([ftx, balance['BTC'], add_btc_op])
+
+      return True
+
+    _tx()
+
 
   def cancel_widthdraw_order(self, order_key):
     
@@ -298,11 +331,11 @@ class Trader:
       # Que den 0
 
       best_bid.amount -= amount
-      if abs(best_bid.amount) < Decimal(1e-8):
+      if zero_btc(best_bid.amount):
         best_bid.status = TradeOrder.ORDER_COMPLETED
       
       best_ask.amount -= amount
-      if abs(best_ask.amount) < Decimal(1e-8):
+      if zero_btc(best_ask.amount):
         best_ask.status = TradeOrder.ORDER_COMPLETED
 
       # Grabamos todo
@@ -380,7 +413,7 @@ class Trader:
         amount       -= op_amount
 
         # Nos comimos esta orden?
-        if abs(order.amount) < Decimal(1e-8):
+        if zero_btc(order.amount):
           order.status = TradeOrder.ORDER_COMPLETED
 
         traded_currency = op_amount*order.ppc
@@ -413,7 +446,7 @@ class Trader:
         # 1) las operaciones generadas
         # 2) las ordenes modificadas y la nueva orden creada
         # 3) el balance del usuario modificado
-        if abs(amount) < Decimal(1e-8):
+        if zero_btc(amount):
           
           to.ppc     = total_currency/amount_wanted
           to.ppc_int = int(to.ppc*Decimal('100'))

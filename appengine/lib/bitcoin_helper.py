@@ -7,6 +7,35 @@ from decimal import Decimal
 
 from models import BitcoinAddress
 
+ONE_SATOSHI = Decimal(1e-8)
+ONE_PIP     = Decimal(1e-10)
+
+
+def format_satoshis(x, is_diff=False, num_zeros = 0):
+  s = Decimal(x)
+  sign, digits, exp = s.as_tuple()
+  digits = map(str, digits)
+  while len(digits) < 9:
+      digits.insert(0,'0')
+  digits.insert(-8,'.')
+  s = ''.join(digits).rstrip('0')
+  if sign: 
+      s = '-' + s
+  elif is_diff:
+      s = "+" + s
+
+  p = s.find('.')
+  s += "0"*( 1 + num_zeros - ( len(s) - p ))
+  s += " "*( 9 - ( len(s) - p ))
+  s = " "*( 5 - ( p )) + s
+  return s
+
+def zero_btc(value):
+  return value < ONE_SATOSHI
+
+def zero_cur(value):
+  return value < ONE_PIP
+
 def encrypt_all_keys(user, old_password):
 
   to_save = []
@@ -48,7 +77,7 @@ def generate_new_address():
 def generate_forward_transaction(src_add, src_priv, dst_add, tx_hash, amount, index, fee=Decimal('0.0005')):
   
   amount -= fee
-  if abs(amount) < Decimal(1e-8):
+  if zero_btc(amount):
     return [False, u'Couldnt set fee']
 
   hash_160 = bc_address_to_hash_160(src_add)[1]
