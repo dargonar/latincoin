@@ -263,13 +263,16 @@ class AccountController(FrontendHandler):
 
     from models import SystemConfig
     s = SystemConfig.get_or_insert('system-config',
-          remote_rpc      = 'blockchain', 
-          confirmations   = '0',
-          trade_enable    = 'Y', 
-          import_enable   = 'Y',
-          process_enable  = 'Y',
-          forward_enable  = 'Y',
-          update_balance_enable = 'Y')
+          remote_rpc        = 'blockchain', 
+          confirmations     = '0',
+          trade_enable      = 'Y', 
+          import_delay      = '0',
+          import_enable     = 'Y',
+          forward_enable    = 'Y',
+          min_btc_withdraw  = Decimal('0'),
+          min_curr_deposit  = Decimal('0'),
+          min_curr_withdraw = Decimal('0'),
+    )
 
     s.put()
 

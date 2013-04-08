@@ -18,10 +18,13 @@ class Dummy(db.Model):
 class SystemConfig(db.Model):
   remote_rpc              = db.StringProperty(choices=['ec2', 'blockchain'], default='ec2')
   confirmations           = db.StringProperty(default='6')
-  import_delay            = db.StringProperty(default='0')
   trade_enable            = db.StringProperty(default='N')
+  import_delay            = db.StringProperty(default='0')
   import_enable           = db.StringProperty(default='Y')
   forward_enable          = db.StringProperty(default='Y')
+  min_btc_withdraw        = DecimalProperty(default=decimal.Decimal('0'))
+  min_curr_deposit        = DecimalProperty(default=decimal.Decimal('0'))
+  min_curr_withdraw       = DecimalProperty(default=decimal.Decimal('0'))
 
   def can_trade(self):
     return self.trade_enable == 'Y'
