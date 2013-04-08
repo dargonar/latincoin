@@ -25,6 +25,7 @@ indexes:
 - kind: BankAccount
   properties:
   - name: account
+  - name: active
   - name: created_at
     direction: desc
 
@@ -108,10 +109,4 @@ indexes:
   - name: order_type
   - name: status
   - name: ppc_int
-    direction: desc
-
-- kind: UserBitcoinAddress
-  properties:
-  - name: account
-  - name: created_at
     direction: desc

@@ -66,6 +66,7 @@ class ProfileController(FrontendHandler, UploadHandler):
 
     kwargs['img_url'] = quote_plus(url)
 
+    kwargs['html'] = 'profile'
     return self.render_response('frontend/profile.html', **kwargs)
   
   @need_auth()
@@ -82,9 +83,9 @@ class ProfileController(FrontendHandler, UploadHandler):
 
   @need_auth()
   def personal_info(self, **kwargs):    
-    
     account = get_or_404(self.user)
     kwargs['tab'] = 'personal_info';
+    kwargs['html'] = 'profile'
     if self.request.method == 'GET':
       kwargs['form']              = ProfileForm(obj=account)
       return self.render_response('frontend/profile.html', **kwargs)
@@ -93,8 +94,6 @@ class ProfileController(FrontendHandler, UploadHandler):
     is_valid = self.form.validate()
     if not is_valid:
       kwargs['form']         = self.form
-      if self.form.errors:
-        kwargs['flash']      = self.build_error('Verifique los datos ingresados:')
       return self.render_response('frontend/profile.html', **kwargs)
 
     account          = self.form.update_object(account)
@@ -125,6 +124,7 @@ class ProfileController(FrontendHandler, UploadHandler):
   def identity_validation(self, **kwargs):
     
     kwargs['tab'] = 'identity_validation';
+    kwargs['html'] = 'profile'
     account_key = db.Key(self.user)
     
     if self.request.method == 'GET':
@@ -196,7 +196,7 @@ class ProfileController(FrontendHandler, UploadHandler):
   def change_password(self, **kwargs):    
     
     kwargs['tab'] = 'change_password';
-    
+    kwargs['html'] = 'profile'
     kwargs['form'] = self.password_form
 
     if self.request.method == 'GET':      
@@ -238,32 +238,34 @@ class ProfileController(FrontendHandler, UploadHandler):
   
   @need_auth()
   def bank_account(self, **kwargs):
-    kwargs['tab'] = 'bank_account';
     account = get_or_404(self.user)
+    
+    kwargs['tab'] = 'bank_account';
+    kwargs['html'] = 'profile'
     
     if self.request.method == 'GET':
       return self.render_response('frontend/profile.html', **kwargs)
     
     cbu         = self.request.POST['bank_account_cbu'] 
     description = self.request.POST['bank_account_desc'] 
-    
+    if cbu is not None:
+      cbu = cbu.strip()
     if is_valid_cbu(cbu)==False:
       self.response.write(u'El CBU no es válido.')
       self.response.set_status(500)
-      #self.error(500)
       return
       
     key       = self.request.POST['key'] 
     bank_acc  = None
     
-    if key is None or key.strip()=='':
-      bank_acc = BankAccount( account     = account,
+    if key is not None and key.strip()!='':
+      old_bank_acc              = db.get(db.Key(key))
+      old_bank_acc.active       = False
+      old_bank_acc.put()
+    
+    bank_acc = BankAccount( account     = account,
                               cbu         = cbu,
                               description = description)
-    else:
-      bank_acc = db.get(db.Key(key))
-      bank_acc.cbu          = cbu
-      bank_acc.description  = description
       
     bank_acc.put()
     self.response.out.write("It's done!")
@@ -276,6 +278,7 @@ class ProfileController(FrontendHandler, UploadHandler):
 
     for bankacc in BankAccount.all() \
               .filter('account =', db.Key(self.user)) \
+              .filter('active =', True) \
               .order('-created_at'):
 
       row = []
@@ -292,9 +295,10 @@ class ProfileController(FrontendHandler, UploadHandler):
   
   @need_auth()
   def btc_address(self, **kwargs):
+    account = get_or_404(self.user)
     
     kwargs['tab'] = 'btc_address';
-    account = get_or_404(self.user)
+    kwargs['html'] = 'profile'
     
     if self.request.method == 'GET':
       return self.render_response('frontend/profile.html', **kwargs)
@@ -302,6 +306,8 @@ class ProfileController(FrontendHandler, UploadHandler):
     address     = self.request.POST['bitcoinaddr_address'] 
     description = self.request.POST['bitcoinaddr_desc'] 
     
+    if address is not None:
+      address = address.strip()
     if is_valid_bitcoin_address(address)==False:
       self.response.write(u'La dirección no es una dirección de Bitcoin válida.')
       self.response.set_status(500)
@@ -311,14 +317,14 @@ class ProfileController(FrontendHandler, UploadHandler):
     key     = self.request.POST['key'] 
     btc_addr = None
     
-    if key is None or key.strip()=='':
-      btc_addr = UserBitcoinAddress(account     = account,
+    if key is not None and key.strip()!='':
+      old_btc_addr = db.get(db.Key(key))
+      old_btc_addr.active     = False
+      old_btc_addr.put()
+      
+    btc_addr = UserBitcoinAddress(account     = account,
                               address     = address,
                               description = description)
-    else:
-      btc_addr = db.get(db.Key(key))
-      btc_addr.address     = address
-      btc_addr.description = description
       
     btc_addr.put()
     self.response.out.write("It's done!")
@@ -326,26 +332,12 @@ class ProfileController(FrontendHandler, UploadHandler):
       
   
   @need_auth()
-  def btc_address_delete(self, **kwargs):  
-    btcaddress_or_bankacc = db.get(db.Key(kwargs['key']))
-    referer = kwargs['referer']
-    if str(btcaddress_or_bankacc.account.key()) != self.user:
-      abort(404)
-    
-    db.delete(btcaddress_or_bankacc)
-    if referer=='profile-btc_address':
-      self.set_ok(u'La dirección fue eliminada.')
-    else:
-      self.set_ok(u'El CBU fue eliminado.')
-    return self.redirect_to(referer)
-    
-  @need_auth()
-  
   def btc_address_list(self, **kwargs):  
     addrs = {'aaData':[]}
 
     for addr in UserBitcoinAddress.all() \
               .filter('account =', db.Key(self.user)) \
+              .filter('active =', True) \
               .order('-created_at'):
 
       row = []
@@ -358,3 +350,22 @@ class ProfileController(FrontendHandler, UploadHandler):
       addrs['aaData'].append(row)
 
     return self.render_json_response(addrs)
+  
+  @need_auth()
+  def btc_address_delete(self, **kwargs):  
+    btcaddress_or_bankacc = db.get(db.Key(kwargs['key']))
+    referer = kwargs['referer']
+    if str(btcaddress_or_bankacc.account.key()) != self.user:
+      abort(404)
+    
+    btcaddress_or_bankacc.active = False
+    btcaddress_or_bankacc.put()
+    
+    #db.delete(btcaddress_or_bankacc)
+    if referer=='profile-btc_address':
+      self.set_ok(u'La dirección fue eliminada.')
+    else:
+      self.set_ok(u'El CBU fue eliminado.')
+    return self.redirect_to(referer)
+    
+  

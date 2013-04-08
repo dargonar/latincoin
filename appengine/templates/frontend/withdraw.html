@@ -1,0 +1,90 @@
+  {% extends "frontend/base_home.html"%}
+  
+  {%block content%}
+    <!-- BEGIN PAGE CONTAINER-->
+			<div class="container-fluid">
+				<!-- BEGIN PAGE HEADER-->
+				<div class="row-fluid">
+					<div class="span12">
+						<!-- BEGIN PAGE TITLE & BREADCRUMB-->			
+						<h3 class="page-title">
+							Retiro de fondos <small>Retire pesos y bitcoins</small>
+						</h3>
+						<ul class="breadcrumb">
+							<li>
+								<i class="icon-home"></i>
+								<a href="trade.html">Inicio</a> 
+								<i class="icon-angle-right"></i>
+							</li>
+							<li><a href="#">Retiro</a></li>
+						</ul>
+						<!-- END PAGE TITLE & BREADCRUMB-->
+					</div>
+				</div>
+				<!-- END PAGE HEADER-->
+				<!-- BEGIN PAGE CONTENT-->
+				<div class="row-fluid profile">
+					<div class="span12">
+						<!--BEGIN TABS-->
+						<div class="tabbable tabbable-custom">
+							<ul class="nav nav-tabs">
+                <li class="{{'active' if tab == 'withdraw_bitcoins' else ''}}">
+                  <a href="{{ url_for('withdraw-bitcoins') }}">Retirar bitcoins</a>
+                </li>
+                <li class="{{'active' if tab == 'withdraw_currency' else ''}}">
+                  <a href="{{ url_for('withdraw-currency', currency='ARS') }}">Retirar pesos</a>
+                </li>
+							</ul>
+							<div class="tab-content">
+								
+                {% if flash %}
+                <div class="alert alert-{{ 'alert' if flash.type=='error' else 'success' }}">
+                  <button class="close" data-dismiss="{{ 'alert' if flash.type=='error' else 'success' }}" onclick="$(this).parent().remove();"></button>
+                  {{flash.message}}
+                </div>
+                {% endif %}
+                
+								<div class="tab-pane row-fluid {{'active' if tab == 'withdraw_bitcoins' else ''}}" id="tab_1_3">
+                  {% if tab == 'withdraw_bitcoins' %}
+                    {%include "frontend/withdraw_bitcoins_form.html"%}
+                  {%endif%}
+                </div>
+								
+								<!--end tab-pane-->
+								
+								<div class="tab-pane row-fluid {{'active' if tab == 'withdraw_currency' else ''}}" id="tab_1_4">
+                  {% if tab == 'withdraw_currency' %}
+                    {%include "frontend/withdraw_currency_form.html"%}
+                  {%endif%}
+								</div>
+								
+								<!--end tab-pane-->
+								
+							</div>
+						</div>
+						<!--END TABS-->
+					</div>
+				</div>
+				<!-- END PAGE CONTENT-->
+			</div>
+  {%endblock%}
+  
+  
+  {%block javascript_run%}
+  <script>
+		
+    // BTC & Bank operation urls
+		var table_ajax_btc_acc_opers_source = '{{ url_for('withdraw-account_operations', currency='BTC', type='MO', state='any')}}';
+    var table_ajax_bank_acc_opers_source = '{{ url_for('withdraw-account_operations', currency='ARS', type='MO', state='any')}}';
+    
+    
+    jQuery(document).ready(function() {			
+			// initiate layout and plugins
+      App.setPage("withdraw");
+      App.init();
+    });
+	</script>
+  {%endblock%}
+  
+  
+  

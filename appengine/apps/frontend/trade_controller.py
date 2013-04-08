@@ -12,6 +12,18 @@ from trade_forms import BidForm, AskForm
 
 class TradeController(FrontendHandler):
   
+  def apply_operation(self, **kwargs):
+    trader = Trader()
+    tmp = trader.apply_operation(kwargs['key'])
+
+    self.response.write(tmp)
+
+  def match_orders(self, **kwargs):
+    trader = Trader()
+    tmp = trader.match_orders()
+
+    self.response.write(tmp)
+
   @need_auth()
   def new(self, **kwargs):
     kwargs['html']     = 'trade'

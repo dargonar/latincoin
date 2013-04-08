@@ -159,6 +159,28 @@ class Account(db.Model):
     user.confirmation_sent_at  = datetime.now()
     return user
 
+class BankAccount(db.Model):
+  account               = db.ReferenceProperty(Account, collection_name='bank_accounts')
+  cbu                   = db.StringProperty()
+  description           = db.StringProperty(required=True)
+  account_holder        = db.StringProperty()
+  state                 = db.StringProperty()
+  created_at            = db.DateTimeProperty(auto_now_add=True)
+  updated_at            = db.DateTimeProperty(auto_now=True)
+  active                = db.BooleanProperty(default=True)
+  def __repr__(self):
+    return u'%s [%s]%s' % (self.description, self.cbu, ('' if self.active else ' - DESACTIVADA'))
+    
+class UserBitcoinAddress(db.Model):
+  address         = db.StringProperty(required=True)
+  description     = db.StringProperty(required=True)
+  account         = db.ReferenceProperty(Account, required=True)
+  created_at      = db.DateTimeProperty(auto_now_add=True)
+  updated_at      = db.DateTimeProperty(auto_now=True)
+  active          = db.BooleanProperty(default=True)
+  def __repr__(self):
+    return u'%s [%s]%s' % (self.description, self.address, ('' if self.active else ' - DESACTIVADA'))
+    
 class AccountValidationFile(db.Model):
   VALIDATION_IDENTITY     = u'identidad'
   VALIDATION_ADDRESS      = u'domicilio'
@@ -221,7 +243,7 @@ class AccountOperation(db.Model):
   payee                 = db.ReferenceProperty(Account, collection_name='payees')
   comment               = db.StringProperty()
   state                 = db.StringProperty(choices=[STATE_PENDING,STATE_ACCEPTED,STATE_CANCELED,STATE_DONE], required=True)
-  bank_account_id       = db.StringProperty()
+  bank_account          = db.ReferenceProperty(BankAccount)
   created_at            = db.DateTimeProperty(auto_now_add=True)
   updated_at            = db.DateTimeProperty(auto_now=True)
 
@@ -302,22 +324,6 @@ class ForwardTx(db.Model):
   forwarded             = db.StringProperty(default='N')
   created_at            = db.DateTimeProperty(auto_now_add=True)
   updated_at            = db.DateTimeProperty(auto_now=True)
-
-class BankAccount(db.Model):
-  account               = db.ReferenceProperty(Account, collection_name='bank_accounts')
-  cbu                   = db.StringProperty()
-  description           = db.StringProperty(required=True)
-  account_holder        = db.StringProperty()
-  state                 = db.StringProperty()
-  created_at            = db.DateTimeProperty(auto_now_add=True)
-  updated_at            = db.DateTimeProperty(auto_now=True)
-  
-class UserBitcoinAddress(db.Model):
-  address         = db.StringProperty(required=True)
-  description     = db.StringProperty(required=True)
-  account         = db.ReferenceProperty(Account, required=True)
-  created_at      = db.DateTimeProperty(auto_now_add=True)
-  updated_at      = db.DateTimeProperty(auto_now=True)
 
 class Ticker(db.Model):
   IN_PROGRESS           = 'InProgress'

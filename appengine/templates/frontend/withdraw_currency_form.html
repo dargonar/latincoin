@@ -1,0 +1,123 @@
+  {%- macro form_input(field, label='', symbol='', disabled=False, hide=False, extra=False) -%}
+    <div class="control-group {{'error' if field.errors else ''}}" {{'style="display:none"' if hide else '' }} >
+      {{'<span class="help-inline">'+field.errors.0+'</span>' if field.errors else ''}}
+      <label class="control-label">{{label}}</label>
+      <div class="controls">
+        {% if symbol!='' %}
+          <div class="input-prepend span6">
+            <span class="add-on">{{symbol}}</span>
+              {{ form_input_field(field, disabled=disabled, class='span11') }}
+          </div>
+        {% else %}
+          {{ form_input_field(field, disabled=disabled, class='span6') }}
+          {% if extra %}
+            {{add_bank_account_html}}
+          {% endif %}
+        {% endif %}
+      </div>
+    </div>
+  {%- endmacro -%}
+
+  {%- macro form_input_field(field, disabled=False, class='span11') -%}
+    {% if disabled %}
+      {{field(class='m-wrap '+class, readonly='readonly')}}
+    {% else %}
+      {{field(class='m-wrap '+class)}}
+    {% endif %}
+  {%- endmacro -%}
+
+
+  
+<div class="span8">
+  <div>
+    <!-- BEGIN GENERAL PORTLET-->
+    <div class="portlet">
+      <div class="portlet-title">
+        <h4><i class="icon-minus-sign"></i></h4>
+      </div>
+      <div class="portlet-body form">
+        <!-- BEGIN FORM-->
+        <form action="{{ url_for('withdraw-currency', currency='ARS')}}" method="POST" class="form-horizontal">
+          <div class="row-fluid">
+            <div class="span12">
+              
+              {% set _url = url_for('profile-bank_account') %}
+              {% set add_bank_account_html = '&nbsp;&nbsp;<a href="'+_url+'" class="btn"><i class="icon-plus"></i> Nueva cuenta</a>'%}
+              
+              {{form_input(form.currency_cbu, hide=False, symbol='', label='Cuenta Bancaria', extra=True)}}
+              {{form_input(form.currency_amount, hide=False, symbol='$', label='Cantidad de pesos', extra=False)}} 
+              
+              <!--div class="control-group">
+                <label class="control-label">Cuenta bancaria</label>
+                <div class="controls">
+                  <div>
+                    <select class="span10 m-wrap" data-placeholder="Seleccionar cuenta" tabindex="1">
+                      <option value="Santanderio Rio">Santanderio Rio</option>
+                      <option value="Santanderio Rio 2">Santanderio Rio 2</option>
+                      <option value="Bco Frances">Bco Frances</option>
+                    </select>
+                    &nbsp;&nbsp;
+                    <div class="input-append"><span class="add-on"><i class="icon-plus"></i> Nueva</span></div>
+                  </div>  
+                </div>
+              </div>
+           
+              <div class="control-group">
+                <label class="control-label">Cantidad de pesos</label>
+                <div class="controls">
+                   <div class="input-prepend">
+                      <span class="add-on">$</span><input class="m-wrap " type="text" />
+                   </div>
+                </div>
+              </div-->
+              
+              <!--div class="control-group">
+                <label class="control-label">PIN de seguridad</label>
+                <div class="controls">
+                   <div class="input-prepend">
+                      <span class="add-on">PIN</span><input class="m-wrap " type="text" />
+                   </div>
+                </div>
+              </div -->
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn blue">Retirar fondos</button>
+          </div>
+        </form>
+
+  
+      </div>
+    </div>
+  </div>
+</div>
+                  
+  <div class="span4">
+    <div>
+      <div class="portlet">
+        <!-- div class="portlet-title">
+          <h4><i class=" icon-question-sign"></i></h4>
+        </div -->
+        <div class="portlet-body">
+          <div class="well">
+            <h4>Instrucciones</h4>
+            <p>As solicitaçãos de retirada serão conferidas todos os dias úteis as 12hs. Após este horário o valor será depositado em até <strong>36 horas úteis</strong>. Dependendo do valor o depósito poderá ser realizado em espécie, cheque ou transferência bancária.</p>
+            <p>Como alternativa você poderá também utilizar contas já cadastradas em sua página de configurações na opção <i>Contas bancárias</i>.</p>
+            <p>Os depósitos serão realizados em todos os bancos nacionais.</p>
+            <p>Será cobrado uma taxa de 1,65%.</p>
+            <p><strong>O valor mínimo de retirada é de R$ 25,00</strong></p>
+            <p>Qualquer dúvida entre em contato com o <a href="/suporte/">suporte</a>.</p>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- END WELLS PORTLET-->
+  </div>
+  
+  <div class="span12" style="margin-left:0;">
+  {% set operations_table_name = 'Retiros de Pesos'%}
+  {% set table_id = 'acc_opers_bank_table'%}
+  {%include "frontend/withdraw_account_operations_table.html"%}
+</div>
