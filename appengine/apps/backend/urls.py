@@ -12,7 +12,7 @@ def get_rules():
         Route('/forward_txs',        name='forward-txs',         handler='.TasksController:forward_txs'),
         Route('/update_btc_balance', name='update-btc-balance',  handler='.TasksController:update_btc_balance'),
         Route('/match_orders',       name='match-orders',        handler='.TasksController:match_orders'),
-        Route('/apply_operations',   name='apply-operations',    handler='.TradeController:apply_operations'),
+        Route('/apply_operations',   name='apply-operations',    handler='.TasksController:apply_operations'),
 
       ]) ]) ]),
       

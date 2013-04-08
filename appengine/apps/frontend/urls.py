@@ -19,6 +19,7 @@ def get_rules():
         Route('/btc/qrcode',                 name='qrcode-img',   handler='.DepositController:qrcode'),
         Route('/currency',                   name='currency',     handler='.DepositController:currency'),
         Route('/list/<type:(btc|currency)>', name='list',         handler='.DepositController:list'),
+      ]) ]) ]),
       
       PathPrefixRoute('/withdraw', [ NamePrefixRoute('withdraw-', [ HandlerPrefixRoute('apps.frontend.withdraw_controller', [
         Route('/bitcoins',                                      name='bitcoins',                  handler='.WithdrawController:new_btc'),

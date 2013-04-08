@@ -10,7 +10,7 @@ from google.appengine.ext import db
 from webapp2 import RequestHandler, uri_for as url_for
 
 from config import config
-from models import Block, BitcoinAddress, ForwardTx, SystemConfig
+from models import Block, BitcoinAddress, ForwardTx, SystemConfig, Operation
 
 from utils import create_blobstore_file, read_blobstore_file, remove_blobstore_file
 from google.appengine.api import taskqueue
@@ -38,9 +38,8 @@ class TasksController(RequestHandler):
   def apply_operations(self, **kwargs):
     
     trader = Trader()
-    tmp = trader.apply_operation(kwargs['key'])
-
-    self.response.write(tmp)
+    for op in Operation.all().filter('status =', Operation.OPERATION_PENDING):
+      tmp = trader.apply_operation(op.key())
 
   def update_btc_balance(self, **kwargs):
   

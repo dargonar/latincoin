@@ -2,3 +2,5 @@
 0-59/1 * * * * curl -s http://localhost:8080/tasks/process_block
 0-59/1 * * * * curl -s http://localhost:8080/tasks/forward_txs
 0-59/1 * * * * curl -s http://localhost:8080/tasks/update_btc_balance
+0-59/1 * * * * curl -s http://localhost:8080/tasks/match_orders
+0-59/1 * * * * curl -s http://localhost:8080/tasks/apply_operations
