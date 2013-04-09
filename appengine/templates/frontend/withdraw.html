@@ -29,17 +29,17 @@
 						<div class="tabbable tabbable-custom">
 							<ul class="nav nav-tabs">
                 <li class="{{'active' if tab == 'withdraw_bitcoins' else ''}}">
-                  <a href="{{ url_for('withdraw-bitcoins') }}">Retirar bitcoins</a>
+                  <a href="{{ url_for('withdraw-btc') }}">Retirar bitcoins</a>
                 </li>
                 <li class="{{'active' if tab == 'withdraw_currency' else ''}}">
-                  <a href="{{ url_for('withdraw-currency', currency='ARS') }}">Retirar pesos</a>
+                  <a href="{{ url_for('withdraw-currency') }}">Retirar pesos</a>
                 </li>
 							</ul>
 							<div class="tab-content">
 								
                 {% if flash %}
-                <div class="alert alert-{{ 'alert' if flash.type=='error' else 'success' }}">
-                  <button class="close" data-dismiss="{{ 'alert' if flash.type=='error' else 'success' }}" onclick="$(this).parent().remove();"></button>
+                <div class="alert alert-{{ 'error' if flash.type=='error' else 'success' }}">
+                  <button class="close" data-dismiss="{{ 'error' if flash.type=='error' else 'success' }}" onclick="$(this).parent().remove();"></button>
                   {{flash.message}}
                 </div>
                 {% endif %}
@@ -74,10 +74,11 @@
   <script>
 		
     // BTC & Bank operation urls
-		var table_ajax_btc_acc_opers_source = '{{ url_for('withdraw-account_operations', currency='BTC', type='MO', state='any')}}';
-    var table_ajax_bank_acc_opers_source = '{{ url_for('withdraw-account_operations', currency='ARS', type='MO', state='any')}}';
+	var table_ajax_btc_acc_opers_source = '{{ url_for('withdraw-list', currency='btc')}}';
+    var table_ajax_bank_acc_opers_source = '{{ url_for('withdraw-list', currency='currency')}}';
     
-    
+	var withdrawTables = {}
+	
     jQuery(document).ready(function() {			
 			// initiate layout and plugins
       App.setPage("withdraw");

@@ -12,18 +12,6 @@ from trade_forms import BidForm, AskForm
 
 class TradeController(FrontendHandler):
   
-  def apply_operation(self, **kwargs):
-    trader = Trader()
-    tmp = trader.apply_operation(kwargs['key'])
-
-    self.response.write(tmp)
-
-  def match_orders(self, **kwargs):
-    trader = Trader()
-    tmp = trader.match_orders()
-
-    self.response.write(tmp)
-
   @need_auth()
   def new(self, **kwargs):
     kwargs['html']     = 'trade'
@@ -62,8 +50,10 @@ class TradeController(FrontendHandler):
       return self.render_response('frontend/trade.html', active_tab=bid_ask, **kwargs)
 
     self.set_ok(u'La orden fue %s con éxito. (#%d)' % ('ingresada' if form.market() else 'completada',trade[0].key().id()) )
-    if not form.market():
-      taskqueue.execute()
+    
+    #TODO: mandar a ejecutar
+    #if not form.market():
+    #taskqueue.execute()
 
     return self.redirect(self.url_for('trade-new') + ('?active_tab=%s' % bid_ask))
 
@@ -92,6 +82,12 @@ class TradeController(FrontendHandler):
       self.set_error(u'La orden (#%d) no pudo ser cancelada.' % order.key().id())
 
     bid_ask = 'bid' if order.is_bid() else 'ask'
+
+    # HACKU: separar esto en dos forms para hacer todo mas sencillo
+    if 'history' in self.request.referer:
+      return self.redirect(self.request.referer)
+
+
     return self.redirect(self.url_for('trade-new') + ('?active_tab=%s' % bid_ask))
 
   @need_auth()
@@ -119,7 +115,7 @@ class TradeController(FrontendHandler):
 
       row = []
       row.append('#%d' % order.key().id())
-      row.append(order.created_at.strftime("%Y-%m-%d %H:%M"))
+      row.append(order.created_at.strftime("%Y-%m-%d %H:%M:%S"))
       row.append('%s%s' % ( 'Compra' if order.bid_ask == TradeOrder.BID_ORDER else 'Venta', '' if order.order_type == TradeOrder.LIMIT_ORDER else ' (inmediata)' ))
 
       if order.order_type == TradeOrder.LIMIT_ORDER:

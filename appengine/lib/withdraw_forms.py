@@ -1,66 +1,71 @@
 # -*- coding: utf-8 -*-
 import logging
 from decimal import Decimal
+from google.appengine.ext import db
 
 from wtforms import Form, BooleanField, TextField, SelectField
 from wtforms import validators, ValidationError
 
 from utils import is_valid_cbu, is_valid_bitcoin_address
+from models import SystemConfig, BankAccount
 
-class WithdrawForm(Form):
-  def is_decimal(self, val):
+from webapp2 import cached_property
 
-    try:
-      dummy = Decimal(val)
-      return True
-    except:
-      return False
+def is_decimal(val):
+  try:
+    dummy = Decimal(val)
+    return True
+  except:
+    return False
+
+class WithdrawBTCForm(Form):
+
+  amount       = TextField()
+  btc_address  = TextField()
+  
+  def validate_amount(self, field):
+    
+    if not is_decimal(field.data):
+      raise ValidationError(u'La cantidad ingresada es inválida')
+
+    sconf = SystemConfig.get_by_key_name('system-config')
+
+    amount = Decimal(field.data)
+    if amount < sconf.min_btc_withdraw:
+      raise ValidationError(u'La cantidad minima para retiro BTC es %.8f' % sconf.min_btc_withdraw)
+
+  def validate_btc_address(self, field):
+    if not is_valid_bitcoin_address(field.data):
+      raise ValidationError(u'La dirección es inválida')
+
+
+class WithdrawCurrencyForm(Form):
+
+  def __init__(self, formdata=None, obj=None, **kwargs):
+    super(WithdrawCurrencyForm, self).__init__(formdata=formdata, obj=obj, **kwargs)
+    
+    ba_list = self.get_ba_list(kwargs.get('user'))
+    if not len(ba_list):
+      ba_list = [('', '')]
+    
+    self.bank_account.choices = ba_list
+
+  amount        = TextField()
+  bank_account  = SelectField(u'',[validators.Required(message=u'Debe seleccionar una cuenta de banco.')])
+
+  def get_ba_list(self, user):
+    query = BankAccount.all().filter('active =', True)
+    query = query.filter('account =', db.Key(user))
+    query = query.order('created_at')
+    return [(str(ba.key()), ba.description + ' ('+ba.cbu+')') for ba in query]
 
   def validate_amount(self, field):
 
-    if not self.is_decimal(field.data):
+    if not is_decimal(field.data):
       raise ValidationError(u'La cantidad ingresada es inválida')
 
-  def validate_address(self, field):
-    if not is_valid_bitcoin_address(field.data):
-      raise ValidationError(u'La dirección es inválida')
-  
-  def validate_cbu(self, field):
-    if not is_valid_cbu(field.data):
-      raise ValidationError(u'El CBU es inválido')
+    sconf = SystemConfig.get_by_key_name('system-config')
 
-class WithdrawBTCForm(WithdrawForm):
-  btc_address   = TextField()
-  btc_amount    = TextField()
-  #btc_pin       = TextField() 
-  
-  def validate_btc_amount(self, field):
-    return self.validate_amount(field)
-
-  def validate_btc_address(self, field):
-    return self.validate_address(field)
-
-  def amount(self):
-    return Decimal(self.btc_amount.data)
-
-  def address(self):
-    return self.btc_address.data
-
-  
-class WithdrawCurrencyForm(WithdrawForm):
-
-  currency_amount  = TextField()
-  currency_cbu     = SelectField(choices=[('','')])
-  #currency_pin     = TextField() 
-  
-  def validate_currency_amount(self, field):
-    return self.validate_amount(field)
-
-  def validate_currency_cbu(self, field):
-    return self.validate_cbu(field)
-
-  def amount(self):
-    return Decimal(self.currency_amount.data)
-
-  def cbu(self):
-    return self.currency_cbu.data
+    amount = Decimal(field.data)
+    if amount < sconf.min_curr_withdraw:
+      raise ValidationError(u'La cantidad minima para retiro es %.2f' % sconf.min_curr_withdraw)

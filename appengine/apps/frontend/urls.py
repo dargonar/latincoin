@@ -15,17 +15,17 @@ def get_rules():
       Route('/', name='contact',      handler='apps.frontend.main_controller.MainController:contact'), # mover donde corresponda
       
       PathPrefixRoute('/deposit', [ NamePrefixRoute('deposit-', [ HandlerPrefixRoute('apps.frontend.deposit_controller', [
-        Route('/btc',                        name='btc',          handler='.DepositController:btc'),
-        Route('/btc/qrcode',                 name='qrcode-img',   handler='.DepositController:qrcode'),
-        Route('/currency',                   name='currency',     handler='.DepositController:currency'),
-        Route('/list/<type:(btc|currency)>', name='list',         handler='.DepositController:list'),
+        Route('/btc',                            name='btc',          handler='.DepositController:btc'),
+        Route('/btc/qrcode',                     name='qrcode-img',   handler='.DepositController:qrcode'),
+        Route('/currency',                       name='currency',     handler='.DepositController:currency'),
+        Route('/list/<currency:(btc|currency)>', name='list',         handler='.DepositController:list'),
       ]) ]) ]),
-      
+
       PathPrefixRoute('/withdraw', [ NamePrefixRoute('withdraw-', [ HandlerPrefixRoute('apps.frontend.withdraw_controller', [
-        Route('/bitcoins',                                      name='bitcoins',                  handler='.WithdrawController:new_btc'),
-        Route('/currency/<currency>',                           name='currency',                  handler='.WithdrawController:new_currency'),
-        Route('/cancel_account_operation/<key>/<referer>',      name='cancel_account_operation',  handler='.WithdrawController:cancel_account_operation'),
-        Route('/account_operations/<state>/<type>/<currency>',   name='account_operations',  handler='.WithdrawController:account_operations'),
+        Route('/btc',                            name='btc',         handler='.WithdrawController:btc'),
+        Route('/currency',                       name='currency',    handler='.WithdrawController:currency'),
+        Route('/cancel/<key>',                   name='cancel',      handler='.WithdrawController:cancel'),
+        Route('/list/<currency:(btc|currency)>', name='list',        handler='.WithdrawController:list'),
       ]) ]) ]),
 
       PathPrefixRoute('/account', [ NamePrefixRoute('account-', [ HandlerPrefixRoute('apps.frontend.account_controller', [

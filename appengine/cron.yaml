@@ -1,5 +1,24 @@
 cron:
-- description: interroga el bitcoind en EC2
+- description: import blockchain
   url: /tasks/import_block
-  #schedule: every 5000 hours
+  schedule: every 1 minutes
+
+- description: busca depositos de bitcoins de usuarios
+  url: /tasks/process_block
+  schedule: every 1 minutes
+
+- description: manda los depositos de usuarios a la billetera offline
+  url: /tasks/forward_txs
+  schedule: every 1 minutes
+
+- description: actualiza los balances en bitcoins de usuarios
+  url: /tasks/update_btc_balance
+  schedule: every 1 minutes
+
+- description: opera la mejor bid y la mejor ask si se tocan
+  url: /tasks/match_orders
+  schedule: every 1 minutes
+
+- description: aplica operaciones que no pudieron ser aplicadas
+  url: /tasks/apply_operations
   schedule: every 1 minutes

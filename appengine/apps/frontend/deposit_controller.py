@@ -26,7 +26,7 @@ class DepositController(FrontendHandler):
     for aop in query:
       row = []
       row.append('%d' % aop.key().id() )
-      row.append(aop.created_at.strftime("%Y-%m-%d %H:%M"))
+      row.append(aop.created_at.strftime("%Y-%m-%d %H:%M:%S"))
       row.append('%.8f' % aop.amount )
       deposits['aaData'].append(row)
 

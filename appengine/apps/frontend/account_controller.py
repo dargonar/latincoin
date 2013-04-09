@@ -269,9 +269,9 @@ class AccountController(FrontendHandler):
           import_delay      = '0',
           import_enable     = 'Y',
           forward_enable    = 'Y',
-          min_btc_withdraw  = Decimal('0'),
+          min_btc_withdraw  = Decimal('0.01'),
           min_curr_deposit  = Decimal('0'),
-          min_curr_withdraw = Decimal('0'),
+          min_curr_withdraw = Decimal('50'),
     )
 
     s.put()

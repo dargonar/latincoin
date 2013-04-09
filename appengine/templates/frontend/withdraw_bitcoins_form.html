@@ -33,12 +33,12 @@
       <div class="portlet-body form">
  
         <!-- BEGIN FORM-->
-        <form action="{{ url_for('withdraw-bitcoins')}}" method="POST" class="form-horizontal">
+        <form action="{{ url_for('withdraw-btc')}}" method="POST" class="form-horizontal">
           <div class="row-fluid">
             <div class="span8">
               
               {{form_input(form.btc_address, hide=False, symbol='', label='Dirección bitcoin', data_source=data_source)}}
-              {{form_input(form.btc_amount, hide=False, symbol='BTC', label='Cantidad de bitcoins ' )}}
+              {{form_input(form.amount, hide=False, symbol='BTC', label='Cantidad de bitcoins ' )}}
              
              <!-- div class="control-group">
                 <label class="control-label">PIN de seguridad</label>

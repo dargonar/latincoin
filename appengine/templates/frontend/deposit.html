@@ -60,7 +60,7 @@
   {%block javascript_run%}
   <script>
 		
-	    var table_ajax_source = {'btc_in': '{{url_for('deposit-list', type='btc')}}'};
+	    var table_ajax_source = {'btc_in': '{{url_for('deposit-list', currency='btc')}}'};
 
 		jQuery(document).ready(function() {			
 			// initiate layout and plugins

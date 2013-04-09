@@ -232,6 +232,36 @@ class AccountOperation(db.Model):
   STATE_CANCELED = 'C'
   STATE_DONE     = 'D'
   
+  def is_money_out(self):
+    return self.operation_type == self.MONEY_OUT
+
+  def is_money_in(self):
+    return self.operation_type == self.MONEY_IN
+
+  def is_done(self):
+    return self.state == self.STATE_DONE
+
+  def is_accepted(self):
+    return self.state == self.STATE_ACCEPTED
+
+  def is_pending(self):
+    return self.state == self.STATE_PENDING
+
+  def is_canceled(self):
+    return self.state == self.STATE_CANCELED
+
+  def is_btc(self):
+    return self.currency == 'BTC'
+
+  def set_cancel(self):
+    self.state = self.STATE_CANCELED
+
+  def set_accepted(self):
+    self.state = self.STATE_ACCEPTED
+
+  def set_done(self):
+    self.state = self.STATE_DONE
+
   def __repr__(self):
     return 'ao: %s %s %s %.5f' % (self.operation_type, self.account.key(), self.currency, self.amount)
 
@@ -291,9 +321,8 @@ class Operation(db.Model):
   OPERATION_PENDING = 'P'
   OPERATION_DONE    = 'D'
   
-  OPERATION_BUY     = 'BUY'
-  OPERATION_SELL    = 'SELL'
-  OPERATION_UNKNOWN = 'NA'
+  OPERATION_BUY     = 'B'
+  OPERATION_SELL    = 'S'
   
   purchase_order        = db.ReferenceProperty(TradeOrder, collection_name='purchases')
   sale_order            = db.ReferenceProperty(TradeOrder, collection_name='sales')
@@ -306,7 +335,7 @@ class Operation(db.Model):
   status                = db.StringProperty(required=True, choices=[OPERATION_PENDING, OPERATION_DONE])
   created_at            = db.DateTimeProperty(auto_now_add=True)
   updated_at            = db.DateTimeProperty(auto_now=True)
-  type                  = db.StringProperty(required=True, choices=[OPERATION_BUY, OPERATION_SELL, OPERATION_UNKNOWN])
+  type                  = db.StringProperty(required=True, choices=[OPERATION_BUY, OPERATION_SELL])
 
 class BitcoinAddress(db.Model):
   user                  = db.ReferenceProperty(Account, collection_name='bitcoin_addresses', required=True)
