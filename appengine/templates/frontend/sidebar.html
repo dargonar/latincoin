@@ -24,25 +24,26 @@
             <span class="{{ 'selected' if html=='trade' else '' }}"></span>
 					</a>
 				</li>
+				<li class="has-sub {{ 'active' if html=='history' else '' }} ">
+					<a href="{{ url_for('trade-history') }}">
+					<i class="icon-table"></i> 
+					<span class="title">Mis Ordenes</span>
+					<span class="{{ 'selected' if html=='history' else '' }}"></span>
+					</a>
+				</li>
+
 				<li class="has-sub {{ 'active' if html=='deposito' else '' }} ">
-					<a href="{{ url_for('deposito') }}">
+					<a href="{{ url_for('deposit-btc') }}">
             <i class="icon-signin"></i> 
             <span class="title">Depósito</span>
             <span class="{{ 'selected' if html=='deposito' else '' }}"></span>
 					</a>
 				</li>
         <li class="has-sub {{ 'active' if html=='withdraw' else '' }} ">
-					<a href="{{ url_for('withdraw-bitcoins') }}">
+					<a href="{{ url_for('withdraw-btc') }}">
             <i class="icon-signout"></i> 
             <span class="title">Retiro</span>
             <span class="{{ 'selected' if html=='withdraw' else '' }}"></span>
-					</a>
-				</li>
-				<li class="has-sub {{ 'active' if html=='history' else '' }} ">
-					<a href="{{ url_for('trade-history') }}">
-					<i class="icon-table"></i> 
-					<span class="title">Historial</span>
-					<span class="{{ 'selected' if html=='history' else '' }}"></span>
 					</a>
 				</li>
         <li class="has-sub {{ 'active' if html=='profile' else '' }} ">

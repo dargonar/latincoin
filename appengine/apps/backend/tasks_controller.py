@@ -10,7 +10,7 @@ from google.appengine.ext import db
 from webapp2 import RequestHandler, uri_for as url_for
 
 from config import config
-from models import Block, BitcoinAddress, ForwardTx, SystemConfig
+from models import Block, BitcoinAddress, ForwardTx, SystemConfig, Operation
 
 from utils import create_blobstore_file, read_blobstore_file, remove_blobstore_file
 from google.appengine.api import taskqueue
@@ -21,21 +21,53 @@ from electrum.bitcoin import address_from_private_key
 from bitcoinrpc import connection
 from bitcoinrpc.authproxy import JSONRPCException
 
+from account_functions import get_account_balance
+from trader import Trader
+
 class TasksController(RequestHandler):
+
+  def match_orders(self, **kwargs):
+    
+    sconfig = SystemConfig.get_by_key_name('system-config')
+    if not sconfig.can_trade():
+      return
+
+    trader = Trader()
+    tmp = trader.match_orders()
+
+  def apply_operations(self, **kwargs):
+    
+    trader = Trader()
+    for op in Operation.all().filter('status =', Operation.OPERATION_PENDING):
+      tmp = trader.apply_operation(op.key())
+
+  def update_btc_balance(self, **kwargs):
+  
+    sconfig = SystemConfig.get_by_key_name('system-config')
+    
+    access = connection.get_proxy( sconfig.remote_rpc )
+    current_block = access.getblockcount()
+
+    trader = Trader()
+    for ftx in ForwardTx.all().filter('forwarded =', 'Y'):
+
+      # Esta confirmada la transaccion original?
+      if current_block > ftx.in_block + int(sconfig.confirmations):
+        trader.add_btc_balance(str(ftx.key()))
 
   def forward_txs(self, **kwargs):
   
-    access = connection.get_proxy( SystemConfig.get_by_key_name('system-config').remote_rpc )
+    sconf = SystemConfig.get_by_key_name('system-config')
+    if not sconf.can_forward():
+      logging.warning('forward_txs disabled')
+      return
 
-    for ftx in ForwardTx.all().filter('forwarded !=', 'Y'):
+    access = connection.get_proxy( sconf.remote_rpc )
+
+    for ftx in ForwardTx.all().filter('forwarded =', 'N'):
       src_add  = ftx.address.address
       src_priv = decrypt_private(ftx.address.private_key, ftx.user.password)
       
-      # Por si justo el usuario cambio el password cuando estaba por forwardearse un tx
-      if src_add != address_from_private_key(src_priv):
-        logging.error('forward_tx error: address_from_private_key %s' % ftx.key())
-        continue
-
       dst_add  = config['my']['cold_wallet']
       tx_hash  = ftx.tx
       index    = int(ftx.index)
@@ -46,8 +78,9 @@ class TasksController(RequestHandler):
         logging.error('forward_tx error: generate_forward_transaction %s' % tx)
         continue
 
+      rawtx = tx.as_dict()['hex']
       try:
-        access.pushtx(tx.as_dict()['hex'])
+        access.pushtx(rawtx)
       except JSONRPCException as err:
         logging.error('forward_tx error: JSONRPCException %s' % err.error)
         return
@@ -56,7 +89,8 @@ class TasksController(RequestHandler):
         return
 
       try:
-        ftx.tx_fw = tx.hash()
+        ftx.tx_fw  = tx.hash()
+        ftx.tx_raw = rawtx
         ftx.forwarded  = 'Y'
         ftx.put()
       except TransactionFailedError as wf:
@@ -66,7 +100,7 @@ class TasksController(RequestHandler):
 
 
   def process_block(self, **kwargs):
-    
+
     block = Block.all().filter('processed =', 'N').order('number').get()
     
     if not block:
@@ -150,13 +184,18 @@ class TasksController(RequestHandler):
 
   def import_block(self, **kwargs):
 
-    access = connection.get_proxy( SystemConfig.get_by_key_name('system-config').remote_rpc )
+    sconf = SystemConfig.get_by_key_name('system-config')
+    if not sconf.can_import():
+      logging.warning('import_block disable')
+      return
+
+    access = connection.get_proxy( sconf.remote_rpc )
 
     block_num = Block.all().order('-number').get().number+1
 
     # Nos fijamos si el bloque que tengo que importar ya esta en el chain    
     try:
-      last_block = access.getblockcount()
+      last_block = access.getblockcount() - int(sconf.import_delay)
       if last_block < block_num:
         return
 

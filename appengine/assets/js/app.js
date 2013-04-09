@@ -2,6 +2,10 @@ var oTableBTC;
 var oTableBankAcc;
 $.fn.dataTableExt.oApi.fnReloadAjax = function ( oSettings, sNewSource, fnCallback, bStandingRedraw )
 {
+    // console.debug(oSettings);
+    // console.debug(sNewSource);
+    // console.debug(fnCallback);
+
     if ( sNewSource !== undefined && sNewSource !== null ) {
         oSettings.sAjaxSource = sNewSource;
     }
@@ -18,7 +22,7 @@ $.fn.dataTableExt.oApi.fnReloadAjax = function ( oSettings, sNewSource, fnCallba
     var aData = [];
  
     this.oApi._fnServerParams( oSettings, aData );
- 
+
     oSettings.fnServerData.call( oSettings.oInstance, oSettings.sAjaxSource, aData, function(json) {
         /* Clear the old information from the table */
         that.oApi._fnClearTable( oSettings );
@@ -44,12 +48,13 @@ $.fn.dataTableExt.oApi.fnReloadAjax = function ( oSettings, sNewSource, fnCallba
         }
  
         that.oApi._fnProcessingDisplay( oSettings, false );
- 
+
         /* Callback user function - for event handlers etc */
         if ( typeof fnCallback == 'function' && fnCallback !== null )
         {
             fnCallback( oSettings );
         }
+
     }, oSettings );
 };
 
@@ -665,11 +670,19 @@ var App = function () {
         });
 
         jQuery('.portlet .tools a.reload').click(function () {
+            var eid = $(this).attr('id');
+            eid = eid.substr(0, eid.length-8);
+
             var el = jQuery(this).parents(".portlet");
             App.blockUI(el);
-            window.setTimeout(function () {
-                App.unblockUI(el);
-            }, 1000);
+
+            withdrawTables[eid].fnReloadAjax();
+
+            // var el = jQuery(this).parents(".portlet");
+            // App.blockUI(el);
+            // window.setTimeout(function () {
+            //     App.unblockUI(el);
+            // }, 1000);
         });
 
         jQuery('.portlet .tools .collapse, .portlet .tools .expand').click(function () {
@@ -2074,6 +2087,38 @@ var App = function () {
         
     }
 
+    var handleDepositTables = function (mode) {
+        
+        if (!jQuery().dataTable) {
+            return;
+        }
+        
+        // begin first table
+        $('#my_'+mode+'_in_table').dataTable({
+            "bProcessing": true,
+            "sAjaxSource": table_ajax_source[mode+'_in'],
+            "sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
+            "sPaginationType": "bootstrap",
+            "oLanguage": {
+                "sEmptyTable": "No hay depositos",
+                "sInfoEmpty": " ",
+                "sLengthMenu": "_MENU_ depositos por pág.",
+                "sInfo": "Mostrando _START_ a _END_ de _TOTAL_ depositos",
+                "oPaginate": {
+                    "sPrevious": "Ant.",
+                    "sNext": "Sig."
+                }
+            },
+            "aoColumnDefs": [{
+                'bSortable': true,
+                'aTargets': [1]
+            }]
+        });
+
+        jQuery('.dataTables_filter').parent(".span6 ").remove(); // delete table search input
+    }
+
+
     var handleOrderTables = function (mode, type) {
         
         if (!jQuery().dataTable) {
@@ -2111,10 +2156,25 @@ var App = function () {
             return;
         }
         
+        function fnUpdateTotal() {
+            var el = $("#trade_operations");
+            App.unblockUI(el);
+        }
+
         // begin first table
-        $('#'+id).dataTable({
+        withdrawTables[id] = $('#'+id).dataTable({
             "bProcessing": true,
             "sAjaxSource": source,
+            "fnServerData" : function(sSource, aoData, fnCallback ){
+                $.ajax({
+                    'dataType': 'json',
+                    'type': 'GET',
+                    'url': sSource,
+                    'cache': false,
+                    'data': aoData,
+                    'success': [fnCallback,fnUpdateTotal]
+                });
+            },
             "sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
             "sPaginationType": "bootstrap",
             "oLanguage": {
@@ -2348,10 +2408,10 @@ var App = function () {
             "sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
             "sPaginationType": "bootstrap",
             "oLanguage": {
-                "sEmptyTable": "No ha ingresado CBUs",
+                "sEmptyTable": "No ha ingresado ninguna cuenta",
                 "sInfoEmpty": " ",
-                "sLengthMenu": "_MENU_ CBUs por pág.",
-                "sInfo": "Mostrando _START_ a _END_ de _TOTAL_ CBUs",
+                "sLengthMenu": "_MENU_ Cuentas por pág.",
+                "sInfo": "Mostrando _START_ a _END_ de _TOTAL_ Cuentas",
                 "oPaginate": {
                     "sPrevious": "Ant.",
                     "sNext": "Sig."
@@ -3084,6 +3144,10 @@ var App = function () {
             if (App.isPage("trade_history")) {
                 handleOrderTables('active','any'); // handles data tables
                 handleOrderTables('inactive','any'); // handles data tables
+            }
+            
+            if (App.isPage("deposit_btc")) {
+                handleDepositTables('btc');
             }
 
             // global handlers

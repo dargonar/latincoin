@@ -74,7 +74,7 @@ class need_auth(object):
       
     return validate_user
   
-def get_or_404(key):
+def get_or_404(key, code=404, msg='not found'):
   try:
       obj = db.get(key)
       if obj:
@@ -83,7 +83,7 @@ def get_or_404(key):
       # Falling through to raise the NotFound.
       pass
 
-  abort(404)
+  abort(code,title=msg)
 
 class FlashBuildMixin(object):
   def set_error(self, msg):
@@ -261,19 +261,16 @@ class FrontendHandler(MyBaseHandler):
   def session_value(self, key, default=None):
     return self.session[key] if key in self.session else default
 
-  def mine_or_404(self, key):
+  def mine_or_404(self, key, code=404, msg='not found'):
     obj = get_or_404(key)
 
-    if not hasattr('user') and not hasattr('account'):
-      abort(404)
+    if hasattr(obj,'user') and str(obj.user.key()) == self.user:
+      return obj
 
-    if hasattr(obj,'user') and str(obj.user.key()) != self.user:
-      abort(404)
+    if hasattr(obj,'account') and str(obj.account.key()) == self.user:
+      return obj
 
-    if hasattr(obj,'account') and str(obj.account.key()) != self.account:
-      abort(404)
-    
-    return obj
+    abort(500, title=msg)
   
 class SessionTicker(object):
   def __init__(self, last_ticker=None):
@@ -310,13 +307,34 @@ class SessionTicker(object):
   def volume_slope(self):
     return self.ticker_data.volume_slope if self.ticker_data is not None else 0  
   
-
 def is_valid_cbu(cbu):
-  value = cbu.strip()
-  if re.match(r"[0-9]{22}$", value) is None:
+  # Portado de java
+  # https://code.google.com/p/cbu/source/browse/trunk/src/main/java/ar/gov/bcra/CBU.java  
+  def cbu_v2(v1):
+    mod = v1 % 10
+    return 0 if mod == 0 else (10 - mod)
+
+  def cbu_v1(pos1, pos2):
+    M = [9, 7, 1, 3]  
+    total = 0; i = pos2; j = -1
+    while i >= pos1:
+      if (j == -1): j = 3
+      total += int(cbu[i]) * M[j]
+      i -= 1; j -= 1
+
+    return cbu_v2(total);
+  
+  if re.match(r"[0-9]{22}$", cbu) is None:
     return False
+
+  if int(cbu[7]) != cbu_v1(0, 6):
+    return False
+
+  if int(cbu[21]) != cbu_v1(8, 20):
+    return False
+
   return True
-    
+
 def is_valid_bitcoin_address(address):
   from electrum import bitcoin
   return bitcoin.is_valid(address)

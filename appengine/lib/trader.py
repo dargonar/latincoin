@@ -3,10 +3,43 @@ import logging
 from decimal import Decimal
 from google.appengine.ext import db
 
-from models import TradeOrder, Operation, Account, AccountOperation, Dummy
+from models import TradeOrder, Operation, Account, AccountOperation, Dummy, ForwardTx, BankAccount
 from account_functions import get_account_balance
 
+from bitcoin_helper import zero_btc
+
 class Trader:
+
+  def add_btc_balance(self, ftx_key):
+
+    # TODO: assert input
+    assert(isinstance(ftx_key, basestring) and len(ftx_key) > 0 ), u'Key de forwardtx inválida'
+    @db.transactional(xg=True)
+    def _tx():
+
+      ftx = ForwardTx.get(ftx_key)
+      if ftx.forwarded != 'Y':
+        return
+
+      ftx.forwarded = 'D'
+      
+      balance = get_account_balance(ftx.user)
+      balance['BTC'].amount += ftx.value
+
+      add_btc_op = AccountOperation( parent         = ftx.user, 
+                                     operation_type = AccountOperation.MONEY_IN, 
+                                     account        = ftx.user,
+                                     amount         = ftx.value,
+                                     currency       = 'BTC',
+                                     bt_tx_id       = ftx.tx,
+                                     state          = AccountOperation.STATE_DONE)
+
+      db.put([ftx, balance['BTC'], add_btc_op])
+
+      return True
+
+    _tx()
+
 
   def cancel_widthdraw_order(self, order_key):
     
@@ -16,11 +49,13 @@ class Trader:
     @db.transactional(xg=True)
     def _tx():
 
+      # Tiene que ser una operacion pendiente y de retiro
       ao = AccountOperation.get(db.Key(order_key))
-      if ao.status == AccountOperation.OPERATION_PENDING:
-        return [None, u'No se puede cancelar la orden']
-
-      ao.status = AccountOperation.OPERATION_CANCELED
+      if not ao.is_pending() or not ao.is_money_out():
+        return [False, u'No se puede cancelar la orden']
+    
+      # Cambiamos el estado a cancelada
+      ao.set_cancel()
 
       balance = get_account_balance(ao.account)
       balance[ao.currency].amount += (-ao.amount)
@@ -35,15 +70,14 @@ class Trader:
   # validamos el cbu
   def add_widthdraw_currency_order(self, user, amount, bank_account_key):
     assert(isinstance(bank_account_key, basestring) and len(bank_account_key) > 0 ), u'CBU inválido'
-    return self.add_widthdraw_order(user, 'ARS', amount, db.get(db.Key(bank_account_key)), None)
+    return self.add_widthdraw_order(user, 'ARS', amount, bank_account=BankAccount.get(db.Key(bank_account_key)) )
     
   # validamos que la direccion sea valida
   def add_widthdraw_btc_order(self, user, amount, address):
-    logging.info('add_widthdraw_btc_order addr[%s] amount[%s]', address, str(amount))
     assert(isinstance(address, basestring) and len(address) > 0 ), u'Direccion no valida'
-    return self.add_widthdraw_order(user, 'BTC', amount, None, address)
+    return self.add_widthdraw_order(user, 'BTC', amount, btc_address=address)
     
-  def add_widthdraw_order(self, user, currency, amount, bank_account = None, btc_address=None):
+  def add_widthdraw_order(self, user, currency, amount, bank_account=None, btc_address=None):
 
     # TODO: assert input
     assert(isinstance(user, basestring) and len(user) > 0 ), u'Key de usuario inválida'
@@ -70,10 +104,7 @@ class Trader:
                                      state          = AccountOperation.STATE_PENDING, 
                                      bank_account   = bank_account,
                                      address        = btc_address)
-      
-      # withdraw_op.bank_account  = bank_account
-      # withdraw_op.address       = btc_address
-      
+            
       balance[currency].amount -= amount
       
       db.put([balance[currency], withdraw_op])
@@ -310,18 +341,18 @@ class Trader:
                      seller            = best_ask.user,
                      buyer             = best_bid.user,
                      status            = Operation.OPERATION_PENDING,
-                     type              = Operation.OPERATION_BUY if best_bid.created_at<best_ask.created_at else Operation.OPERATION_SELL
+                     type              = Operation.OPERATION_BUY if best_bid.created_at > best_ask.created_at else Operation.OPERATION_SELL
             );
 
       # Acomodamos los valores de los TradeOrders y los marcamos como completos en caso 
       # Que den 0
 
       best_bid.amount -= amount
-      if abs(best_bid.amount) < Decimal(1e-8):
+      if zero_btc(best_bid.amount):
         best_bid.status = TradeOrder.ORDER_COMPLETED
       
       best_ask.amount -= amount
-      if abs(best_ask.amount) < Decimal(1e-8):
+      if zero_btc(best_ask.amount):
         best_ask.status = TradeOrder.ORDER_COMPLETED
 
       # Grabamos todo
@@ -399,7 +430,7 @@ class Trader:
         amount       -= op_amount
 
         # Nos comimos esta orden?
-        if abs(order.amount) < Decimal(1e-8):
+        if zero_btc(order.amount):
           order.status = TradeOrder.ORDER_COMPLETED
 
         traded_currency = op_amount*order.ppc
@@ -432,7 +463,7 @@ class Trader:
         # 1) las operaciones generadas
         # 2) las ordenes modificadas y la nueva orden creada
         # 3) el balance del usuario modificado
-        if abs(amount) < Decimal(1e-8):
+        if zero_btc(amount):
           
           to.ppc     = total_currency/amount_wanted
           to.ppc_int = int(to.ppc*Decimal('100'))

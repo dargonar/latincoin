@@ -15,6 +15,8 @@ from trader import Trader
 from account_functions import get_account_balance
 from my_test_utils import TestUtilMixin
 
+from bitcoin_helper import zero_btc
+
 class TestOrders(unittest.TestCase, TestUtilMixin):
 
   def setUp(self):
@@ -131,8 +133,8 @@ class TestOrders(unittest.TestCase, TestUtilMixin):
 
     # Comparamos las sumas de los accountoperation contra el balance global
     res = self.aux_compare_guita()
-    self.assertTrue( abs(res['in']['ARS'] - res['sumbal']['ARS']) < Decimal(1e-8))
-    self.assertTrue( abs(res['in']['BTC'] - res['sumbal']['BTC']) < Decimal(1e-8))
+    self.assertTrue( zero_btc(res['in']['ARS'] - res['sumbal']['ARS']) )
+    self.assertTrue( zero_btc(res['in']['BTC'] - res['sumbal']['BTC']) )
 
     # Por todos los usuarios, verificamos que el balance comprometido 
     # sea igual a las ordenes que tienen abiertas aun
@@ -141,8 +143,8 @@ class TestOrders(unittest.TestCase, TestUtilMixin):
       res1 = self.aux_ops_sum(u)
       res2 = get_account_balance(u)
 
-      self.assertTrue( abs(res1['ARS']-res2['ARS'].amount) < Decimal(1e-8))
-      self.assertTrue( abs(res1['BTC']-res2['BTC'].amount) < Decimal(1e-8))
+      self.assertTrue( zero_btc(res1['ARS']-res2['ARS'].amount) )
+      self.assertTrue( zero_btc(res1['BTC']-res2['BTC'].amount) )
 
       res = self.aux_sum_trade_orders(u)
       
@@ -153,8 +155,8 @@ class TestOrders(unittest.TestCase, TestUtilMixin):
       print 'sum bid ord : %.5f' % res['ARS']
       print 'amt ars comp: %.5f' % res2['ARS'].amount_comp
 
-      self.assertTrue( abs(res2['ARS'].amount_comp-res['ARS']) < Decimal(1e-8))
-      self.assertTrue( abs(res2['BTC'].amount_comp-res['BTC']) < Decimal(1e-8))
+      self.assertTrue( zero_btc(res2['ARS'].amount_comp-res['ARS']) )
+      self.assertTrue( zero_btc(res2['BTC'].amount_comp-res['BTC']) )
 
     # Todas las operaciones
     tot_op = Operation.all().count()
@@ -169,7 +171,7 @@ class TestOrders(unittest.TestCase, TestUtilMixin):
 
     # Todas las trades ordenes cerradas
     for t in TradeOrder.all().filter('status =', TradeOrder.ORDER_COMPLETED):
-      self.assertTrue(abs(t.amount) < Decimal(1e-8))
+      self.assertTrue(zero_btc(t.amount))
 
     # Todas las trades ordenes canceladas
     for t in TradeOrder.all().filter('status =', TradeOrder.ORDER_CANCELED):

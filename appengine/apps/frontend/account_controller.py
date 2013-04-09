@@ -262,14 +262,24 @@ class AccountController(FrontendHandler):
     b_btc.put()
 
     from models import SystemConfig
-    s = SystemConfig.get_or_insert('system-config', \
-          remote_rpc='blockchain', trade_enable='Y')
+    s = SystemConfig.get_or_insert('system-config',
+          remote_rpc        = 'blockchain', 
+          confirmations     = '0',
+          trade_enable      = 'Y', 
+          import_delay      = '0',
+          import_enable     = 'Y',
+          forward_enable    = 'Y',
+          min_btc_withdraw  = Decimal('0.01'),
+          min_curr_deposit  = Decimal('0'),
+          min_curr_withdraw = Decimal('50'),
+    )
 
     s.put()
 
     from bitcoinrpc.connection import get_proxy
     
-    last_block = 230099 #get_proxy(s.remote_rpc).getblockcount()
+    last_block = 230099
+    last_block = get_proxy(s.remote_rpc).getblockcount()
 
     from models import Block
     b = Block( key=db.Key.from_path('Block',last_block), processed='Y', number=last_block, hash='n/a', txs=0)

@@ -16,8 +16,24 @@ class Dummy(db.Model):
   pass
 
 class SystemConfig(db.Model):
-  remote_rpc            = db.StringProperty(choices=['ec2', 'blockchain'], default='ec2')
-  read_only             = db.StringProperty(default='N')
+  remote_rpc              = db.StringProperty(choices=['ec2', 'blockchain'], default='ec2')
+  confirmations           = db.StringProperty(default='6')
+  trade_enable            = db.StringProperty(default='N')
+  import_delay            = db.StringProperty(default='0')
+  import_enable           = db.StringProperty(default='Y')
+  forward_enable          = db.StringProperty(default='Y')
+  min_btc_withdraw        = DecimalProperty(default=decimal.Decimal('0'))
+  min_curr_deposit        = DecimalProperty(default=decimal.Decimal('0'))
+  min_curr_withdraw       = DecimalProperty(default=decimal.Decimal('0'))
+
+  def can_trade(self):
+    return self.trade_enable == 'Y'
+    
+  def can_import(self):
+    return self.import_enable == 'Y'
+
+  def can_forward(self):
+    return self.forward_enable == 'Y'
 
 class Block(db.Model):
   number                = db.IntegerProperty(required=True)
@@ -216,6 +232,36 @@ class AccountOperation(db.Model):
   STATE_CANCELED = 'C'
   STATE_DONE     = 'D'
   
+  def is_money_out(self):
+    return self.operation_type == self.MONEY_OUT
+
+  def is_money_in(self):
+    return self.operation_type == self.MONEY_IN
+
+  def is_done(self):
+    return self.state == self.STATE_DONE
+
+  def is_accepted(self):
+    return self.state == self.STATE_ACCEPTED
+
+  def is_pending(self):
+    return self.state == self.STATE_PENDING
+
+  def is_canceled(self):
+    return self.state == self.STATE_CANCELED
+
+  def is_btc(self):
+    return self.currency == 'BTC'
+
+  def set_cancel(self):
+    self.state = self.STATE_CANCELED
+
+  def set_accepted(self):
+    self.state = self.STATE_ACCEPTED
+
+  def set_done(self):
+    self.state = self.STATE_DONE
+
   def __repr__(self):
     return 'ao: %s %s %s %.5f' % (self.operation_type, self.account.key(), self.currency, self.amount)
 
@@ -275,9 +321,8 @@ class Operation(db.Model):
   OPERATION_PENDING = 'P'
   OPERATION_DONE    = 'D'
   
-  OPERATION_BUY     = 'BUY'
-  OPERATION_SELL    = 'SELL'
-  OPERATION_UNKNOWN = 'NA'
+  OPERATION_BUY     = 'B'
+  OPERATION_SELL    = 'S'
   
   purchase_order        = db.ReferenceProperty(TradeOrder, collection_name='purchases')
   sale_order            = db.ReferenceProperty(TradeOrder, collection_name='sales')
@@ -290,16 +335,18 @@ class Operation(db.Model):
   status                = db.StringProperty(required=True, choices=[OPERATION_PENDING, OPERATION_DONE])
   created_at            = db.DateTimeProperty(auto_now_add=True)
   updated_at            = db.DateTimeProperty(auto_now=True)
-  type                  = db.StringProperty(required=True, choices=[OPERATION_BUY, OPERATION_SELL, OPERATION_UNKNOWN])
+  type                  = db.StringProperty(required=True, choices=[OPERATION_BUY, OPERATION_SELL])
 
 class BitcoinAddress(db.Model):
   user                  = db.ReferenceProperty(Account, collection_name='bitcoin_addresses', required=True)
   address               = db.StringProperty(required=True)
   private_key           = db.StringProperty(required=True)
+  created_at            = db.DateTimeProperty(auto_now_add=True)
 
 class ForwardTx(db.Model):
   tx                    = db.StringProperty(required=True)
   tx_fw                 = db.StringProperty()
+  tx_raw                = db.TextProperty()
   in_block              = db.IntegerProperty()
   out_block             = db.IntegerProperty()
   user                  = db.ReferenceProperty(Account)

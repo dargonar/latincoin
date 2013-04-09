@@ -47,7 +47,7 @@ class MainController(FrontendHandler):
 
       row = []
       row.append('#%d' % order.key().id())
-      row.append(order.created_at.strftime("%Y-%m-%d %H:%M"))
+      row.append(order.created_at.strftime("%Y-%m-%d %H:%M:%S"))
       row.append('%s%s' % ( 'Compra' if order.bid_ask == TradeOrder.BID_ORDER else 'Venta', '' if order.order_type == TradeOrder.LIMIT_ORDER else ' (inmediata)' ))
 
       if order.order_type == TradeOrder.LIMIT_ORDER:

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime
+from urllib import quote_plus,unquote_plus
 
 from google.appengine.ext import db, blobstore
 from google.appengine.ext.webapp import blobstore_handlers
@@ -8,7 +9,7 @@ from google.appengine.api import images, files
 from google.appengine.api.images import get_serving_url
 
 from webapp2 import cached_property
-from webapp2_extras.security import generate_password_hash, generate_random_string, check_password_hash
+from webapp2_extras.security import generate_password_hash, generate_random_string, check_password_hash, LOWERCASE_ALPHA
 
 from models import Account, AccountValidationFile, UserBitcoinAddress, BankAccount
 
@@ -21,14 +22,65 @@ import json, re, urllib
 
 from file_upload import UploadHandler
 
+from onetimepass import *
+from gaeqrcode.PyQRNative import QRErrorCorrectLevel
+from gaeqrcode.PyQRNativeGAE import QRCode
+import base64
+
 class ProfileController(FrontendHandler, UploadHandler):
+
+  @need_auth()
+  def otp_verify(self, **kwargs):
+
+    try:
+      code   = int(self.request.POST['code'])
+      secret = self.request.POST['secret'] 
+    except:
+      self.set_error('Código inválido #1.')
+      return self.redirect_to('profile-otp')
+
+    if valid_hotp(code, secret):
+      self.set_ok('Código valido.')
+    else:
+      self.set_error('Código inválido #2.')
+    
+    return self.redirect_to('profile-otp')
 
   @need_auth()
   def otp(self, **kwargs):    
     kwargs['tab'] = 'otp';
+    
+    secret = base64.b32encode( generate_random_string(10, pool=LOWERCASE_ALPHA) )
+
+    name = self.user_name
+    if '@' in name:
+      name = name[0:name.find('@')]
+
+    name = '%s@LatinCoin' % name
+
+    kwargs['secret']  = secret
+    kwargs['name']    = name
+    
+    url = 'otpauth://totp/%s?secret=%s' % (name,secret)
+    kwargs['url'] = url
+
+    kwargs['img_url'] = quote_plus(url)
+
     kwargs['html'] = 'profile'
     return self.render_response('frontend/profile.html', **kwargs)
   
+  @need_auth()
+  def otp_image(self, **kwargs):
+    url = unquote_plus(kwargs['url'])
+
+    qr = QRCode(QRCode.get_type_for_string(url), QRErrorCorrectLevel.L)
+    qr.addData(url)
+    qr.make()
+    img = qr.make_image()
+
+    self.response.headers['Content-Type'] = 'image/png'
+    self.response.out.write(img)
+
   @need_auth()
   def personal_info(self, **kwargs):    
     account = get_or_404(self.user)

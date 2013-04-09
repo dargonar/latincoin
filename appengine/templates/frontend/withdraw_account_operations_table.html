@@ -3,9 +3,7 @@
 							<div class="portlet-title">
 								<h4><i class="icon-table"></i>{{ operations_table_name }}</h4>
 								<div class="tools">
-									<a href="javascript:;" class="{{ 'expand' if collapsed else 'colllapse' }}"></a>
-									<!-- a href="#portlet-config" data-toggle="modal" class="config"></a -->
-									<a href="javascript:;" class="reload"></a>
+									<a id="{{table_id}}-refresh" href="javascript:;" class="reload"></a>
 								</div>
 							</div>
 							<div class="portlet-body">

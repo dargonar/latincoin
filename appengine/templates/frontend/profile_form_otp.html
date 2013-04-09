@@ -1,39 +1,27 @@
   <div class="row-fluid">
     <div class="span6">
-      <form action="#">
+      <form id="otp-verify" action="{{url_for('profile-otp-verify')}}" method="POST">
+        <input type="hidden" name="secret" value="{{secret}}"/>
         <div class="control-group">
           <div class="controls">
-            <label class="control-label">{{'Nombre de autenticación'}}</label>
-            <input type="text" class="m-wrap span12" />
-          </div>
-          <div class="controls">
-            <label class="control-label">{{'Llave privada standard'}}</label>
-              <div class="alert alert-info">
-                UL4JLP76R6G4TOS4CLL54E3W4E
-              </div>
-          </div>
-          <div class="controls">
-            <label class="control-label">{{'Llave privada segura'}}</label>
+            <label class="control-label">Llave privada segura</label>
             <div class="alert alert-info">
-              UL4JLP76R6G4TOS4CLL54E3W4E
+              {{secret}}
             </div>
           </div>
           <div class="controls">
-              <label class="control-label">{{'Código'}}</label>
-              <input type="text" class="m-wrap span12"/>
+              <label class="control-label">Código</label>
+              <input type="text" class="m-wrap span12" name="code"/>
           </div>
-          
           <div class="form-actions" style="padding-left: 20px !important;">
-            <a href="#" class="btn blue"><i class="icon-ok"></i>&nbsp;{{'Guardar'}}</a>
-            <a href="#" class="btn red"><i class="icon-remove"></i>&nbsp;{{'Desactivar autenticación por OTP'}}</a>
+            <a href="#" onclick="javascript:$('#otp-verify').submit()" class="btn blue">Guardar</a>
           </div>
-          
         </div>
       </form>
     </div>
     <div class="span2">
       <div class="well">
-        <img src="/assets/img/chart.png" alt="QR Code" />
+        <img src="{{url_for('profile-otp-image', url=img_url)}}" alt="QR Code" />
       </div>
     </div>
     

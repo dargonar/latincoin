@@ -35,6 +35,11 @@ indexes:
   - name: created_at
     direction: desc
 
+- kind: BitcoinAddress
+  properties:
+  - name: user
+  - name: created_at
+
 - kind: Block
   properties:
   - name: processed

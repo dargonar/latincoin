@@ -11,17 +11,23 @@ def get_rules():
 
 
       Route('/', name='home',         handler='apps.frontend.main_controller.MainController:home'),
-      Route('/terms', name='terms',        handler='apps.frontend.main_controller.MainController:terms'), # mover donde corresponda
-      Route('/contact', name='contact',      handler='apps.frontend.main_controller.MainController:contact'), # mover donde corresponda
-      Route('/deposito', name='deposito',     handler='apps.frontend.main_controller.MainController:deposito'), # mover donde corresponda
+      Route('/', name='terms',        handler='apps.frontend.main_controller.MainController:terms'), # mover donde corresponda
+      Route('/', name='contact',      handler='apps.frontend.main_controller.MainController:contact'), # mover donde corresponda
       
-      PathPrefixRoute('/withdraw', [ NamePrefixRoute('withdraw-', [ HandlerPrefixRoute('apps.frontend.withdraw_controller', [
-        Route('/bitcoins',                                      name='bitcoins',                  handler='.WithdrawController:new_btc'),
-        Route('/currency/<currency>',                           name='currency',                  handler='.WithdrawController:new_currency'),
-        Route('/cancel_account_operation/<key>/<referer>',      name='cancel_account_operation',  handler='.WithdrawController:cancel_account_operation'),
-        Route('/account_operations/<state>/<type>/<currency>',  name='account_operations',       handler='.WithdrawController:account_operations'),
+      PathPrefixRoute('/deposit', [ NamePrefixRoute('deposit-', [ HandlerPrefixRoute('apps.frontend.deposit_controller', [
+        Route('/btc',                            name='btc',          handler='.DepositController:btc'),
+        Route('/btc/qrcode',                     name='qrcode-img',   handler='.DepositController:qrcode'),
+        Route('/currency',                       name='currency',     handler='.DepositController:currency'),
+        Route('/list/<currency:(btc|currency)>', name='list',         handler='.DepositController:list'),
       ]) ]) ]),
-      
+
+      PathPrefixRoute('/withdraw', [ NamePrefixRoute('withdraw-', [ HandlerPrefixRoute('apps.frontend.withdraw_controller', [
+        Route('/btc',                            name='btc',         handler='.WithdrawController:btc'),
+        Route('/currency',                       name='currency',    handler='.WithdrawController:currency'),
+        Route('/cancel/<key>',                   name='cancel',      handler='.WithdrawController:cancel'),
+        Route('/list/<currency:(btc|currency)>', name='list',        handler='.WithdrawController:list'),
+      ]) ]) ]),
+
       PathPrefixRoute('/account', [ NamePrefixRoute('account-', [ HandlerPrefixRoute('apps.frontend.account_controller', [
         Route('/signup',          name='signup',          handler='.AccountController:signup'),
         Route('/login',           name='login',           handler='.AccountController:login'),
@@ -36,10 +42,6 @@ def get_rules():
         Route('/orders/<mode:(active|inactive)>/<type:(bid|ask|any)>',  name='orders',  handler='.TradeController:list_orders'),
         Route('/history',         name='history',      handler='.TradeController:history'),
         Route('/cancel/<key>',    name='cancel',       handler='.TradeController:cancel_order'),
-
-        Route('/match',           name='match',        handler='.TradeController:match_orders'),
-        Route('/apply/<key>',     name='apply',        handler='.TradeController:apply_operation'),
-
       ]) ]) ]),
 
       
@@ -50,11 +52,13 @@ def get_rules():
         Route('/identity_validation_files',   name='identity_validation_files',       handler='.ProfileController:identity_validation_files'),
         Route('/change_password',             name='change_password',                 handler='.ProfileController:change_password'),
         Route('/btc_address',                 name='btc_address',                     handler='.ProfileController:btc_address'),
-        Route('/btc_address_delete/<key>/<referer>',    name='btc_address_delete',              handler='.ProfileController:btc_address_delete'),
+        Route('/btc_address_delete/<key>/<referer>',    name='btc_address_delete',    handler='.ProfileController:btc_address_delete'),
         Route('/btc_address_list',            name='btc_address_list',                handler='.ProfileController:btc_address_list'),
         Route('/bank_account',                name='bank_account',                    handler='.ProfileController:bank_account'),
         Route('/bank_account_list',           name='bank_account_list',               handler='.ProfileController:bank_account_list'),
         Route('/otp',                         name='otp',                             handler='.ProfileController:otp'),
+        Route('/otp/image/<url>',             name='otp-image',                       handler='.ProfileController:otp_image'),
+        Route('/otp/verify',                  name='otp-verify',                      handler='.ProfileController:otp_verify'),
       ]) ]) ]),
       
     ]

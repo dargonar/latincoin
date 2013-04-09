@@ -14,6 +14,7 @@ from trader import Trader
 from account_functions import get_account_balance
 
 from my_test_utils import *
+from bitcoin_helper import zero_btc
 
 class TestOperation(unittest.TestCase, TestUtilMixin):
 
@@ -71,8 +72,8 @@ class TestOperation(unittest.TestCase, TestUtilMixin):
       ars -= r['ARS'].amount
       btc -= r['BTC'].amount
 
-    self.assertTrue(abs(ars) < Decimal(1e-8))
-    self.assertTrue(abs(btc) < Decimal(1e-8))
+    self.assertTrue(zero_btc(ars))
+    self.assertTrue(zero_btc(btc))
 
   def u(self,user):
     return str(self.users[user].key())
