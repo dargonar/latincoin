@@ -19,7 +19,7 @@ def get_rules():
         Route('/bitcoins',                                      name='bitcoins',                  handler='.WithdrawController:new_btc'),
         Route('/currency/<currency>',                           name='currency',                  handler='.WithdrawController:new_currency'),
         Route('/cancel_account_operation/<key>/<referer>',      name='cancel_account_operation',  handler='.WithdrawController:cancel_account_operation'),
-        Route('/account_operations/<state>/<type>/<currency>',   name='account_operations',  handler='.WithdrawController:account_operations'),
+        Route('/account_operations/<state>/<type>/<currency>',  name='account_operations',       handler='.WithdrawController:account_operations'),
       ]) ]) ]),
       
       PathPrefixRoute('/account', [ NamePrefixRoute('account-', [ HandlerPrefixRoute('apps.frontend.account_controller', [

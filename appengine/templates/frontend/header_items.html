@@ -1,17 +1,17 @@
 				<!-- display:none si no esta  logeado -->					
 				{% if is_logged %}
-        <!--
-        <ul class="nav pull-left">
-          <li class="dropdown user" style="left:0px;">
-						<div class="dropdown-toggle" style="margin-top: 3px;height: 26px;">
-              <a href="/market" class="dropdown-toggle">
-                <i class="icon-shopping-cart"></i>
-                <span class="username">Mercado</span>
-              </a>
-            </div>
-          </li>
-        </ul>
-        -->
+          {% if home %}
+          <ul class="nav pull-left">
+            <li class="dropdown user" style="left:0px;">
+              <div class="dropdown-toggle" style="margin-top: 3px;height: 26px;">
+                <a href="{{url_for('trade-new')}}" class="dropdown-toggle">
+                  <i class="icon-money" style="color:#FFFFFF;font-weight:bold;"></i>
+                  <span class="username" style="color:#FFFFFF;font-weight:bold;">Comprar y vender bitcoins</span>
+                </a>
+              </div>
+            </li>
+          </ul>
+          {% endif %}
         {% endif %}
         
         <ul class="nav pull-right">
@@ -51,7 +51,7 @@
 							<!--li><a href="calendar.html"><i class="icon-calendar"></i> My Calendar</a></li -->
 							<!--li><a href="#"><i class="icon-tasks"></i> My Tasks</a></li-->
 							<li class="divider"></li>
-							<li><a href="{{url_for('account-logout')}}"><i class="icon-key"></i> Log Out</a></li>
+							<li><a href="{{url_for('account-logout')}}"><i class="icon-off"></i> Log Out</a></li>
 						</ul>
 					</li>
           {% else %}

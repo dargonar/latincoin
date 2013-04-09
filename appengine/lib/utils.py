@@ -282,7 +282,7 @@ class SessionTicker(object):
   # Ticker Data
   @property
   def lastprice(self):
-    return '%.5f' % self.ticker_data.lastprice if self.ticker_data is not None else Decimal('0')
+    return '%.5f' % (self.ticker_data.last_price if self.ticker_data is not None else Decimal('0'))
 
   @property
   def lastprice_slope(self):

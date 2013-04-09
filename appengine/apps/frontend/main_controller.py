@@ -16,7 +16,7 @@ class MainController(FrontendHandler):
       data = index_html_tables
       memcache.add('index_html_tables', data, 60)
     
-    return self.render_response('frontend/index.html', _tables=data)
+    return self.render_response('frontend/index.html', _tables=data, home=True)
   
   
   def get_operations(self):
