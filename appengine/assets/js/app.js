@@ -2435,7 +2435,7 @@ var App = function () {
         
         oCurrentTable['tabla_cuentas_bancarias'] = oTable;
         
-        //jQuery('#tabla_cuentas_bancarias_wrapper .row-fluid').remove(); // modify table search input
+        jQuery('#tabla_cuentas_bancarias_wrapper .row-fluid').remove(); // modify table search input
         
         var xEditing = null;
 
@@ -2501,7 +2501,7 @@ var App = function () {
             if($("a[data-mode='new']").length !=0 && this.innerHTML.indexOf("Guardar") == -1 )
                 return;
             
-            console.debug('voy a guardar!');
+            //console.debug('voy a guardar!');
 
             var nRow = $(this).parents('tr')[0];
 
