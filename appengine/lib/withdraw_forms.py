@@ -7,7 +7,7 @@ from wtforms import Form, BooleanField, TextField, SelectField
 from wtforms import validators, ValidationError
 
 from utils import is_valid_cbu, is_valid_bitcoin_address
-from models import SystemConfig, BankAccount
+from models import SystemConfig, BankAccount, UserBitcoinAddress
 
 from webapp2 import cached_property
 
@@ -20,9 +20,22 @@ def is_decimal(val):
 
 class WithdrawBTCForm(Form):
 
+  def __init__(self, formdata=None, obj=None, **kwargs):
+    super(WithdrawBTCForm, self).__init__(formdata=formdata, obj=obj, **kwargs)
+
+    self.btc_address.choices = self.get_bitcoin_addresses(kwargs.get('user'))
+
   amount       = TextField()
-  btc_address  = TextField()
+  btc_address  = SelectField(u'',[validators.Required(message=u'Debe indicar una dirección.')])
   
+
+  def get_bitcoin_addresses(self, user):
+    query = UserBitcoinAddress.all()
+    query = query.filter('active =', True)
+    query = query.filter('account =', db.Key(user))
+
+    return [(str(addy.address), addy.description + ' ('+addy.address+')') for addy in query]
+
   def validate_amount(self, field):
     
     if not is_decimal(field.data):

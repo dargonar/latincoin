@@ -6,6 +6,33 @@ from config import config
 from models import Account
 from wtforms import Form, BooleanField, SelectField, TextField, FloatField , PasswordField, FileField, DateField
 from wtforms import HiddenField, TextAreaField, IntegerField, validators, ValidationError
+from utils import is_valid_cbu, is_valid_bitcoin_address
+
+class UserBitcoinAddressForm(Form):
+
+  def validate_address(self, field):
+    if not is_valid_bitcoin_address(field.data):
+      raise ValidationError(u'La dirección es invalida.')
+  
+  address     = TextField(u'', [validators.Required(message=u'Debe ingresar una dirección.')] )
+  description = TextField(u'', [validators.Required(message=u'Debe ingresar una descripción.'), 
+                                validators.Length(message='La descripción no puede superar los %(max)d caracteres.', max=100),
+                                validators.Regexp(message='La descripción solo puede contener letras y numeros.', regex='\w')
+                                ])
+  key         = HiddenField()
+
+class BankAccountForm(Form):
+
+  def validate_cbu(self, field):
+    if not is_valid_cbu(field.data):
+      raise ValidationError(u'El CBU es invalido.')
+  
+  cbu         = TextField(u'', [validators.Required(message=u'Debe ingresar un CBU.')] )
+  description = TextField(u'', [validators.Required(message=u'Debe ingresar una descripción.'), 
+                                validators.Length(message='La descripción no puede superar los %(max)d caracteres.', max=100),
+                                validators.Regexp(message='La descripción solo puede contener letras y numeros.', regex='\w')
+                                ])
+  key         = HiddenField()
 
 class ProfileForm(Form):
   def __repr__(self):

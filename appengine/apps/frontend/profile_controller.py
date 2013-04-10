@@ -16,7 +16,7 @@ from models import Account, AccountValidationFile, UserBitcoinAddress, BankAccou
 from config import config
 from utils import FrontendHandler, need_auth, get_or_404, abort, is_valid_bitcoin_address, is_valid_cbu
 
-from profile_forms import ProfileForm, ChangePasswordForm
+from profile_forms import ProfileForm, ChangePasswordForm, BankAccountForm, UserBitcoinAddressForm
 
 import json, re, urllib
 
@@ -86,10 +86,10 @@ class ProfileController(FrontendHandler, UploadHandler):
     account = get_or_404(self.user)
     kwargs['tab'] = 'personal_info';
     kwargs['html'] = 'profile'
+
     if self.request.method == 'GET':
       kwargs['form']              = ProfileForm(obj=account)
       return self.render_response('frontend/profile.html', **kwargs)
-    
     
     is_valid = self.form.validate()
     if not is_valid:
@@ -222,7 +222,8 @@ class ProfileController(FrontendHandler, UploadHandler):
       return self.redirect_to('profile-change_password')
 
     # Solo guardamos si password viejo incorrecto (is_valid = True)
-    # Pero mostramos el mismo mensaje en los dos casos, para no avivarlo que puso mal     
+    # Pero mostramos el mismo mensaje en los dos casos, 
+    # para no avivarlo que fue lo que puso mal     
     if is_valid:
       user.fail_change_pass(self.request.remote_addr)
       user.put()
@@ -238,37 +239,35 @@ class ProfileController(FrontendHandler, UploadHandler):
   
   @need_auth()
   def bank_account(self, **kwargs):
-    account = get_or_404(self.user)
     
-    kwargs['tab'] = 'bank_account';
     kwargs['html'] = 'profile'
+    kwargs['tab']  = 'bank_account';
     
     if self.request.method == 'GET':
       return self.render_response('frontend/profile.html', **kwargs)
     
-    cbu         = self.request.POST['bank_account_cbu'] 
-    description = self.request.POST['bank_account_desc'] 
-    if cbu is not None:
-      cbu = cbu.strip()
-    if is_valid_cbu(cbu)==False:
-      self.response.write(u'El CBU no es válido.')
+    # Cuando viene el post, lo validamos dentro de un form
+    # Si hay error, mandamos el primer error
+    form = BankAccountForm(self.request.POST)
+    if not form.validate():
+      self.response.write(form.errors[form.errors.keys()[0]][0])
       self.response.set_status(500)
       return
-      
-    key       = self.request.POST['key'] 
-    bank_acc  = None
-    
-    if key is not None and key.strip()!='':
-      old_bank_acc              = db.get(db.Key(key))
-      old_bank_acc.active       = False
-      old_bank_acc.put()
-    
-    bank_acc = BankAccount( account     = account,
-                              cbu         = cbu,
-                              description = description)
-      
+
+    # Es uno nuevo o un edit?
+    # Si es edit, traemos con mine_or_404 (code=500)
+    key = form.key.data
+    if key and len(key):
+      bank_acc = self.mine_or_404(key, code=500)
+      bank_acc.cbu         = form.cbu.data
+      bank_acc.description = form.description.data
+    else:
+      bank_acc = BankAccount(account     = db.Key(self.user),
+                             cbu         = form.cbu.data, 
+                             description = form.description.data)
+
     bank_acc.put()
-    self.response.out.write("It's done!")
+    self.response.out.write("ok")
     return
       
   
@@ -284,9 +283,10 @@ class ProfileController(FrontendHandler, UploadHandler):
       row = []
       row.append(bankacc.cbu)
       row.append(bankacc.description)
-      #row.append(str(addr.key()))
-      row.append('<input type="hidden" name="key" value="'+str(bankacc.key())+'" />')
-      row.append('<a href="' + self.url_for('profile-btc_address_delete', key=str(bankacc.key()), referer='profile-bank_account' ) + '">Borrar</a>')
+      
+      edit_link   = '<a href="#" key="%s" class="edit btn mini purple"><i class="icon-edit"></i>&nbsp;Editar</a>' % str(bankacc.key())
+      remove_link = '<a href="%s" class="delete btn mini black"><i class="icon-trash"></i>&nbsp;Borrar</a>' % self.url_for( 'profile-bank_account_delete', key=str(bankacc.key()) )
+      row.append( '%s&nbsp;%s' % (edit_link,remove_link))
 
       bankaccs['aaData'].append(row)
 
@@ -302,34 +302,31 @@ class ProfileController(FrontendHandler, UploadHandler):
     
     if self.request.method == 'GET':
       return self.render_response('frontend/profile.html', **kwargs)
-    
-    address     = self.request.POST['bitcoinaddr_address'] 
-    description = self.request.POST['bitcoinaddr_desc'] 
-    
-    if address is not None:
-      address = address.strip()
-    if is_valid_bitcoin_address(address)==False:
-      self.response.write(u'La dirección no es una dirección de Bitcoin válida.')
+
+    # Cuando viene el post, lo validamos dentro de un form
+    # Si hay error, mandamos el primer error
+    form = UserBitcoinAddressForm(self.request.POST)
+    if not form.validate():
+      self.response.write(form.errors[form.errors.keys()[0]][0])
       self.response.set_status(500)
-      #self.error(500)
       return
-      
-    key     = self.request.POST['key'] 
-    btc_addr = None
-    
-    if key is not None and key.strip()!='':
-      old_btc_addr = db.get(db.Key(key))
-      old_btc_addr.active     = False
-      old_btc_addr.put()
-      
-    btc_addr = UserBitcoinAddress(account     = account,
-                              address     = address,
-                              description = description)
-      
-    btc_addr.put()
-    self.response.out.write("It's done!")
+
+    # Es uno nuevo o un edit?
+    # Si es edit, traemos con mine_or_404 (code=500)
+    key = form.key.data
+    if key and len(key):
+
+      user_addy = self.mine_or_404(key, code=500)
+      user_addy.address = form.address.data
+      user_addy.description = form.description.data
+
+    else:
+      user_addy = UserBitcoinAddress(account     = db.Key(self.user),
+                                     address     = form.address.data, 
+                                     description = form.description.data)
+    user_addy.put()
+    self.response.out.write("ok")
     return
-      
   
   @need_auth()
   def btc_address_list(self, **kwargs):  
@@ -341,11 +338,14 @@ class ProfileController(FrontendHandler, UploadHandler):
               .order('-created_at'):
 
       row = []
+      
+      row = []
       row.append(addr.address)
       row.append(addr.description)
-      #row.append(str(addr.key()))
-      row.append('<input type="hidden" name="key" value="'+str(addr.key())+'" />')
-      row.append('<a href="' + self.url_for('profile-btc_address_delete', key=str(addr.key()), referer='profile-btc_address' ) + '">Borrar</a>')
+      
+      edit_link   = '<a href="#" key="%s" class="edit btn mini purple"><i class="icon-edit"></i>&nbsp;Editar</a>' % str(addr.key())
+      remove_link = '<a href="%s" class="delete btn mini black"><i class="icon-trash"></i>&nbsp;Borrar</a>' % self.url_for( 'profile-btc_address_delete', key=str(addr.key()) )
+      row.append( '%s&nbsp;%s' % (edit_link,remove_link))
 
       addrs['aaData'].append(row)
 
@@ -353,19 +353,21 @@ class ProfileController(FrontendHandler, UploadHandler):
   
   @need_auth()
   def btc_address_delete(self, **kwargs):  
-    btcaddress_or_bankacc = db.get(db.Key(kwargs['key']))
-    referer = kwargs['referer']
-    if str(btcaddress_or_bankacc.account.key()) != self.user:
-      abort(404)
     
-    btcaddress_or_bankacc.active = False
-    btcaddress_or_bankacc.put()
+    btc_address = self.mine_or_404(kwargs['key'])
+    btc_address.active = False
+    btc_address.put()
     
-    #db.delete(btcaddress_or_bankacc)
-    if referer=='profile-btc_address':
-      self.set_ok(u'La dirección fue eliminada.')
-    else:
-      self.set_ok(u'El CBU fue eliminado.')
-    return self.redirect_to(referer)
+    self.set_ok(u'La dirección fue eliminada correctamente.')
+    return self.redirect(self.request.referer)
+
+  @need_auth()
+  def bank_account_delete(self, **kwargs):  
     
+    bank_account = self.mine_or_404(kwargs['key'])
+    bank_account.active = False
+    bank_account.put()
+    
+    self.set_ok(u'La cuenta bancaria fue eliminada correctamente.')
+    return self.redirect(self.request.referer)
   
