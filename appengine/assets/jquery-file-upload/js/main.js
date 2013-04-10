@@ -35,7 +35,7 @@ $(function () {
                 obj.find('.cancel').click(function (e) {
                     if(jqXHR!=null)
                       jqXHR.abort();
-                    obj.remove();
+                    $(this).parents('tr')[0].remove();
                     return false;
                 });
                 //alert('Added file: ' + file.name + '[' + (file.size/1024).toFixed(2) + 'Kb]');
@@ -63,7 +63,7 @@ $(function () {
                     $('#verification_files').html(data);
                   }),
                   error: (function (data) {
-                   window.location=identity_validation_post; // '/profile/identity_validation';
+                   //window.location=identity_validation_post; // '/profile/identity_validation';
                   })
                 });
                 
@@ -99,12 +99,6 @@ $(function () {
         '    <td class="size"><span>'+(file.size/1024).toFixed(2)+' KB</span></td>'+
         '    <td>'+
         '      <div class="progress progress-success progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="bar" style="width:0%;"></div></div>'+
-        '    </td>'+
-        '    <td class="start">'+
-        '      <button class="btn blue uploader_button" id="boton_'+Math.floor((Math.random()*100000)+1)+'">'+
-        '        <i class="icon-upload icon-white"></i>'+
-        '        <span>Subir</span>'+
-        '      </button>'+
         '    </td>'+
         '    <td class="cancel">'+
         '      <button class="btn red canceler_button">'+

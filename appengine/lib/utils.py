@@ -130,9 +130,11 @@ class Jinja2Mixin(object):
     
     env.globals['session']      = self.session
     env.globals['is_logged']    = self.is_logged
+    env.globals['is_verified']  = self.is_verified
     env.globals['ars_balance']  = self.ars_balance
     env.globals['btc_balance']  = self.btc_balance
     env.globals['user_name']    = self.user_name
+    
     
     # cargamos el ticker
     env.globals['ticker']         = self.ticker
@@ -198,21 +200,17 @@ class FrontendHandler(MyBaseHandler):
 
   def do_login(self, user):
 
-    # BORRAR -----
-    # from random import uniform
-    # balance['BTC'].amount += Decimal('%.5f'% uniform(10,100))
-    # balance['BTC'].put();
-    # balance['ARS'].amount += Decimal('%.2f'% uniform(10,10000))
-    # balance['ARS'].put();
-    # BORRAR ----
     balance = get_account_balance(user)
     self.session['account.btc']  = str(balance['BTC'].key())
     self.session['account.ars']  = str(balance['ARS'].key())
     self.session['account.user'] = str(user.key())
-    self.session['account.name'] = user.name if user.name and len(user.name) else user.email
     self.session['account.logged'] = True
-    
+    self.update_user_info(user)
   
+  def update_user_info(self, user):
+    self.session['account.name'] = user.name if user.name and len(user.name) else user.email
+    self.session['account.verified'] = user.email_verified
+
   @property
   def ticker(self):
     data = memcache.get('ticker')
@@ -241,6 +239,10 @@ class FrontendHandler(MyBaseHandler):
   @property
   def is_logged(self):
     return self.session_value('account.logged', False)
+
+  @property
+  def is_verified(self):
+    return self.session_value('account.verified', False)
 
   @property
   def user_name(self):

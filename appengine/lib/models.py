@@ -75,6 +75,7 @@ class Account(db.Model):
   password              = db.StringProperty(indexed=False)
   time_zone             = db.StringProperty(indexed=False)
 
+  email_verified        = db.BooleanProperty(default=False)
   cuit                  = db.StringProperty()  
   
   identity_is_validated = db.BooleanProperty(default=False)
@@ -172,7 +173,13 @@ class Account(db.Model):
     return ((datetime.now() - self.confirmation_sent_at).seconds < 3600 and self.confirmed_at is None)
 
   def confirm(self):
-    self.confirmed_at = datetime.now()
+    self.email_verified     = True
+    self.confirmed_at       = datetime.now()
+    self.confirmation_token = ''
+
+  def validate_email(self):
+    self.email_verified     = True
+    self.confirmed_at       = datetime.now()
     self.confirmation_token = ''
 
   @classmethod

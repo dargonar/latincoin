@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import logging
 from datetime import datetime
 from urllib import quote_plus,unquote_plus
 
@@ -83,21 +84,37 @@ class ProfileController(FrontendHandler, UploadHandler):
 
   @need_auth()
   def personal_info(self, **kwargs):    
-    account = get_or_404(self.user)
+    
+    account = Account.get(db.Key(self.user))
+
     kwargs['tab'] = 'personal_info';
     kwargs['html'] = 'profile'
 
     if self.request.method == 'GET':
-      kwargs['form']              = ProfileForm(obj=account)
+      kwargs['form'] = ProfileForm(obj=account)
       return self.render_response('frontend/profile.html', **kwargs)
     
-    is_valid = self.form.validate()
-    if not is_valid:
-      kwargs['form']         = self.form
+    if self.form.validate():
+      kwargs['form'] = self.form
       return self.render_response('frontend/profile.html', **kwargs)
 
-    account          = self.form.update_object(account)
+    # Si cambio el email, lo marcamos como no verificado
+    old_email = account.email
+    account = self.form.update_object(account)
+    new_email = account.email
+
+    if old_email != new_email:
+      account.email_verified = False
+
+      account.confirmation_token = generate_random_string(length=40)
+      account.confirmation_sent_at = datetime.now()
+
+      #TODO: taskqueue, mandar email
+      logging.error('TOKEN: %s' % account.confirmation_token)
+
     account.save()
+
+    self.update_user_info(account)
     
     self.set_ok('Perfil guardado satisfactoriamente.')
     return self.redirect_to('profile-personal_info')
@@ -118,7 +135,7 @@ class ProfileController(FrontendHandler, UploadHandler):
             .order('created_at')
             
     kwargs['files'] = myfiles
-    return self.render_response('frontend/profile_validation_files.html', **kwargs)
+    return self.render_response('frontend/profile_form_verification_files.html', **kwargs)
     
   @need_auth()
   def identity_validation(self, **kwargs):

@@ -35,6 +35,7 @@ def get_rules():
         Route('/confirm/<token>', name='confirm',         handler='.AccountController:confirm'),
         Route('/forget',          name='forget',          handler='.AccountController:forget'),
         Route('/reset/<token>',   name='reset',           handler='.AccountController:reset'),
+        Route('/validate/<token>',name='validate',        handler='.AccountController:validate'),
       ]) ]) ]),
       
       PathPrefixRoute('/trade', [ NamePrefixRoute('trade-', [ HandlerPrefixRoute('apps.frontend.trade_controller', [
