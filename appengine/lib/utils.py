@@ -232,7 +232,7 @@ class FrontendHandler(MyBaseHandler):
 
   @property
   def btc_balance(self):
-    return '%.5f' % self.try_get_balance('btc')
+    return '%.8f' % self.try_get_balance('btc')
 
   @property
   def ars_balance(self):
@@ -270,7 +270,7 @@ class FrontendHandler(MyBaseHandler):
     if hasattr(obj,'account') and str(obj.account.key()) == self.user:
       return obj
 
-    abort(500, title=msg)
+    abort(code, title=msg)
   
 class SessionTicker(object):
   def __init__(self, last_ticker=None):

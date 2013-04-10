@@ -3,6 +3,7 @@ import decimal
 from datetime import datetime, timedelta
 
 from google.appengine.ext import db, blobstore
+from google.appengine.api import memcache
 
 from webapp2_extras.security import generate_password_hash, generate_random_string, check_password_hash
 
@@ -15,6 +16,15 @@ def create_password(password):
 class Dummy(db.Model):
   pass
 
+def get_system_config():
+  sconf = memcache.get('system-config')
+  
+  if not sconf:
+    sconf = SystemConfig.get_by_key_name('system-config')
+    memcache.set('system-config', sconf)
+
+  return sconf
+
 class SystemConfig(db.Model):
   remote_rpc              = db.StringProperty(choices=['ec2', 'blockchain'], default='ec2')
   confirmations           = db.StringProperty(default='6')
@@ -22,9 +32,21 @@ class SystemConfig(db.Model):
   import_delay            = db.StringProperty(default='0')
   import_enable           = db.StringProperty(default='Y')
   forward_enable          = db.StringProperty(default='Y')
+  
   min_btc_withdraw        = DecimalProperty(default=decimal.Decimal('0'))
-  min_curr_deposit        = DecimalProperty(default=decimal.Decimal('0'))
+  max_btc_withdraw        = DecimalProperty(default=decimal.Decimal('21e8'))
+
   min_curr_withdraw       = DecimalProperty(default=decimal.Decimal('0'))
+  max_curr_withdraw       = DecimalProperty(default=decimal.Decimal('1e8'))
+
+  min_curr_deposit        = DecimalProperty(default=decimal.Decimal('0'))
+  max_curr_deposit        = DecimalProperty(default=decimal.Decimal('1e8'))
+  
+  max_ask_amount          = DecimalProperty(default=decimal.Decimal('21e8'))
+  min_ask_amount          = DecimalProperty(default=decimal.Decimal('0'))
+
+  max_bid_amount          = DecimalProperty(default=decimal.Decimal('21e8'))
+  min_bid_amount          = DecimalProperty(default=decimal.Decimal('0'))
 
   def can_trade(self):
     return self.trade_enable == 'Y'

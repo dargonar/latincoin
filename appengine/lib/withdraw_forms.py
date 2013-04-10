@@ -7,7 +7,7 @@ from wtforms import Form, BooleanField, TextField, SelectField
 from wtforms import validators, ValidationError
 
 from utils import is_valid_cbu, is_valid_bitcoin_address
-from models import SystemConfig, BankAccount, UserBitcoinAddress
+from models import get_system_config, BankAccount, UserBitcoinAddress
 
 from webapp2 import cached_property
 
@@ -41,7 +41,7 @@ class WithdrawBTCForm(Form):
     if not is_decimal(field.data):
       raise ValidationError(u'La cantidad ingresada es inválida')
 
-    sconf = SystemConfig.get_by_key_name('system-config')
+    sconf = get_system_config()
 
     amount = Decimal(field.data)
     if amount < sconf.min_btc_withdraw:
@@ -77,7 +77,7 @@ class WithdrawCurrencyForm(Form):
     if not is_decimal(field.data):
       raise ValidationError(u'La cantidad ingresada es inválida')
 
-    sconf = SystemConfig.get_by_key_name('system-config')
+    sconf = get_system_config()
 
     amount = Decimal(field.data)
     if amount < sconf.min_curr_withdraw:

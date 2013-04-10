@@ -1,4 +1,25 @@
 var oCurrentTable = {};
+
+function genericFnStopLoading(id) {
+    //console.debug(id);
+    var el = $('#'+id).parents(".portlet");
+    App.unblockUI(el);
+}
+
+function genericFnServerData(sSource, aoData, fnCallback ) {
+    
+    var myid = $(this).attr('id');
+
+    $.ajax({
+        'dataType': 'json',
+        'type': 'GET',
+        'url': sSource,
+        'cache': false,
+        'data': aoData,
+        'success': [fnCallback,function(){ console.debug('calling genericFnStopLoading'); genericFnStopLoading(myid); }]
+    });
+}
+
 $.fn.dataTableExt.oApi.fnReloadAjax = function ( oSettings, sNewSource, fnCallback, bStandingRedraw )
 {
     // console.debug(oSettings);
@@ -669,19 +690,15 @@ var App = function () {
         });
 
         jQuery('.portlet .tools a.reload').click(function () {
+            
             var eid = $(this).attr('id');
             eid = eid.substr(0, eid.length-8);
 
             var el = jQuery(this).parents(".portlet");
+            //console.debug('voy bloquard: ' + $(el))
             App.blockUI(el);
 
-            withdrawTables[eid].fnReloadAjax();
-
-            // var el = jQuery(this).parents(".portlet");
-            // App.blockUI(el);
-            // window.setTimeout(function () {
-            //     App.unblockUI(el);
-            // }, 1000);
+            oCurrentTable[eid].fnReloadAjax();
         });
 
         jQuery('.portlet .tools .collapse, .portlet .tools .expand').click(function () {
@@ -2096,6 +2113,7 @@ var App = function () {
 
         // begin first table
         oCurrentTable[tid] = $('#'+tid).dataTable({
+            "fnServerData" : genericFnServerData,
             "bProcessing": true,
             "sAjaxSource": table_ajax_source[mode+'_in'],
             "sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
@@ -2130,6 +2148,7 @@ var App = function () {
         
         // begin first table
         oCurrentTable[tid] = $('#'+tid).dataTable({
+            "fnServerData" : genericFnServerData,
             "bProcessing": true,
             "sAjaxSource": table_ajax_source[mode+'_'+type],
             "sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
@@ -2159,25 +2178,12 @@ var App = function () {
             return;
         }
         
-        function fnUpdateTotal() {
-            var el = $("#trade_operations");
-            App.unblockUI(el);
-        }
-        
         // begin first table
         oCurrentTable[id] = $('#'+id).dataTable({
+            "fnServerData" : genericFnServerData,
             "bProcessing": true,
             "sAjaxSource": source,
-            "fnServerData" : function(sSource, aoData, fnCallback ){
-                $.ajax({
-                    'dataType': 'json',
-                    'type': 'GET',
-                    'url': sSource,
-                    'cache': false,
-                    'data': aoData,
-                    'success': [fnCallback,fnUpdateTotal]
-                });
-            },
+            "fnServerData" : genericFnServerData,
             "sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
             "sPaginationType": "bootstrap",
             "oLanguage": {
@@ -2234,6 +2240,7 @@ var App = function () {
         }
         
         var oTable = $('#tabla_direcciones_bitcoin').dataTable({
+            "fnServerData" : genericFnServerData,
             "bProcessing": true,
             "sAjaxSource": table_ajax_btc_addresses_source,
             "sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
@@ -2417,6 +2424,7 @@ var App = function () {
         }
         
         var oTable = $('#tabla_cuentas_bancarias').dataTable({
+            "fnServerData" : genericFnServerData,
             "bProcessing": true,
             "sAjaxSource": table_ajax_bank_accounts_source,
             "sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
