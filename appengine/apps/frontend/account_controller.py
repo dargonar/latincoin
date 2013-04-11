@@ -243,7 +243,8 @@ class AccountController(FrontendHandler):
   def init_all(self):
     from config import config
     from webapp2_extras.security import generate_random_string, check_password_hash
-
+    from init_mail import init_mails
+    
     from models import Dummy
     parent=Dummy.get_or_insert('trade_orders')
     parent=Dummy.get_or_insert('operations')
@@ -300,5 +301,7 @@ class AccountController(FrontendHandler):
                           close                 = Decimal('0.0'), 
                         )
     dummy_ticker.put()
+    
+    init_mails()
     
     self.response.write('lito')

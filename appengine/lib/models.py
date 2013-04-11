@@ -335,7 +335,7 @@ class Operation(db.Model):
   status                = db.StringProperty(required=True, choices=[OPERATION_PENDING, OPERATION_DONE])
   created_at            = db.DateTimeProperty(auto_now_add=True)
   updated_at            = db.DateTimeProperty(auto_now=True)
-  type                  = db.StringProperty(required=True, choices=[OPERATION_BUY, OPERATION_SELL])
+  type                  = db.StringProperty(required=True, choices=[OPERATION_BUY, OPERATION_SELL]) # , 'BUY', 'SELL', 'NA'
 
 class BitcoinAddress(db.Model):
   user                  = db.ReferenceProperty(Account, collection_name='bitcoin_addresses', required=True)
@@ -379,3 +379,38 @@ class Ticker(db.Model):
   
   created_at            = db.DateTimeProperty(auto_now_add=True) # uno por HORA
   updated_at            = db.DateTimeProperty(auto_now=True)
+
+
+# <keyname= 'welcome' + LANG>
+# un registro por idioma    
+class JinjaTemplate(db.Model):
+  name                  = db.StringProperty(indexed=True)
+  language              = db.StringProperty(choices=['es', 'en', 'pt'], default='es', indexed=True)
+  source                = db.TextProperty(indexed=False)
+  last_read             = db.DateTimeProperty()
+  created_at            = db.DateTimeProperty(auto_now_add=True)
+  updated_at            = db.DateTimeProperty(auto_now=True)
+  type                  = db.StringProperty(indexed=False, default='txt')
+  pass
+  
+# <keyname= 'mail_' + JinjaTemplate.key_name + LANG>
+# un registro por idioma
+class MailTemplate(db.Model):
+  name                  = db.StringProperty()
+  subject               = db.StringProperty()
+  language              = db.StringProperty(choices=['es', 'en', 'pt'], default='es', indexed=True)
+  body_txt              = db.ReferenceProperty(JinjaTemplate, collection_name='txt_mail_templates')
+  #body_html             = db.ReferenceProperty(JinjaTemplate, collection_name='html_mail_templates')
+  
+  created_at            = db.DateTimeProperty(auto_now_add=True)
+  updated_at            = db.DateTimeProperty(auto_now=True)
+  
+  NAME_PREFIX = 'mail_'
+  
+  def get_jinja_template(self):
+    if self.name is None or self.name.count(MailTemplate.NAME_PREFIX)<1:
+      return None
+    # Le quitamos el prefijo 'mail_' y buscamos el template por keyname
+    template_name = self.name.replace(MailTemplate.NAME_PREFIX, '')
+    return JinjaTemplate.get_by_key_name(template_name)
+    
