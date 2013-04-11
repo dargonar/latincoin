@@ -14,7 +14,7 @@ class DepositController(FrontendHandler):
   @need_auth()
   def list(self, **kwargs):
 
-    currency = 'BTC' if kwargs['type'] == 'btc' else 'ARS'
+    currency = 'BTC' if kwargs['currency'] == 'btc' else 'ARS'
 
     query = AccountOperation.all().filter('account =', db.Key(self.user))
     query = query.filter('operation_type =', AccountOperation.MONEY_IN)

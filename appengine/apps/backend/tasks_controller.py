@@ -10,7 +10,7 @@ from google.appengine.ext import db
 from webapp2 import RequestHandler, uri_for as url_for
 
 from config import config
-from models import Block, BitcoinAddress, ForwardTx, SystemConfig, Operation
+from models import Block, BitcoinAddress, ForwardTx, Operation, get_system_config
 
 from utils import create_blobstore_file, read_blobstore_file, remove_blobstore_file
 from google.appengine.api import taskqueue
@@ -28,7 +28,7 @@ class TasksController(RequestHandler):
 
   def match_orders(self, **kwargs):
     
-    sconfig = SystemConfig.get_by_key_name('system-config')
+    sconfig = get_system_config()
     if not sconfig.can_trade():
       return
 
@@ -43,7 +43,7 @@ class TasksController(RequestHandler):
 
   def update_btc_balance(self, **kwargs):
   
-    sconfig = SystemConfig.get_by_key_name('system-config')
+    sconfig = get_system_config()
     
     access = connection.get_proxy( sconfig.remote_rpc )
     current_block = access.getblockcount()
@@ -57,7 +57,7 @@ class TasksController(RequestHandler):
 
   def forward_txs(self, **kwargs):
   
-    sconf = SystemConfig.get_by_key_name('system-config')
+    sconf = get_system_config()
     if not sconf.can_forward():
       logging.warning('forward_txs disabled')
       return
@@ -184,7 +184,7 @@ class TasksController(RequestHandler):
 
   def import_block(self, **kwargs):
 
-    sconf = SystemConfig.get_by_key_name('system-config')
+    sconf = get_system_config()
     if not sconf.can_import():
       logging.warning('import_block disable')
       return

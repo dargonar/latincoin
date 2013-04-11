@@ -35,6 +35,7 @@ def get_rules():
         Route('/confirm/<token>', name='confirm',         handler='.AccountController:confirm'),
         Route('/forget',          name='forget',          handler='.AccountController:forget'),
         Route('/reset/<token>',   name='reset',           handler='.AccountController:reset'),
+        Route('/validate/<token>',name='validate',        handler='.AccountController:validate'),
       ]) ]) ]),
       
       PathPrefixRoute('/trade', [ NamePrefixRoute('trade-', [ HandlerPrefixRoute('apps.frontend.trade_controller', [
@@ -52,9 +53,10 @@ def get_rules():
         Route('/identity_validation_files',   name='identity_validation_files',       handler='.ProfileController:identity_validation_files'),
         Route('/change_password',             name='change_password',                 handler='.ProfileController:change_password'),
         Route('/btc_address',                 name='btc_address',                     handler='.ProfileController:btc_address'),
-        Route('/btc_address_delete/<key>/<referer>',    name='btc_address_delete',    handler='.ProfileController:btc_address_delete'),
+        Route('/btc_address_delete/<key>',    name='btc_address_delete',              handler='.ProfileController:btc_address_delete'),
         Route('/btc_address_list',            name='btc_address_list',                handler='.ProfileController:btc_address_list'),
         Route('/bank_account',                name='bank_account',                    handler='.ProfileController:bank_account'),
+        Route('/bank_account_delete/<key>',   name='bank_account_delete',             handler='.ProfileController:btc_address_delete'),
         Route('/bank_account_list',           name='bank_account_list',               handler='.ProfileController:bank_account_list'),
         Route('/otp',                         name='otp',                             handler='.ProfileController:otp'),
         Route('/otp/image/<url>',             name='otp-image',                       handler='.ProfileController:otp_image'),

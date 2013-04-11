@@ -40,6 +40,25 @@ class AccountController(FrontendHandler):
 
     return self.render_response('frontend/signup_success.html')
 
+  def validate(self, **kwargs):
+    token = kwargs['token']
+
+    user = Account.all().filter('confirmation_token =', token).get()
+    
+    # No hay codigo de verificación
+    if not user:
+      self.set_error(u'<strong>Codigo inválido</strong>')
+      return self.redirect_to('account-login')
+
+    user.validate_email()
+    user.put()
+
+    self.update_user_info(user)
+
+    self.set_ok(u'<strong>Su email fue verificado correctamente</strong>')
+    return self.redirect_to('account-login')
+
+
   def confirm(self, **kwargs):
     token = kwargs['token']
     

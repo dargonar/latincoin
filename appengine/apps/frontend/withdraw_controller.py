@@ -21,16 +21,6 @@ class WithdrawController(FrontendHandler):
     form              = self.withdraw_btc_form
     kwargs['form']    = form
     
-    btc_addresses = UserBitcoinAddress.all().filter('active =', True).filter('account =', db.Key(self.user))
-      
-    data_source = ''
-    for btc_address in btc_addresses:
-      data_source += '"'+btc_address.address+'",'
-    if data_source.strip() != '':
-      data_source = '[' + data_source + '""'+']'
-    
-    kwargs['data_source'] = data_source
-
     # Si viene GET mostramos el FORM
     if self.request.method == 'GET':
       return self.render_response('frontend/withdraw.html', **kwargs)
@@ -53,7 +43,7 @@ class WithdrawController(FrontendHandler):
 
   @cached_property
   def withdraw_btc_form(self):
-    return WithdrawBTCForm(self.request.POST)
+    return WithdrawBTCForm(self.request.POST, user=self.user)
 
   @need_auth()
   def currency(self, **kwargs):

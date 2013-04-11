@@ -20,21 +20,21 @@
             
 						<br />
 						<!-- The file upload form used as target for the file upload widget -->
-						<form id="fileupload" action="#" method="POST" enctype="multipart/form-data">
+						<form id="fileupload" action="{{url_for('profile-identity_validation')}}" method="POST" enctype="multipart/form-data">
 							<!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
 							<div class="row-fluid fileupload-buttonbar" id="file_dragzone">
 								<div class="span7">
 									<!-- The fileinput-button span is used to style the file input field as button -->
 									<span class="btn green fileinput-button">
                     <i class="icon-plus icon-white"></i>
-                    <span>Agregar archivos...</span>
+                    <span>{{ 'Agregar archivos...' }}</span>
                     <input type="file" name="files[]" multiple>
 									</span>
-									<button type="submit" class="btn blue start" style="display:none;">
+									<button type="submit" class="btn blue start">
                     <i class="icon-upload icon-white"></i>
-                    <span>Start upload</span>
+                    <span>{{ 'Subir archivos' }}</span>
 									</button>
-									<button type="reset" class="btn yellow cancel" style="display:none;">
+<!-- 									<button type="reset" class="btn yellow cancel" style="display:none;">
                     <i class="icon-ban-circle icon-white"></i>
                     <span>Cancel upload</span>
 									</button>
@@ -42,7 +42,7 @@
                     <i class="icon-trash icon-white"></i>
                     <span>Delete</span>
 									</button>
-								</div>
+ -->					</div>
 								<!-- The global progress information -->
 								<div class="span5 fileupload-progress fade">
 									<!-- The global progress bar -->
