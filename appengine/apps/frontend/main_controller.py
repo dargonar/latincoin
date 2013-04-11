@@ -7,7 +7,6 @@ from models import TradeOrder, Operation
 
 class MainController(FrontendHandler):
   def home(self, **kwargs):
-    #kwargs[]
     data = memcache.get('index_html_tables')
     if data is None:
       index_html_tables = {}
@@ -61,7 +60,7 @@ class MainController(FrontendHandler):
       row.append('%.2f' % (order.ppc*temp) )
       
       
-      row.append(self.label_for_order(order))
+      #row.append(self.label_for_order(order))
       row.append('<a href="' + self.url_for('trade-cancel', key=str(order.key())) + '">Cancelar</a>')
 
       orders['aaData'].append(row)
@@ -71,13 +70,11 @@ class MainController(FrontendHandler):
   
   def terms(self, **kwargs):
     return self.render_response('frontend/terminos.html', **kwargs)
-
-    
+  
   def contact(self, **kwargs):
     return self.render_response('frontend/index.html', **kwargs)
   
-  def deposito(self, **kwargs):
-    return self.render_response('frontend/deposito.html', **kwargs)
+  def soon(self, **kwargs):
+    return self.render_response('frontend/soon.html', **kwargs)
     
-  def withdraw(self, **kwargs):
-    return self.render_response('frontend/retiro.html', **kwargs)
+  

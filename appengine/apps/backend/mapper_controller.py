@@ -17,10 +17,30 @@ from trader import Trader
 
 from my_test_utils import TestUtilMixin
 
-from my_mapper import TickerMapper
+from my_mapper import TickerMapper, OperationNotificationMapper
 
 class RunTickerMapper(RequestHandler):
-  
+  def build(self, **kwargs):
+    
+    #self.delete_all(False)
+    for ticker in Ticker.all().filter('status =', Ticker.IN_PROGRESS):
+      db.delete(ticker)
+      logging.info('Ticker IN-PROGRESS borrado')
+      
+    last_ticker = Ticker.all().order('-created_at').get()
+    if last_ticker is None:
+      pass
+    
+    mTestUtilMixin = TestUtilMixin()
+    b = mTestUtilMixin.generate_trade_operations()
+    if b:
+      self.response.write('deberiamos haber creado todo :)')
+    self.response.write('<br/>ready!')
+    return
+    
+    mapper = TickerMapper(str(last_ticker.key()))
+    deferred.defer(mapper.run)
+    self.response.write('TickerMapper corriendo')
   
   def delete_all(self, delete_ticker=True):
     for user in Account.all():
@@ -41,24 +61,8 @@ class RunTickerMapper(RequestHandler):
         db.delete(ticker)
     return
   
-  def build_ticker(self, **kwargs):
-    
-    #self.delete_all(False)
-    for ticker in Ticker.all().filter('status =', Ticker.IN_PROGRESS):
-      db.delete(ticker)
-      logging.info('Ticker IN-PROGRESS borrado')
-      
-    last_ticker = Ticker.all().order('-created_at').get()
-    if last_ticker is None:
-      pass
-    
-    mTestUtilMixin = TestUtilMixin()
-    b = mTestUtilMixin.generate_trade_operations()
-    if b:
-      self.response.write('deberiamos haber creado todo :)')
-    
-    return
-    mapper = TickerMapper(str(last_ticker.key()))
-    
+class RunOperationNotificationMapper(RequestHandler):
+  def run(self, **kwargs):
+    mapper = OperationNotificationMapper()
     deferred.defer(mapper.run)
-    self.response.write('TickerMapper corriendo')
+    self.response.write('OperationNotificationMapper corriendo')

@@ -23,9 +23,15 @@ def mail_contex_for(fnc, user, **kwargs):
   
   base_context = {}
 
-  if fnc == 'send_resetpassword_email':
-    base_context['reset_link'] = url_for('account-reset', token=user.reset_password_token, _full=True)
-
+  if fnc == 'send_completedask_email' or fnc == 'send_completedbid_email' or fnc == 'send_newask_email' or fnc == 'send_newbid_email' or fnc == 'send_partiallycompletedask_email' or fnc == 'send_partiallycompletedbid_email' or fnc == 'send_cancelask_email' or fnc == 'send_cancelbid_email':
+    base_context['order']        = kwargs['order']
+    if fnc != 'send_newask_email' and fnc != 'send_newbid_email':
+      base_context['opers']        = kwargs['opers']
+    
+  if fnc == 'send_forgotpassword_email':
+    base_context['reset_link']        = url_for('account-reset', token=user.reset_password_token, _full=True)
+    base_context['cancel_reset_link'] = url_for('account-cancel_reset', token=user.reset_password_token, _full=True)
+    
   if fnc == 'send_welcome_email':
     base_context['confirm_link'] = url_for('account-confirm', token=user.confirmation_token, _full=True)
 
@@ -38,8 +44,35 @@ def mail_contex_for(fnc, user, **kwargs):
 
   return base_context
 
-def send_resetpassword_email(context):
-  send_user_email('reset_password', context)
+def send_cancelask_email(context):      
+  send_user_email('cancel_ask', context)
+
+def send_cancelbid_email(context):
+  send_user_email('cancel_bid', context)
+
+def send_partiallycompletedask_email(context):      
+  send_user_email('partially_completed_ask', context)
+
+def send_partiallycompletedbid_email(context):
+  send_user_email('partially_completed_bid', context)
+
+def send_completedask_email(context):      
+  send_user_email('completed_ask', context)
+
+def send_completedbid_email(context):
+  send_user_email('completed_bid', context)
+
+def send_newask_email(context):
+  send_user_email('new_ask', context)
+
+def send_newbid_email(context):
+  send_user_email('new_bid', context)
+  
+def send_forgotpassword_email(context):
+  send_user_email('forgot_password', context)
+
+def send_passwordchanged_email(context):
+  send_user_email('password_changed', context)
 
 def send_welcome_email(context):
   send_user_email('welcome', context)

@@ -11,8 +11,9 @@ def get_rules():
 
 
       Route('/', name='home',         handler='apps.frontend.main_controller.MainController:home'),
-      Route('/', name='terms',        handler='apps.frontend.main_controller.MainController:terms'), # mover donde corresponda
-      Route('/', name='contact',      handler='apps.frontend.main_controller.MainController:contact'), # mover donde corresponda
+      Route('/soon', name='soon',        handler='apps.frontend.main_controller.MainController:soon'), # mover donde corresponda
+      Route('/terms', name='terms',        handler='apps.frontend.main_controller.MainController:terms'), # mover donde corresponda
+      Route('/contact', name='contact',      handler='apps.frontend.main_controller.MainController:contact'), # mover donde corresponda
       
       PathPrefixRoute('/deposit', [ NamePrefixRoute('deposit-', [ HandlerPrefixRoute('apps.frontend.deposit_controller', [
         Route('/btc',                            name='btc',          handler='.DepositController:btc'),
@@ -35,6 +36,7 @@ def get_rules():
         Route('/confirm/<token>', name='confirm',         handler='.AccountController:confirm'),
         Route('/forget',          name='forget',          handler='.AccountController:forget'),
         Route('/reset/<token>',   name='reset',           handler='.AccountController:reset'),
+        Route('/cancel_reset/<token>',   name='cancel_reset',  handler='.AccountController:cancel_reset'),
         Route('/validate/<token>',name='validate',        handler='.AccountController:validate'),
       ]) ]) ]),
       

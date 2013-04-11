@@ -12,7 +12,7 @@ from models import Account, AccountBalance, BitcoinAddress, Ticker
 from utils import FrontendHandler
 from account_forms import SignUpForm, ForgetPasswordForm, ResetPasswordForm
 
-from mailer import send_welcome_email, send_resetpassword_email, mail_contex_for
+from mailer import send_welcome_email, send_forgotpassword_email, send_passwordchanged_email, mail_contex_for
 from bitcoin_helper import generate_new_address, encrypt_private
 
 class AccountController(FrontendHandler):
@@ -47,7 +47,7 @@ class AccountController(FrontendHandler):
     
     # No hay codigo de verificación
     if not user:
-      self.set_error(u'<strong>Codigo inválido</strong>')
+      self.set_error(u'<strong>Código inválido</strong>')
       return self.redirect_to('account-login')
 
     user.validate_email()
@@ -66,7 +66,11 @@ class AccountController(FrontendHandler):
     
     # No hay codigo o ya expiro el tiempo
     if not user or not user.can_confirm():
-      self.set_error(u'<strong>Codigo de registro inválido</strong>')
+      if user and user.user_forgot_confirm():
+        db.delete(user)
+        self.set_error(u'Recuerde que debe confirmar su correo dentro de la hora de haberse registrado. <br/> Deberá registrarse nuevamente.')
+      else:
+        self.set_error(u'<strong>Código de registro inválido</strong>')
       return self.redirect_to('account-signup')
 
     @db.transactional(xg=True)
@@ -154,11 +158,28 @@ class AccountController(FrontendHandler):
       user.create_reset_token()
       user.put()
 
-      deferred.defer(send_resetpassword_email, mail_contex_for('send_resetpassword_email',user))
+      deferred.defer(send_forgotpassword_email, mail_contex_for('send_forgotpassword_email',user))
 
     self.set_ok(u'Si su correo existe en nuestro sitio, recibirá un enlace para crear un nuevo password en su correo.')
     return self.redirect_to('account-login')
 
+  def cancel_reset(self, **kwargs):
+
+    # Existe el token
+    user = Account.all().filter('reset_password_token =', kwargs['token']).get()
+    if not user:
+      return self.redirect_to('account-login')
+
+    @db.transactional(xg=True)
+    def _tx():
+      user.cancel_reset_token()
+      user.put()
+    _tx()
+
+    self.set_ok(u'El cambio de contraseña ha sido cancelado con éxito.')
+    return self.redirect_to('account-login')
+
+    
   def reset(self, **kwargs):
 
     kwargs['form'] = self.reset_form
@@ -180,7 +201,7 @@ class AccountController(FrontendHandler):
     def _tx():
       to_save = user.change_password(self.reset_form.password.data, self.request.remote_addr, True)
       db.put(to_save)
-
+      deferred.defer(send_passwordchanged_email, mail_contex_for('send_passwordchanged_email', user))
     _tx()
 
     self.set_ok(u'La contraseña fue cambiada con exito.')
@@ -305,7 +326,8 @@ class AccountController(FrontendHandler):
     b = Block( key=db.Key.from_path('Block',last_block), processed='Y', number=last_block, hash='n/a', txs=0)
     b.put()
 
-    dummy_ticker = Ticker( status                = Ticker.DONE,
+    dummy_ticker = Ticker.get_or_insert('dummy_ticker',
+                          status                = Ticker.DONE,
                           last_price            = Decimal('0.0'),
                           avg_price             = Decimal('0.0'),
                           high                  = Decimal('0.0'),

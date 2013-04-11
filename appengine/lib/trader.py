@@ -278,7 +278,6 @@ class Trader:
   # Intenta matchear la mejor BID con la mejor ASK
   # Si hay posibilidades de trade, genera una nueva Operation 
   # y acomoda las TradeOrders
-
   def match_orders(self):
 
     @db.transactional(xg=True)

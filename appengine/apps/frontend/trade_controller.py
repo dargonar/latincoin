@@ -2,13 +2,16 @@
 from decimal import Decimal
 
 from google.appengine.ext import db
+from google.appengine.ext import deferred
 
 from webapp2 import cached_property
 
 from models import TradeOrder
-from utils import FrontendHandler, need_auth
+from utils import FrontendHandler, need_auth, get_or_404
 from trader import Trader
 from trade_forms import BidForm, AskForm
+
+from mailer import send_newbid_email, send_newask_email, send_completedbid_email, send_completedask_email, send_cancelbid_email, send_cancelask_email, mail_contex_for
 
 class TradeController(FrontendHandler):
   
@@ -44,11 +47,12 @@ class TradeController(FrontendHandler):
       trade = trader.add_limit_trade(self.user, 'B' if bid_ask == 'bid' else 'A', 
                                     Decimal(form.amount()), Decimal(form.ppc()))
 
+    user = get_or_404(self.user)
     # Verificamos si se pudo ingresar la orden
     if not trade[0]:
       self.set_error(trade[1])
       return self.render_response('frontend/trade.html', active_tab=bid_ask, **kwargs)
-
+    
     self.set_ok(u'La orden fue %s con éxito. (#%d)' % ('ingresada' if form.market() else 'completada',trade[0].key().id()) )
     
     #TODO: mandar a ejecutar

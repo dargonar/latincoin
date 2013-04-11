@@ -16,8 +16,9 @@ def get_rules():
 
       ]) ]) ]),
       
-      PathPrefixRoute('/map', [ NamePrefixRoute('task-', [ HandlerPrefixRoute('apps.backend.ticker_mapper_runner', [
-        Route('/ticker_mapper',  name='ticker-mapper',    handler='.RunTickerMapper:build_ticker'),
+      PathPrefixRoute('/map', [ NamePrefixRoute('mapper-', [ HandlerPrefixRoute('apps.backend.mapper_controller', [
+        Route('/ticker',              name='ticker',                    handler='.RunTickerMapper:build'),
+        Route('/oper_notification',   name='operation-notification',    handler='.RunOperationNotificationMapper:run'),
       ]) ]) ]),
 
     ]

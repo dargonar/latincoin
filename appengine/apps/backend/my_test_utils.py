@@ -2,7 +2,7 @@
 import logging 
 from decimal import Decimal
 from random import uniform
-from datetime import datetime
+from datetime import datetime 
 
 from google.appengine.ext import db
 
@@ -15,7 +15,8 @@ class TestUtilMixin:
   def generate_trade_operations(self):
     
     # generamos un ticker, el primero y mas puto de todos
-    last_ticker = Ticker( status                = Ticker.DONE,
+    last_ticker = Ticker.get_or_insert('dummy_ticker',
+                          status                = Ticker.DONE,
                           last_price            = Decimal('0.0'),
                           avg_price             = Decimal('0.0'),
                           high                  = Decimal('0.0'),
@@ -73,6 +74,7 @@ class TestUtilMixin:
       res = trader.match_orders() 
       if res[0] is not None:
         rop = trader.apply_operation( str(res[0].key()) )
+        rop.traders_were_notified = True # para no mandarles mails a esos recontra putos
         logging.info(' Oper realizada? [%s]',rop)
         
     # Corremos las ultimas veces hasta que no se toquen las puntas
@@ -81,6 +83,7 @@ class TestUtilMixin:
     while res[0] is not None:
       print 'print una mas ...'
       trader.apply_operation(str(res[0].key()))
+      res[0].traders_were_notified = True # para no mandarles mails a esos recontra putos
       res = trader.match_orders()
 
     bba = self.aux_get_best_bid_ask()

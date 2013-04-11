@@ -16,8 +16,7 @@
 											<th>Precio/BTC</th>
 											<th>Cantidad(BTC)</th>
 											<th>Total(Pesos)</th>
-                      <th></th>
-										</tr>
+ 									</tr>
 									</thead>
 									<tbody>
 										{% for oper in opers.run(limit=10) %}
@@ -28,7 +27,6 @@
                       <td>${{'%0.2f'|format(oper.ppc|float)}}</td>
 											<td>{{'%0.5f'|format(oper.traded_btc|float)}}</td>
 											<td class="hidden-480">${{'%0.2f'|format((oper.ppc*oper.traded_btc)|float)}}</td>
-											<td>{{oper|label_for_oper}}</td>
 										</tr>
 										{% endfor %}
 									</tbody>

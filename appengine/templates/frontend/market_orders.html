@@ -14,7 +14,6 @@
 											<th>Precio/BTC</th>
 											<th>Cantidad(BTC)</th>
 											<th>Pesos</th>
-											<th></th>
 										</tr>
 									</thead>
 									<tbody>
@@ -24,7 +23,6 @@
 											<td>${{'%0.2f'|format(ask.ppc|float)}}</td>
 											<td>{{'%0.5f'|format(ask.amount|float)}}</td>
 											<td class="hidden-480">${{'%0.2f'|format((ask.ppc*ask.amount)|float)}}</td>
-											<td>{{ask|label_for_order}}</td>
 										</tr>
 										{% endfor%}
 									</tbody>
@@ -49,7 +47,6 @@
 											<th>Precio/BTC</th>
 											<th>Cantidad(BTC)</th>
 											<th>Pesos</th>
-											<th></th>
 										</tr>
 									</thead>
 									<tbody>
@@ -59,7 +56,6 @@
 											<td>${{'%0.2f'|format(bid.ppc|float)}}</td>
 											<td>{{'%0.5f'|format(bid.amount|float)}}</td>
 											<td class="hidden-480">${{'%0.2f'|format((bid.ppc*bid.amount)|float)}}</td>
-											<td>{{bid|label_for_order}}</td>
 										</tr>
 										{% endfor%}
 									</tbody>

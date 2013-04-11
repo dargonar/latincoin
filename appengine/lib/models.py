@@ -142,7 +142,10 @@ class Account(db.Model):
 
     to_save.append(self)
     return to_save
-
+  
+  def cancel_reset_token(self): 
+    self.reset_password_token = ''
+    
   def create_reset_token(self):
     self.reset_password_token = generate_random_string(length=40)
 
@@ -171,7 +174,10 @@ class Account(db.Model):
 
   def can_confirm(self):
     return ((datetime.now() - self.confirmation_sent_at).seconds < 3600 and self.confirmed_at is None)
-
+  
+  def user_forgot_confirm(self):
+    return ((datetime.now() - self.confirmation_sent_at).seconds > 3600 and self.confirmed_at is None)
+    
   def confirm(self):
     self.email_verified     = True
     self.confirmed_at       = datetime.now()
@@ -365,7 +371,12 @@ class Operation(db.Model):
   created_at            = db.DateTimeProperty(auto_now_add=True)
   updated_at            = db.DateTimeProperty(auto_now=True)
   type                  = db.StringProperty(required=True, choices=[OPERATION_BUY, OPERATION_SELL]) # , 'BUY', 'SELL', 'NA'
-
+  
+  buyer_was_notified    = db.BooleanProperty(default=False)
+  seller_was_notified   = db.BooleanProperty(default=False)
+  traders_were_notified = db.BooleanProperty(default=False, indexed=True)
+  last_notification     = db.DateTimeProperty()
+  
 class BitcoinAddress(db.Model):
   user                  = db.ReferenceProperty(Account, collection_name='bitcoin_addresses', required=True)
   address               = db.StringProperty(required=True)
