@@ -2,11 +2,14 @@
 import logging
 from decimal import Decimal
 from google.appengine.ext import db
+from google.appengine.ext import deferred
 
 from models import TradeOrder, Operation, Account, AccountOperation, Dummy, ForwardTx, BankAccount
 from account_functions import get_account_balance
 
 from bitcoin_helper import zero_btc
+
+from mailer import send_depositreceivedbtc_email, mail_contex_for
 
 class Trader:
 
@@ -35,13 +38,18 @@ class Trader:
                                      state          = AccountOperation.STATE_DONE)
 
       db.put([ftx, balance['BTC'], add_btc_op])
-
+      
+      deferred.defer(send_depositreceivedbtc_email
+                        , mail_contex_for('send_depositreceivedbtc_email'
+                                        , ftx.user
+                                        , deposit_amount=ftx.value))
+      
       return True
 
     _tx()
 
 
-  def cancel_widthdraw_order(self, order_key):
+  def cancel_withdraw_order(self, order_key):
     
     # TODO: assert input
     assert(isinstance(order_key, basestring) and len(order_key) > 0 ), u'Key de orden inválida'
@@ -68,16 +76,16 @@ class Trader:
 
 
   # validamos el cbu
-  def add_widthdraw_currency_order(self, user, amount, bank_account_key):
+  def add_withdraw_currency_order(self, user, amount, bank_account_key):
     assert(isinstance(bank_account_key, basestring) and len(bank_account_key) > 0 ), u'CBU inválido'
-    return self.add_widthdraw_order(user, 'ARS', amount, bank_account=BankAccount.get(db.Key(bank_account_key)) )
+    return self.add_withdraw_order(user, 'ARS', amount, bank_account=BankAccount.get(db.Key(bank_account_key)) )
     
   # validamos que la direccion sea valida
-  def add_widthdraw_btc_order(self, user, amount, address):
+  def add_withdraw_btc_order(self, user, amount, address):
     assert(isinstance(address, basestring) and len(address) > 0 ), u'Direccion no valida'
-    return self.add_widthdraw_order(user, 'BTC', amount, btc_address=address)
+    return self.add_withdraw_order(user, 'BTC', amount, btc_address=address)
     
-  def add_widthdraw_order(self, user, currency, amount, bank_account=None, btc_address=None):
+  def add_withdraw_order(self, user, currency, amount, bank_account=None, btc_address=None):
 
     # TODO: assert input
     assert(isinstance(user, basestring) and len(user) > 0 ), u'Key de usuario inválida'
@@ -247,7 +255,7 @@ class Trader:
                                     state          = AccountOperation.STATE_DONE)
 
       op.status = Operation.OPERATION_DONE
-
+      logging.info('  OPERATION_DONE')
 
       to_save =  [op]
 

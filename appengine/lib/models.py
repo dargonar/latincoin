@@ -117,7 +117,24 @@ class Account(db.Model):
   last_changepass_ip    = db.StringProperty()
   last_bad_changepass_at= db.DateTimeProperty()
   last_bad_changepass_ip= db.StringProperty()
-
+  
+  def bank_deposit_was_received(amount):
+    balance = filter(lambda x:x.currency.lower()=='ars',self.balances)
+    if len(balance)!=1:
+      return False
+    
+    @db.transactional(xg=False)
+    def _tx():
+      balance[0].amount += Decimal(amount)
+      balance[0].put()
+      from mailer import send_depositreceivedars_email, mail_contex_for
+      deferred.defer(send_depositreceivedars_email
+                        , mail_contex_for('send_depositreceivedars_email'
+                                        , self
+                                        , deposit_amount=amount))
+      return True
+    return _tx()
+    
   def fail_change_pass(self, remote_addr):
     self.last_bad_changepass_at = datetime.now()
     self.last_bad_changepass_ip = remote_addr

@@ -22,12 +22,21 @@ sys.path.append(os.path.join(os.path.abspath("."), "lib"))
 def mail_contex_for(fnc, user, **kwargs):
   
   base_context = {}
+  # if fnc == 'deposit_received_ars':
+    # base_context['deposit_amount']  = kwargs['deposit_amount'] 
+  # if fnc == 'deposit_received_btc': 
+    # base_context['deposit_amount']  = kwargs['deposit_amount'] 
+  # if fnc == 'withdraw_request_ars': 
+    # base_context['withdraw_amount']  = kwargs['withdraw_amount'] 
+    # base_context['withdraw_cbu']  = kwargs['withdraw_cbu'] 
+  # if fnc == 'withdraw_request_btc': 
+    # base_context['withdraw_amount']  = kwargs['withdraw_amount'] 
+    # base_context['withdraw_address']  = kwargs['withdraw_address']   
+  # if fnc == 'send_completedask_email' or fnc == 'send_completedbid_email' or fnc == 'send_newask_email' or fnc == 'send_newbid_email' or fnc == 'send_partiallycompletedask_email' or fnc == 'send_partiallycompletedbid_email' or fnc == 'send_cancelask_email' or fnc == 'send_cancelbid_email':
+    # base_context['order']        = kwargs['order']
+    # if fnc != 'send_newask_email' and fnc != 'send_newbid_email':
+      # base_context['opers']        = kwargs['opers']
 
-  if fnc == 'send_completedask_email' or fnc == 'send_completedbid_email' or fnc == 'send_newask_email' or fnc == 'send_newbid_email' or fnc == 'send_partiallycompletedask_email' or fnc == 'send_partiallycompletedbid_email' or fnc == 'send_cancelask_email' or fnc == 'send_cancelbid_email':
-    base_context['order']        = kwargs['order']
-    if fnc != 'send_newask_email' and fnc != 'send_newbid_email':
-      base_context['opers']        = kwargs['opers']
-    
   if fnc == 'send_forgotpassword_email':
     base_context['reset_link']        = url_for('account-reset', token=user.reset_password_token, _full=True)
     base_context['cancel_reset_link'] = url_for('account-cancel_reset', token=user.reset_password_token, _full=True)
@@ -41,9 +50,22 @@ def mail_contex_for(fnc, user, **kwargs):
   base_context['server_url']  = 'http://%s' % get_request().host
   base_context['support_url'] = 'http://%s' % get_request().host
   base_context['user_email']  = user.email
-
+  
+  base_context = dict(base_context, **kwargs)
   return base_context
 
+def send_withdrawrequestars_email(context):      
+  send_user_email('withdraw_request_ars', context)
+
+def send_withdrawrequestbtc_email(context):      
+  send_user_email('withdraw_request_btc', context)
+
+def send_depositreceivedbtc_email(context):      
+  send_user_email('deposit_received_btc', context)
+  
+def send_depositreceivedars_email(context):      
+  send_user_email('deposit_received_ars', context)
+  
 def send_cancelask_email(context):      
   send_user_email('cancel_ask', context)
 

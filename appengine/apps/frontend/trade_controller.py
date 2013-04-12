@@ -11,7 +11,7 @@ from utils import FrontendHandler, need_auth, get_or_404
 from trader import Trader
 from trade_forms import BidForm, AskForm
 
-from mailer import send_newbid_email, send_newask_email, send_completedbid_email, send_completedask_email, send_cancelbid_email, send_cancelask_email, mail_contex_for
+from mailer import send_newbid_email, send_newask_email, send_cancelbid_email, send_cancelask_email, mail_contex_for
 
 class TradeController(FrontendHandler):
   
@@ -53,6 +53,16 @@ class TradeController(FrontendHandler):
       self.set_error(trade[1])
       return self.render_response('frontend/trade.html', active_tab=bid_ask, **kwargs)
     
+    if bid_ask == 'bid':
+      deferred.defer(send_newbid_email
+                        , mail_contex_for('send_newbid_email'
+                                        , user
+                                        , order=trade[0]))
+    else:
+      deferred.defer(send_newask_email
+                        , mail_contex_for('send_newask_email'
+                                        , user
+                                        , order=trade[0]))
     self.set_ok(u'La orden fue %s con éxito. (#%d)' % ('ingresada' if form.market() else 'completada',trade[0].key().id()) )
     
     #TODO: mandar a ejecutar
@@ -86,7 +96,19 @@ class TradeController(FrontendHandler):
       self.set_error(u'La orden (#%d) no pudo ser cancelada.' % order.key().id())
 
     bid_ask = 'bid' if order.is_bid() else 'ask'
-
+    
+    if result:
+      if bid_ask == 'bid':
+        deferred.defer(send_cancelbid_email
+                          , mail_contex_for('send_cancelbid_email'
+                                          , user
+                                          , order=trade[0]))
+      else:
+        deferred.defer(send_cancelask_email
+                          , mail_contex_for('send_cancelask_email'
+                                          , user
+                                          , order=trade[0]))
+    
     # HACKU: separar esto en dos forms para hacer todo mas sencillo
     if 'history' in self.request.referer:
       return self.redirect(self.request.referer)

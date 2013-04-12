@@ -326,6 +326,7 @@ def is_valid_cbu(cbu):
 
     return cbu_v2(total);
   
+  cbu = cbu.strip()
   if re.match(r"[0-9]{22}$", cbu) is None:
     return False
 
@@ -339,6 +340,6 @@ def is_valid_cbu(cbu):
 
 def is_valid_bitcoin_address(address):
   from electrum import bitcoin
-  return bitcoin.is_valid(address)
+  return bitcoin.is_valid(address.strip())
 
   

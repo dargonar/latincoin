@@ -3,6 +3,7 @@ import logging
 from decimal import Decimal
 
 from google.appengine.ext import db
+from google.appengine.ext import deferred
 
 from webapp2 import cached_property
 
@@ -10,6 +11,8 @@ from models import TradeOrder, BankAccount, UserBitcoinAddress, AccountOperation
 from utils import FrontendHandler, need_auth, get_or_404
 from trader import Trader
 from withdraw_forms import WithdrawBTCForm, WithdrawCurrencyForm
+
+from mailer import send_withdrawrequestbtc_email, send_withdrawrequestars_email, mail_contex_for
 
 class WithdrawController(FrontendHandler):
   
@@ -30,13 +33,19 @@ class WithdrawController(FrontendHandler):
       return self.render_response('frontend/withdraw.html', **kwargs)
 
     trader = Trader()
-    order = trader.add_widthdraw_btc_order(str(self.user), Decimal(form.amount.data), form.btc_address.data)
+    order = trader.add_withdraw_btc_order(str(self.user), Decimal(form.amount.data), form.btc_address.data)
     
     # Verificamos si se pudo ingresar la orden
     if not order[0]:
       self.set_error(order[1])
       return self.render_response('frontend/withdraw.html', **kwargs)
-
+    
+    deferred.defer(send_withdrawrequestbtc_email
+                        , mail_contex_for('send_withdrawrequestbtc_email'
+                                        , get_or_404(self.user)
+                                        , withdraw_amount  =  order[0].amount
+                                        , withdraw_address =  order[0].address))
+      
     self.set_ok(u'El pedido de retiro fue realizado con éxito. (#%d)' % (order[0].key().id()) )
 
     return self.redirect(self.url_for('withdraw-btc'))
@@ -69,13 +78,20 @@ class WithdrawController(FrontendHandler):
       return self.render_response('frontend/withdraw.html', **kwargs)
     
     trader = Trader()  
-    order = trader.add_widthdraw_currency_order(self.user, Decimal(form.amount.data), str(bank_account.key()))
+    order = trader.add_withdraw_currency_order(self.user, Decimal(form.amount.data), str(bank_account.key()))
     
     # Verificamos si se pudo ingresar la orden
     if not order[0]:
       self.set_error(order[1])
       return self.render_response('frontend/withdraw.html', **kwargs)
 
+    if order[0].currency.lower() == 'ars':
+      deferred.defer( send_withdrawrequestars_email
+                        , mail_contex_for('send_withdrawrequestars_email'
+                                        , get_or_404(self.user)
+                                        , withdraw_amount   =  order[0].amount
+                                        , withdraw_cbu      =  order[0].bank_account.cbu))
+                                        
     self.set_ok(u'El pedido de retiro fue realizado con éxito. (#%d)' % (order[0].key().id()) )
 
     return self.redirect(self.url_for('withdraw-currency'))
@@ -91,7 +107,7 @@ class WithdrawController(FrontendHandler):
     oper = self.mine_or_404(kwargs['key'], code=500, msg=u'Operación inválida')
 
     trader = Trader()
-    ret = trader.cancel_widthdraw_order(str(oper.key()))
+    ret = trader.cancel_withdraw_order(str(oper.key()))
     
     if ret[0]:
       self.set_ok(u'El pedido de retiro fue cancelado.')
