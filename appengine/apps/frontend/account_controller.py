@@ -10,7 +10,7 @@ from webapp2_extras.security import generate_password_hash, generate_random_stri
 from models import Account, AccountBalance, BitcoinAddress, Ticker
 
 from utils import FrontendHandler
-from account_forms import SignUpForm, ForgetPasswordForm, ResetPasswordForm
+from froms.account import SignUpForm, ForgetPasswordForm, ResetPasswordForm
 
 from mailer import send_welcome_email, send_forgotpassword_email, send_passwordchanged_email, mail_contex_for
 from bitcoin_helper import generate_new_address, encrypt_private
@@ -66,11 +66,7 @@ class AccountController(FrontendHandler):
     
     # No hay codigo o ya expiro el tiempo
     if not user or not user.can_confirm():
-      if user and user.user_forgot_confirm():
-        db.delete(user)
-        self.set_error(u'Recuerde que debe confirmar su correo dentro de la hora de haberse registrado. <br/> Deberá registrarse nuevamente.')
-      else:
-        self.set_error(u'<strong>Código de registro inválido</strong>')
+      self.set_error(u'<strong>Código de registro inválido o expirado</strong>')
       return self.redirect_to('account-signup')
 
     @db.transactional(xg=True)
@@ -85,16 +81,10 @@ class AccountController(FrontendHandler):
       if not addr['result']:
         raise(BaseException('no se puede generar direccion btc'))
 
-      #HACK BORRAR
-      if user.email == 'm@m.com':
-        addr['public']  = '1Hentff2dAtBtzwqpsRFXcnpMWeYov8VvD'
-        addr['private'] = '5HpHagT65TZzG1PH3CSu63k9NmovqAZNQs8s8VAXLZFRbhnEhZU'
-      #----
-
       btc_addr = BitcoinAddress(key_name    = addr['public'],
                                 user        = user,
                                 address     = addr['public'], 
-                                private_key = encrypt_private(addr['private'], user.password))
+                                private_key = encrypt_private(addr['private']))
 
       db.put([user, balance_curr, balance_btc, btc_addr])
 
@@ -163,22 +153,6 @@ class AccountController(FrontendHandler):
     self.set_ok(u'Si su correo existe en nuestro sitio, recibirá un enlace para crear un nuevo password en su correo.')
     return self.redirect_to('account-login')
 
-  def cancel_reset(self, **kwargs):
-
-    # Existe el token
-    user = Account.all().filter('reset_password_token =', kwargs['token']).get()
-    if not user:
-      return self.redirect_to('account-login')
-
-    @db.transactional(xg=True)
-    def _tx():
-      user.cancel_reset_token()
-      user.put()
-    _tx()
-
-    self.set_ok(u'El cambio de contraseña ha sido cancelado con éxito.')
-    return self.redirect_to('account-login')
-
     
   def reset(self, **kwargs):
 
@@ -219,14 +193,22 @@ class AccountController(FrontendHandler):
   def signup_form(self):
     return SignUpForm(self.request.POST)
 
-  # # DELETE
+
   def test_1(self):
-    
-    from bitcoin_helper import decrypt_private
-    user = Account.get(db.Key(self.user))
-    for ba in BitcoinAddress.all().filter('user =', user):
-      ddd = decrypt_private(ba.private_key, user.password)
-      self.response.write(ddd)
+    from bitcoin_helper import encrypt_private, decrypt_private, generate_new_address
+    from electrum.bitcoin import *
+
+    addy = generate_new_address()
+    if not addy['result']:
+      raise(BaseException('no se puede generar direccion btc'))
+
+    priv_enc = encrypt_private(addy['private'])
+    self.response.write(priv_enc + '</br>' )
+    asec = decrypt_private(priv_enc)
+    self.response.write(asec + '</br>' )
+    tmp = address_from_private_key(asec)
+    self.response.write(tmp + '</br>' )
+    self.response.write( str(tmp==addy['public']) + '</br>')
 
 
   # # DELETE
@@ -283,7 +265,7 @@ class AccountController(FrontendHandler):
   def init_all(self):
     from config import config
     from webapp2_extras.security import generate_random_string, check_password_hash
-    from init_mail import init_mails
+    from mail import init_mails
     
     from models import Dummy
     parent=Dummy.get_or_insert('trade_orders')

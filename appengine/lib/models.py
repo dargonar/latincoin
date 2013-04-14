@@ -8,7 +8,7 @@ from google.appengine.api import memcache
 from webapp2_extras.security import generate_password_hash, generate_random_string, check_password_hash
 
 from config import config
-from appengine_properties import DecimalProperty
+from appengine.properties import DecimalProperty
 
 def create_password(password):
   return generate_password_hash(password, method='sha256', pepper=config['my']['secret_key'])
@@ -117,30 +117,12 @@ class Account(db.Model):
   last_changepass_ip    = db.StringProperty()
   last_bad_changepass_at= db.DateTimeProperty()
   last_bad_changepass_ip= db.StringProperty()
-  
-  def bank_deposit_was_received(amount):
-    balance = filter(lambda x:x.currency.lower()=='ars',self.balances)
-    if len(balance)!=1:
-      return False
-    
-    @db.transactional(xg=False)
-    def _tx():
-      balance[0].amount += Decimal(amount)
-      balance[0].put()
-      from mailer import send_depositreceivedars_email, mail_contex_for
-      deferred.defer(send_depositreceivedars_email
-                        , mail_contex_for('send_depositreceivedars_email'
-                                        , self
-                                        , deposit_amount=amount))
-      return True
-    return _tx()
     
   def fail_change_pass(self, remote_addr):
     self.last_bad_changepass_at = datetime.now()
     self.last_bad_changepass_ip = remote_addr
 
   def change_password(self, new_password, remote_addr, is_reset=False):
-    from bitcoin_helper import encrypt_all_keys
     old_password = self.password
   
     self.password = generate_password_hash(new_password, method='sha256', pepper=config['my']['secret_key'])
@@ -154,14 +136,8 @@ class Account(db.Model):
       self.last_changepass_at   = datetime.now()
       self.last_changepass_ip   = remote_addr
 
-    # Re-encriptamos todas las llaves privadas del usuario
-    to_save = encrypt_all_keys(self, old_password)
-
     to_save.append(self)
     return to_save
-  
-  def cancel_reset_token(self): 
-    self.reset_password_token = ''
     
   def create_reset_token(self):
     self.reset_password_token = generate_random_string(length=40)
@@ -192,9 +168,6 @@ class Account(db.Model):
   def can_confirm(self):
     return ((datetime.now() - self.confirmation_sent_at).seconds < 3600 and self.confirmed_at is None)
   
-  def user_forgot_confirm(self):
-    return ((datetime.now() - self.confirmation_sent_at).seconds > 3600 and self.confirmed_at is None)
-    
   def confirm(self):
     self.email_verified     = True
     self.confirmed_at       = datetime.now()

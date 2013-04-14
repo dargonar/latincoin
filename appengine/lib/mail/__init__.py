@@ -143,11 +143,10 @@ def init_mails():
   template_txt = """
   Estimado {{user_email}},
   
-  Ha solicitado modificar su contraseña. Por favor siga el siguiente enlace para elegir una nueva contraseña:
+  Ha solicitado crear una nueva contraseña. Por favor siga el siguiente enlace para elegir una nueva contraseña:
   {{reset_link}}
   
-  Si usted no ha solicitado recuperación alguna, por favor siga el siguiente enlace:
-  {{cancel_reset_link}}
+  Si usted no ha solicitado este pedido, por favor ignore este email.
   
   {% include "signature_es" %}
   """.decode('utf-8')

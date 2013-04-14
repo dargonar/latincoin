@@ -64,7 +64,7 @@ class BlockChainProxy():
       raise JSONRPCException({'code' : 617, 'message' : 'unable to push tx: %s' % resp})
 
   def get_url(self, url):
-    logging.info(url)
+    #logging.info(url)
 
     conn = httplib.HTTPConnection('blockchain.info', 80, False, self.HTTP_TIMEOUT)
     conn.request('GET', url)

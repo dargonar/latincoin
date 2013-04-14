@@ -21,10 +21,15 @@ from electrum.bitcoin import address_from_private_key
 from bitcoinrpc import connection
 from bitcoinrpc.authproxy import JSONRPCException
 
-from account_functions import get_account_balance
+from exchanger import get_account_balance
 from trader import Trader
 
 class TasksController(RequestHandler):
+
+  def build_next_bar(self, **kwargs):
+
+    
+    for op in Operation.all().filter('status =', Operation.OPERATION_PENDING):
 
   def match_orders(self, **kwargs):
     
@@ -66,7 +71,7 @@ class TasksController(RequestHandler):
 
     for ftx in ForwardTx.all().filter('forwarded =', 'N'):
       src_add  = ftx.address.address
-      src_priv = decrypt_private(ftx.address.private_key, ftx.user.password)
+      src_priv = decrypt_private(ftx.address.private_key)
       
       dst_add  = config['my']['cold_wallet']
       tx_hash  = ftx.tx
@@ -77,6 +82,24 @@ class TasksController(RequestHandler):
       if not ok:
         logging.error('forward_tx error: generate_forward_transaction %s' % tx)
         continue
+
+      # Nota: aca puede ser el unico error donde queda en un estado incosistente pero arreglable
+      # manualmente.
+      # Caso 1: la tx se transmite => pero da timeout por network
+      #         * Da exception (Exception o JSONRPCException) -> no se actualiza la como enviada
+      #         * No se le actualiza el balance al usuario
+      #         * Pero la transaccion esta segura en la billetera offline
+      #         * Queda una ForwardTx dando error, por que ese input ya se "gasto"
+      #
+      # Caso 2: la tx de transmite => pero el salvado del ftx da exception
+      #         * Da exception (Exception o TransactionFailedError) -> no se actualiza la como enviada
+      #         * No se le actualiza el balance al usuario
+      #         * Pero la transaccion esta segura en la billetera offline
+      #         * Queda una ForwardTx dando error, por que ese input ya se "gasto"
+      #
+      # Quizas lo que hay que hacer simplemente es manejar bien el error de "ya gastada" y marcarla como enviada.
+      # Lo unico que se perderia en ese momento es el rawtx, dado que eso se guarda posteriori.
+      # Tambien se puede encuestar por esa transaccion ID y guardarlo (esta es la mejor)
 
       rawtx = tx.as_dict()['hex']
       try:

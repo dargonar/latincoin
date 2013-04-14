@@ -9,7 +9,7 @@ from webapp2 import cached_property
 from models import TradeOrder
 from utils import FrontendHandler, need_auth, get_or_404
 from trader import Trader
-from trade_forms import BidForm, AskForm
+from forms.trade import BidForm, AskForm
 
 from mailer import send_newbid_email, send_newask_email, send_cancelbid_email, send_cancelask_email, mail_contex_for
 

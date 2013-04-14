@@ -36,32 +36,22 @@ def zero_btc(value):
 def zero_cur(value):
   return value < ONE_PIP
 
-def encrypt_all_keys(user, old_password):
+def get_secure_key():
+  return sha256(config['my']['secret_key_2']).digest().encode('hex')[0:32]
 
-  to_save = []
-  for addy in BitcoinAddress.all().ancestor(user):
-    addy.private_key = decrypt_private(addy.private_key, old_password)
-    addy.private_key = encrypt_private(addy.private_key, user.password)
-    to_save.append(addy)
+def decrypt_private(crypt_priv_key):
+  return decryptData(get_secure_key(), crypt_priv_key.decode('hex'))
 
-  return to_save
-
-def get_key_for_passwd(passwd):
-  return sha256('%s%s' % (sha256(passwd).digest().encode('hex'), sha256(config['my']['secret_key_2']).digest().encode('hex'))).digest()
-
-def decrypt_private(crypt_priv_key, user_password):
-  return decryptData(get_key_for_passwd(user_password), crypt_priv_key.decode('hex'))
-
-def encrypt_private(plain_priv_key, user_password):
-  return encryptData(get_key_for_passwd(user_password), plain_priv_key).encode('hex')
+def encrypt_private(plain_priv_key):
+  return encryptData(get_secure_key(), plain_priv_key).encode('hex')
 
 def generate_new_address():
 
-  seed = random_seed(128)
+  seed = random_seed(256)
   int_seed = int('0x%s' % seed,16)
   
   pkey = EC_KEY(int_seed)
-
+  
   private_key = GetPrivKey(pkey)
   public_key = GetPubKey(pkey.pubkey)
   address = public_key_to_bc_address(public_key)

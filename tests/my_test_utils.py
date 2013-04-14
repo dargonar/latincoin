@@ -6,7 +6,7 @@ from google.appengine.ext import db
 
 from models import Account, TradeOrder, AccountBalance, Dummy, Operation, AccountOperation
 from trader import Trader
-from account_functions import get_account_balance
+from exchanger import get_account_balance
 
 class TestUtilMixin:
 

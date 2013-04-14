@@ -20,10 +20,49 @@ from webapp2 import abort, cached_property, RequestHandler, Response, HTTPExcept
 from webapp2_extras import jinja2, sessions, json
 
 from models import AccountBalance, Ticker
-from account_functions import get_account_balance
+from exchanger import get_account_balance
 
-from bitcoin_helper import encrypt_all_keys
-from myfilters import do_marketarrowfy, do_label_for_order, do_orderamountfy, do_time_distance_in_words, do_label_for_oper, do_operation_type
+from filters import *
+
+from jinja2 import BaseLoader, TemplateNotFound
+
+from models import JinjaTemplate
+
+class MyJinjaLoader(BaseLoader):
+
+  def __init__(self, path):
+    self.path = path
+
+  def get_source(self, environment, template):
+    
+    # memcacheado
+    mTemplate = JinjaTemplate.get_by_key_name(template) 
+    if mTemplate is None:
+      raise TemplateNotFound(template)
+    
+    do_reload = False
+    
+    if mTemplate.updated_at != mTemplate.last_read:
+      mTemplate.updated_at = mTemplate.last_read
+      mTemplate.put()
+      do_reload = True
+    
+    return mTemplate.source.decode('utf-8'), None, lambda: do_reload
+
+def get_template(template):
+    
+  # memcacheado
+  memcache_template_key = 'template_%s'%template
+  source = memcache.get(memcache_template_key)
+  if source is None:
+    mTemplate = JinjaTemplate.get_by_key_name(template) 
+    if mTemplate is None:
+      raise TemplateNotFound(template)
+  
+    source = mTemplate.source #.decode('utf-8')
+    memcache.add(memcache_template_key, source, 6000)
+  return source, None, False
+
 
 def read_blobstore_file(blob_key):  
   blob_reader = blobstore.BlobReader(blob_key)

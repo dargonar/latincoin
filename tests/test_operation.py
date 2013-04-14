@@ -11,7 +11,7 @@ from google.appengine.datastore import datastore_stub_util
 from models import Account, TradeOrder, AccountBalance, Dummy, Operation, AccountOperation
 from trader import Trader
 
-from account_functions import get_account_balance
+from exchanger import get_account_balance
 
 from my_test_utils import *
 from bitcoin_helper import zero_btc
