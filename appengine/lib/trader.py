@@ -9,7 +9,7 @@ from account_functions import get_account_balance
 
 from bitcoin_helper import zero_btc
 
-from mailer import send_depositreceivedbtc_email, mail_contex_for
+from mailer import send_depositreceivedbtc_email, send_acceptwithdrawrequestars_email, send_acceptwithdrawrequestbtc_email, send_donewithdrawrequestbtc_email, send_donewithdrawrequestars_email, mail_contex_for
 
 class Trader:
 
@@ -48,7 +48,70 @@ class Trader:
 
     _tx()
 
+  def close_withdraw_order(self, order_key):
+    
+    # TODO: assert input
+    assert(isinstance(order_key, basestring) and len(order_key) > 0 ), u'Key de orden inválida'
 
+    @db.transactional(xg=True)
+    def _tx():
+
+      # Tiene que ser una operacion pendiente y de retiro
+      ao = AccountOperation.get(db.Key(order_key))
+      if not ao.is_accepted() or not ao.is_money_out():
+        return [False, u'No se puede cerrar la orden']
+    
+      # Cambiamos el estado a cancelada
+      ao.set_done()
+
+      db.put([ao]) #, balance[ao.currency]
+      
+      if ao.is_btc():
+        deferred.defer( send_donewithdrawrequestbtc_email
+                          , mail_contex_for('send_donewithdrawrequestbtc_email'
+                                          , ao.account
+                                          , account_operation   =  ao))
+      else:
+        deferred.defer( send_donewithdrawrequestars_email
+                          , mail_contex_for('send_donewithdrawrequestars_email'
+                                          , ao.account
+                                          , account_operation   =  ao))
+      return [ao, u'ok']
+
+    return _tx()
+    
+  def accept_withdraw_order(self, order_key):
+    
+    # TODO: assert input
+    assert(isinstance(order_key, basestring) and len(order_key) > 0 ), u'Key de orden inválida'
+
+    @db.transactional(xg=True)
+    def _tx():
+
+      # Tiene que ser una operacion pendiente y de retiro
+      ao = AccountOperation.get(db.Key(order_key))
+      if not ao.is_pending() or not ao.is_money_out():
+        return [False, u'No se puede aceptar la orden']
+    
+      # Cambiamos el estado a cancelada
+      ao.set_accepted()
+
+      db.put([ao]) #, balance[ao.currency]
+      
+      if ao.is_btc():
+        deferred.defer( send_acceptwithdrawrequestbtc_email
+                          , mail_contex_for('send_acceptwithdrawrequestbtc_email'
+                                          , ao.account
+                                          , account_operation   =  ao))
+      else:
+        deferred.defer( send_acceptwithdrawrequestars_email
+                          , mail_contex_for('send_acceptwithdrawrequestars_email'
+                                          , ao.account
+                                          , account_operation   =  ao))
+      return [ao, u'ok']
+
+    return _tx()
+    
   def cancel_withdraw_order(self, order_key):
     
     # TODO: assert input
@@ -73,7 +136,6 @@ class Trader:
       return [ao, u'ok']
 
     return _tx()
-
 
   # validamos el cbu
   def add_withdraw_currency_order(self, user, amount, bank_account_key):
@@ -281,7 +343,6 @@ class Trader:
       return op
 
     return _tx()
-
 
   # Intenta matchear la mejor BID con la mejor ASK
   # Si hay posibilidades de trade, genera una nueva Operation 
@@ -505,7 +566,6 @@ class Trader:
       return res
 
     return _tx()
-
 
   # Agrega un limit order a la DB
   # Checkea dentro de una transaccion el balance disponible

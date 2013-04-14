@@ -224,7 +224,7 @@ class BankAccount(db.Model):
   updated_at            = db.DateTimeProperty(auto_now=True)
   active                = db.BooleanProperty(default=True)
   def __repr__(self):
-    return u'%s [%s]%s' % (self.description, self.cbu, ('' if self.active else ' - DESACTIVADA'))
+    return u'%s (%s)%s' % (self.description, self.cbu, ('' if self.active else ' - DESACTIVADA'))
     
 class UserBitcoinAddress(db.Model):
   address         = db.StringProperty(required=True)

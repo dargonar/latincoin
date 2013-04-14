@@ -54,6 +54,24 @@ def mail_contex_for(fnc, user, **kwargs):
   base_context = dict(base_context, **kwargs)
   return base_context
 
+def send_donewithdrawrequestars_email(context):      
+  send_user_email('done_withdraw_request_ars', context)
+
+def send_donewithdrawrequestbtc_email(context):      
+  send_user_email('done_withdraw_request_btc', context)
+  
+def send_acceptwithdrawrequestars_email(context):      
+  send_user_email('accept_withdraw_request_ars', context)
+
+def send_acceptwithdrawrequestbtc_email(context):      
+  send_user_email('accept_withdraw_request_btc', context)
+  
+def send_cancelwithdrawrequestars_email(context):      
+  send_user_email('cancel_withdraw_request_ars', context)
+
+def send_cancelwithdrawrequestbtc_email(context):      
+  send_user_email('cancel_withdraw_request_btc', context)
+  
 def send_withdrawrequestars_email(context):      
   send_user_email('withdraw_request_ars', context)
 

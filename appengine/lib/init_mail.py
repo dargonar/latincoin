@@ -9,6 +9,7 @@ def init_mails():
     
   # ----------------------------------------------------------------------------------  
   # partial templates ----------------------------------------------------------------  
+  
   # ----------------------------------------------------------------------------------  
   # trade_order_es
   name = 'trade_order_es'
@@ -76,6 +77,27 @@ def init_mails():
                                               , language  = 'es'
                                               , source    = template_txt)
   jinja_prt_tpl3.put()
+  
+  # ----------------------------------------------------------------------------------  
+  # money_out_operation //account_operation_es
+  name = 'money_inout_operation_es'
+  template_txt = """
+    ID:         #{{account_operation.key().id()|string}}
+    Fecha:      {{account_operation.updated_at.strftime("%Y-%m-%d %H:%M:%S")}}
+    Monto en {{'Pesos' if account_operation.currency=='ARS' else 'BTC'}}:  {{'%0.5f'|format(account_operation.amount|float)}}
+    {{'Dirección' if account_operation.bank_account is None else 'CBU'}} {{'destino' if account_operation == account_operation.MONEY_OUT else 'origen'}}:      ${{account_operation.address if account_operation.bank_account is None else account_operation.bank_account}}
+    --    
+  """.decode('utf-8')
+  
+  jinja_prt_tpl4 = JinjaTemplate.get_or_insert(name
+                                              , name      = name
+                                              , language  = 'es'
+                                              , source    = template_txt)
+  jinja_prt_tpl4.put()
+  
+  
+  # ----------------------------------------------------------------------------------  
+  # final templates ------------------------------------------------------------------
   
   # ----------------------------------------------------------------------------------  
   # welcome
@@ -503,6 +525,7 @@ def init_mails():
   Este mail no requiere respuesta.
   
   Se han acreditado {{'%0.5f'|format(deposit_amount)}} bitcoins en su cuenta LatinCoin. 
+  
   Gracias por su paciencia.
   
   Buenas ventas!
@@ -588,4 +611,208 @@ def init_mails():
                           , subject   = subject
                           , body_txt  = jinja_tpl14)
   mail_tpl14.put()
+  
+  # ----------------------------------------------------------------------------------
+  # cancela solicitud de retiro de pesos
+  name = 'cancel_withdraw_request_ars_es'
+  template_txt = """
+  Estimado {{user_email}},
+  
+  Este mail no requiere respuesta.
+  
+  Ha cancelado su solicitud de retiro de pesos argentinos.
+  
+  Detalle de la solicitud cancelada: 
+  
+  {% include "money_inout_operation_es" %}
+  
+  {% include "signature_es" %}
+  """.decode('utf-8')
+  
+  jinja_tpl15 = JinjaTemplate.get_or_insert( name
+                             , name  = name
+                             , language  = 'es'
+                             , source    = template_txt)
+  jinja_tpl13.put()
+  
+  name = 'mail_' + name
+  subject = """[LatinCoin] Solicitud de retiro de fondos cancelada""".decode('utf-8')
+  mail_tpl15 = MailTemplate.get_or_insert(  name
+                          , name  = name
+                          , language  = 'es'
+                          , subject   = subject
+                          , body_txt  = jinja_tpl15)
+  mail_tpl15.put()
+  
+  # ----------------------------------------------------------------------------------
+  # cancela solicitud de retiro de bitcoins
+  name = 'cancel_withdraw_request_btc_es'
+  template_txt = """
+  Estimado {{user_email}},
+  
+  Este mail no requiere respuesta.
+  
+  Ha cancelado su solicitud de retiro de bitcoins.
+  
+  Detalle de la solicitud cancelada: 
+  
+  {% include "money_inout_operation_es" %}
+  
+  {% include "signature_es" %}
+  """.decode('utf-8')
+  
+  jinja_tpl16 = JinjaTemplate.get_or_insert( name
+                             , name  = name
+                             , language  = 'es'
+                             , source    = template_txt)
+  jinja_tpl16.put()
+  
+  name = 'mail_' + name
+  subject = """[LatinCoin] Solicitud de retiro de bitcoins cancelada""".decode('utf-8')
+  mail_tpl16 = MailTemplate.get_or_insert(  name
+                          , name  = name
+                          , language  = 'es'
+                          , subject   = subject
+                          , body_txt  = jinja_tpl16)
+  mail_tpl16.put()
+  
+  # ----------------------------------------------------------------------------------
+  # solicitud de retiro de pesos aceptada
+  name = 'accept_withdraw_request_ars_es'
+  template_txt = """
+  Estimado {{user_email}},
+  
+  Este mail no requiere respuesta.
+  
+  Su solicitud de retiro de pesos argentinos ha sido aceptada.
+  
+  Detalle de la solicitud: 
+  
+  {% include "money_inout_operation_es" %}
+  
+  Los pesos se transferirán a la brevedad en la cuenta indicada.
+  
+  Gracias por su paciencia.
+  
+  {% include "signature_es" %}
+  """.decode('utf-8')
+  
+  jinja_tpl17 = JinjaTemplate.get_or_insert( name
+                             , name  = name
+                             , language  = 'es'
+                             , source    = template_txt)
+  jinja_tpl17.put()
+  
+  name = 'mail_' + name
+  subject = """[LatinCoin] Solicitud de retiro de fondos aceptada""".decode('utf-8')
+  mail_tpl17 = MailTemplate.get_or_insert(  name
+                          , name  = name
+                          , language  = 'es'
+                          , subject   = subject
+                          , body_txt  = jinja_tpl17)
+  mail_tpl17.put()
+  
+  # ----------------------------------------------------------------------------------
+  # solicitud de retiro de bitcoins aceptada
+  name = 'accept_withdraw_request_btc_es'
+  template_txt = """
+  Estimado {{user_email}},
+  
+  Este mail no requiere respuesta.
+  
+  Su solicitud de retiro de bitcoins ha sido aceptada.
+  
+  Detalle de la solicitud: 
+  
+  {% include "money_inout_operation_es" %}
+  
+  Los bitcoins se transferirán a la brevedad a la dirección indicada.
+  
+  Gracias por su paciencia.
+  
+  {% include "signature_es" %}
+  """.decode('utf-8')
+  
+  jinja_tpl18 = JinjaTemplate.get_or_insert( name
+                             , name  = name
+                             , language  = 'es'
+                             , source    = template_txt)
+  jinja_tpl18.put()
+  
+  name = 'mail_' + name
+  subject = """[LatinCoin] Solicitud de retiro de bitcoins aceptada""".decode('utf-8')
+  mail_tpl18 = MailTemplate.get_or_insert(  name
+                          , name  = name
+                          , language  = 'es'
+                          , subject   = subject
+                          , body_txt  = jinja_tpl18)
+  mail_tpl18.put()
+  
+  # ----------------------------------------------------------------------------------
+  # solicitud de retiro de pesos aceptada
+  name = 'done_withdraw_request_ars_es'
+  template_txt = """
+  Estimado {{user_email}},
+  
+  Este mail no requiere respuesta.
+  
+  Los pesos argentinos solicitados para retiro fueron enviados a la cuenta destino.
+  
+  Detalle de la operación: 
+  
+  {% include "money_inout_operation_es" %}
+  
+  Los pesos se acreditarán a la brevedad en la cuenta indicada.
+  
+  {% include "signature_es" %}
+  """.decode('utf-8')
+  
+  jinja_tpl19 = JinjaTemplate.get_or_insert( name
+                             , name  = name
+                             , language  = 'es'
+                             , source    = template_txt)
+  jinja_tpl19.put()
+  
+  name = 'mail_' + name
+  subject = """[LatinCoin] Retiro de fondos finalizado""".decode('utf-8')
+  mail_tpl19 = MailTemplate.get_or_insert(  name
+                          , name  = name
+                          , language  = 'es'
+                          , subject   = subject
+                          , body_txt  = jinja_tpl19)
+  mail_tpl19.put()
+  
+  # ----------------------------------------------------------------------------------
+  # solicitud de retiro de bitcoins aceptada
+  name = 'accept_withdraw_request_btc_es'
+  template_txt = """
+  Estimado {{user_email}},
+  
+  Este mail no requiere respuesta.
+  
+  Los bitcoins solicitados para para retiro fueron enviados a la dirección destino..
+  
+  Detalle de la operación: 
+  
+  {% include "money_inout_operation_es" %}
+  
+  Los bitcoins se acreditarán a la brevedad en la dirección indicada.
+  
+  {% include "signature_es" %}
+  """.decode('utf-8')
+  
+  jinja_tpl20 = JinjaTemplate.get_or_insert( name
+                             , name  = name
+                             , language  = 'es'
+                             , source    = template_txt)
+  jinja_tpl20.put()
+  
+  name = 'mail_' + name
+  subject = """[LatinCoin] Retiro de bitcoins finalizado""".decode('utf-8')
+  mail_tpl20 = MailTemplate.get_or_insert(  name
+                          , name  = name
+                          , language  = 'es'
+                          , subject   = subject
+                          , body_txt  = jinja_tpl20)
+  mail_tpl20.put()
   

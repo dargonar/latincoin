@@ -116,13 +116,10 @@ class OperationNotificationMapper(Mapper):
     return q
 
   def map(self, oper):
-    
-    
-    
-    logging.info(' Operation MAPPER begin')
-    
+    # Envio mail al comprador
     if oper.buyer_was_notified!= True:
-      # envio mail al user de la purchase_order
+      # Si esta activa significa que aún no se completó.
+      # Eviamos mail "parcialmente completada"
       if oper.purchase_order.status == TradeOrder.ORDER_ACTIVE:
         logging.info(' Mapper::enviando mail a %s', oper)
         deferred.defer(send_partiallycompletedbid_email
@@ -130,6 +127,7 @@ class OperationNotificationMapper(Mapper):
                                         , oper.purchase_order.user
                                         , order=oper.purchase_order
                                         , opers=filter(lambda x:x.traders_were_notified==False,oper.purchase_order.purchases)))
+      # Orden completada: eviamos mail "fully completada"
       elif oper.purchase_order.status == TradeOrder.ORDER_COMPLETED:
         logging.info(' Mapper::enviando mail a %s', oper)
         deferred.defer(send_completedbid_email
@@ -139,8 +137,10 @@ class OperationNotificationMapper(Mapper):
                                         , opers=filter(lambda x:x.traders_were_notified==False,oper.purchase_order.purchases)))
       oper.buyer_was_notified = True
       
+    # Envio mail al user de la sale_order
     if oper.seller_was_notified!= True:
-      # envio mail al user de la sale_order
+      # Si esta activa significa que aún no se completó.
+      # Eviamos mail "parcialmente completada"
       if oper.sale_order.status == TradeOrder.ORDER_ACTIVE:
         logging.info(' Mapper::enviando mail a %s', oper)
         deferred.defer(send_partiallycompletedask_email
@@ -148,6 +148,7 @@ class OperationNotificationMapper(Mapper):
                                         , oper.sale_order.user
                                         , order=oper.sale_order
                                         , opers=filter(lambda x:x.traders_were_notified==False,oper.sale_order.sales)))
+      # Orden completada: eviamos mail "fully completada"
       elif oper.sale_order.status == TradeOrder.ORDER_COMPLETED:
         logging.info(' Mapper::enviando mail a %s', oper)
         deferred.defer(send_completedask_email
@@ -164,14 +165,3 @@ class OperationNotificationMapper(Mapper):
   
   def finish(self):
     pass
-    
-    
-    # if bid_ask == 'bid':
-      # deferred.defer(send_newbid_email, mail_contex_for('send_newbid_email', user, order=trade[0]))
-      # if form.market()!=True:
-        # deferred.defer(send_completedbid_email, mail_contex_for('send_completedbid_email', user, order=trade[0], opers=trade[0].purchases))
-    # else:
-      # deferred.defer(send_newask_email, mail_contex_for('send_newask_email', user, order=trade[0]))
-      # if form.market()!=True:
-        # deferred.defer(send_completedask_email, mail_contex_for('send_completedask_email', user, order=trade[0], opers=trade[0].sales))
-    
