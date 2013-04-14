@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
-import fix_path
-
 import logging
+
 from decimal import Decimal
 from random import uniform
-
 
 from google.appengine.ext import db
 from google.appengine.ext import deferred

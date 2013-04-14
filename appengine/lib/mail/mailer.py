@@ -38,8 +38,7 @@ def mail_contex_for(fnc, user, **kwargs):
       # base_context['opers']        = kwargs['opers']
 
   if fnc == 'send_forgotpassword_email':
-    base_context['reset_link']        = url_for('account-reset', token=user.reset_password_token, _full=True)
-    base_context['cancel_reset_link'] = url_for('account-cancel_reset', token=user.reset_password_token, _full=True)
+    base_context['reset_link'] = url_for('account-reset', token=user.reset_password_token, _full=True)
     
   if fnc == 'send_welcome_email':
     base_context['confirm_link'] = url_for('account-confirm', token=user.confirmation_token, _full=True)
@@ -128,7 +127,7 @@ def send_user_email(email_type, context):
   logging.info('os.path[%s]   sys.path[%s]', os.path.abspath("."), sys.path)
   
   template = email_type
-  sender   = 'ptutino@gmail.com'
+  sender   = 'admin@latincoin.com'
     
   template_key = get_mailtemplate_key(template)  
   mMailTemplate = MailTemplate.get_by_key_name(template_key)

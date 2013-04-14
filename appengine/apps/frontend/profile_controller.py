@@ -18,11 +18,11 @@ from models import Account, AccountValidationFile, UserBitcoinAddress, BankAccou
 from config import config
 from utils import FrontendHandler, need_auth, get_or_404, abort, is_valid_bitcoin_address, is_valid_cbu
 
-from profile_forms import ProfileForm, ChangePasswordForm, BankAccountForm, UserBitcoinAddressForm
+from forms.profile import ProfileForm, ChangePasswordForm, BankAccountForm, UserBitcoinAddressForm
 
 import json, re, urllib
 
-from file_upload import UploadHandler
+from appengine.file_upload import UploadHandler
 
 from mailer import send_passwordchanged_email, mail_contex_for
 

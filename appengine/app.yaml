@@ -1,4 +1,4 @@
-application: btc-xchange
+application: latincoin
 version: 0_0_1
 runtime: python27
 api_version: 1

@@ -10,7 +10,7 @@ from webapp2 import cached_property
 from models import TradeOrder, BankAccount, UserBitcoinAddress, AccountOperation
 from utils import FrontendHandler, need_auth, get_or_404
 from trader import Trader
-from withdraw_forms import WithdrawBTCForm, WithdrawCurrencyForm
+from forms.withdraw import WithdrawBTCForm, WithdrawCurrencyForm
 
 from mailer import send_withdrawrequestbtc_email, send_withdrawrequestars_email, send_cancelwithdrawrequestbtc_email, send_cancelwithdrawrequestars_email, mail_contex_for
 
