@@ -407,9 +407,6 @@ class PriceBar(db.Model):
   bar_time              = db.IntegerProperty(required=True)
   bar_interval          = db.IntegerProperty(required=True, choices=[M1,H1,H24])
 
-  year                  = db.IntegerProperty(required=True)
-  month                 = db.IntegerProperty(required=True)
-  day                   = db.IntegerProperty(required=True)
   created_at            = db.DateTimeProperty(auto_now_add=True)
 
   def next_bar(self):

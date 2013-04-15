@@ -46,8 +46,6 @@ class TasksController(RequestHandler):
 
     ohlc = get_ohlc(from_ts, to_ts, last_bar.close)
 
-    date = datetime.fromtimestamp(new_bar_time * last_bar.bar_interval)
-
     # Aramamos el próximo bar
     next_bar = PriceBar(open         = ohlc['open'],
                         high         = ohlc['high'],
@@ -55,10 +53,7 @@ class TasksController(RequestHandler):
                         close        = ohlc['close'],
                         volume       = ohlc['volume'], 
                         bar_time     = new_bar_time,
-                        bar_interval = last_bar.bar_interval,
-                        year         = date.year,
-                        month        = date.month,
-                        day          = date.day)
+                        bar_interval = last_bar.bar_interval)
 
     next_bar.put()
         

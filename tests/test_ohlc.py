@@ -127,10 +127,7 @@ class TestOHLC(unittest.TestCase, TestUtilMixin):
                           close        = ohlc['close'],
                           volume       = ohlc['volume'], 
                           bar_time     = new_bar_time,
-                          bar_interval = last_bar.bar_interval,
-                          year         = date.year,
-                          month        = date.month,
-                          day          = date.day)
+                          bar_interval = last_bar.bar_interval)
 
       next_bar.put()
         
