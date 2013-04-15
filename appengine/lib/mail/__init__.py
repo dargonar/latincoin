@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 import logging
 from google.appengine.ext import db
 
@@ -109,7 +110,7 @@ def init_mails():
   
   Su usuario: {{user_email}}
   
-  Con el fin de habilitar su cuenta, tendrá que ingresar la siguiente dirección o copiarla en su navegador:
+  Con el fin de habilitar su cuenta, tendrá que ingresar la siguiente dirección:
   {{confirm_link}}
   
   {% include "signature_es" %}
