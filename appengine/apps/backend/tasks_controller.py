@@ -4,6 +4,7 @@ import pickle
 import hashlib
 import time
 
+from datetime import datetime
 from decimal import Decimal
 
 from google.appengine.ext import db
@@ -32,11 +33,12 @@ class TasksController(RequestHandler):
     
     # Traemos la ultima barra de hora
     last_bar = PriceBar.all().filter('bar_interval =', PriceBar.M1) \
-                             .order('bar_time') \
+                             .order('-bar_time') \
                              .get()
     
     # Tenemos que armar la siguiente?
-    have_to_build, new_bar_time, now = last_bar.next_bar()
+    have_to_build, new_bar_time  = last_bar.next_bar()
+    logging.error('%s;%s' % (have_to_build, new_bar_time) )
     if not have_to_build:
       return
 
@@ -44,19 +46,23 @@ class TasksController(RequestHandler):
     from_ts = datetime.fromtimestamp(last_bar.bar_time * last_bar.bar_interval)
     to_ts   = datetime.fromtimestamp(new_bar_time * last_bar.bar_interval)
 
-    ohcl = get_ohlc(from_ts, to_ts)
+    ohlc = get_ohlc(from_ts, to_ts, last_bar.close)
+    date = datetime.fromtimestamp(new_bar_time * last_bar.bar_interval)
+
+    logging.error(ohlc)
+    logging.error(date)
 
     # Aramamos el próximo bar
-    next_bar = PriceBar(open         = ohcl['open'],
-                        high         = ohcl['high'],
-                        low          = ohcl['low'],
-                        close        = ohcl['close'],
-                        volume       = ohcl['volume'], 
+    next_bar = PriceBar(open         = ohlc['open'],
+                        high         = ohlc['high'],
+                        low          = ohlc['low'],
+                        close        = ohlc['close'],
+                        volume       = ohlc['volume'], 
                         bar_time     = new_bar_time,
                         bar_interval = last_bar.bar_interval,
-                        year         = now.year,
-                        month        = now.month,
-                        day          = now.day)
+                        year         = date.year,
+                        month        = date.month,
+                        day          = date.day)
 
     next_bar.put()
 
