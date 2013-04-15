@@ -13,7 +13,7 @@ from webapp2 import abort, cached_property, RequestHandler, Response, HTTPExcept
 from models import Ticker, Operation, TradeOrder
 from mailer import send_partiallycompletedbid_email, send_completedbid_email, send_partiallycompletedask_email, send_completedask_email, mail_contex_for
 
-from mappers import Mapper
+from appegine.mapper import Mapper
 
 class TickerMapper(Mapper):
   KIND        = Operation

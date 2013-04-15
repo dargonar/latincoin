@@ -2,6 +2,7 @@
 import logging
 import pickle
 import hashlib
+import time
 
 from decimal import Decimal
 
@@ -10,7 +11,7 @@ from google.appengine.ext import db
 from webapp2 import RequestHandler, uri_for as url_for
 
 from config import config
-from models import Block, BitcoinAddress, ForwardTx, Operation, get_system_config
+from models import PriceBar, Block, BitcoinAddress, ForwardTx, Operation, get_system_config
 
 from utils import create_blobstore_file, read_blobstore_file, remove_blobstore_file
 from google.appengine.api import taskqueue
@@ -21,15 +22,42 @@ from electrum.bitcoin import address_from_private_key
 from bitcoinrpc import connection
 from bitcoinrpc.authproxy import JSONRPCException
 
-from exchanger import get_account_balance
-from trader import Trader
+from exchanger import get_account_balance, get_ohlc
+
 
 class TasksController(RequestHandler):
 
   def build_next_bar(self, **kwargs):
-
     
-    for op in Operation.all().filter('status =', Operation.OPERATION_PENDING):
+    # Traemos la ultima barra de hora
+    last_bar = PriceBar.all().filter('bar_interval =', PriceBar.M1) \
+                             .order('bar_time') \
+                             .get()
+    
+    # Tenemos que armar la siguiente?
+    have_to_build, new_bar_time, now = last_bar.next_bar()
+    if not have_to_build:
+      return
+
+    # Limites de fechas
+    from_ts = datetime.fromtimestamp(last_bar.bar_time * last_bar.bar_interval)
+    to_ts   = datetime.fromtimestamp(new_bar_time * last_bar.bar_interval)
+
+    ohcl = get_ohlc(from_ts, to_ts)
+
+    # Aramamos el próximo bar
+    next_bar = PriceBar(open         = ohcl['open'],
+                        high         = ohcl['high'],
+                        low          = ohcl['low'],
+                        close        = ohcl['close'],
+                        volume       = ohcl['volume'], 
+                        bar_time     = new_bar_time,
+                        bar_interval = last_bar.bar_interval,
+                        year         = now.year,
+                        month        = now.month,
+                        day          = now.day)
+
+    next_bar.put()
 
   def match_orders(self, **kwargs):
     

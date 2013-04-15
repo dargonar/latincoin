@@ -19,50 +19,10 @@ from google.appengine.api import files
 from webapp2 import abort, cached_property, RequestHandler, Response, HTTPException, uri_for as url_for, get_app
 from webapp2_extras import jinja2, sessions, json
 
-from models import AccountBalance, Ticker
+from models import AccountBalance
 from exchanger import get_account_balance
 
 from filters import *
-
-from jinja2 import BaseLoader, TemplateNotFound
-
-from models import JinjaTemplate
-
-class MyJinjaLoader(BaseLoader):
-
-  def __init__(self, path):
-    self.path = path
-
-  def get_source(self, environment, template):
-    
-    # memcacheado
-    mTemplate = JinjaTemplate.get_by_key_name(template) 
-    if mTemplate is None:
-      raise TemplateNotFound(template)
-    
-    do_reload = False
-    
-    if mTemplate.updated_at != mTemplate.last_read:
-      mTemplate.updated_at = mTemplate.last_read
-      mTemplate.put()
-      do_reload = True
-    
-    return mTemplate.source.decode('utf-8'), None, lambda: do_reload
-
-def get_template(template):
-    
-  # memcacheado
-  memcache_template_key = 'template_%s'%template
-  source = memcache.get(memcache_template_key)
-  if source is None:
-    mTemplate = JinjaTemplate.get_by_key_name(template) 
-    if mTemplate is None:
-      raise TemplateNotFound(template)
-  
-    source = mTemplate.source #.decode('utf-8')
-    memcache.add(memcache_template_key, source, 6000)
-  return source, None, False
-
 
 def read_blobstore_file(blob_key):  
   blob_reader = blobstore.BlobReader(blob_key)
@@ -176,7 +136,7 @@ class Jinja2Mixin(object):
     
     
     # cargamos el ticker
-    env.globals['ticker']         = self.ticker
+    #env.globals['ticker']         = self.ticker
     env.filters['marketarrowfy']  = do_marketarrowfy
     env.filters['label_for_order']= do_label_for_order
     env.filters['orderamountfy']  = do_orderamountfy
@@ -249,20 +209,6 @@ class FrontendHandler(MyBaseHandler):
   def update_user_info(self, user):
     self.session['account.name'] = user.name if user.name and len(user.name) else user.email
     self.session['account.verified'] = user.email_verified
-
-  @property
-  def ticker(self):
-    data = memcache.get('ticker')
-    if data is None:
-      last_ticker = Ticker.all() \
-              .order('created_at') \
-              .get()
-      
-      data = SessionTicker(last_ticker)
-      memcache.add('ticker', data, 60)
-      
-    return data 
-      
       
   def do_logout(self):
     self.session.clear()

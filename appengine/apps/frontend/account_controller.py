@@ -7,12 +7,12 @@ from google.appengine.ext import db
 from webapp2 import cached_property
 from webapp2_extras.security import generate_password_hash, generate_random_string, check_password_hash
 
-from models import Account, AccountBalance, BitcoinAddress, Ticker
+from models import Account, AccountBalance, BitcoinAddress
 
 from utils import FrontendHandler
-from froms.account import SignUpForm, ForgetPasswordForm, ResetPasswordForm
+from forms.account import SignUpForm, ForgetPasswordForm, ResetPasswordForm
 
-from mailer import send_welcome_email, send_forgotpassword_email, send_passwordchanged_email, mail_contex_for
+from mail.mailer import send_welcome_email, send_forgotpassword_email, send_passwordchanged_email, mail_contex_for
 from bitcoin_helper import generate_new_address, encrypt_private
 
 class AccountController(FrontendHandler):
@@ -265,7 +265,6 @@ class AccountController(FrontendHandler):
   def init_all(self):
     from config import config
     from webapp2_extras.security import generate_random_string, check_password_hash
-    from mail import init_mails
     
     from models import Dummy
     parent=Dummy.get_or_insert('trade_orders')
@@ -308,23 +307,29 @@ class AccountController(FrontendHandler):
     b = Block( key=db.Key.from_path('Block',last_block), processed='Y', number=last_block, hash='n/a', txs=0)
     b.put()
 
-    dummy_ticker = Ticker.get_or_insert('dummy_ticker',
-                          status                = Ticker.DONE,
-                          last_price            = Decimal('0.0'),
-                          avg_price             = Decimal('0.0'),
-                          high                  = Decimal('0.0'),
-                          low                   = Decimal('0.0'),
-                          volume                = Decimal('0.0'),  
-                          last_price_slope      = 0,
-                          avg_price_slope       = 0,
-                          high_slope            = 0,
-                          low_slope             = 0,
-                          volume_slope          = 0,
-                          open                  = Decimal('0.0'),  
-                          close                 = Decimal('0.0'), 
-                        )
-    dummy_ticker.put()
+    from models import PriceBar
+    import time
+    nowts = time.time()
+
+    bar_time = int(nowts/PriceBar.M1)
+
+    now = datetime.fromtimestamp(bar_time)
+
+    from models import PriceBar
+    dummy_bar = PriceBar.get_or_insert('dummy_bar',
+                        open     = 0,
+                        high     = 0,
+                        low      = 0,
+                        close    = 0,
+                        volume   = 0, 
+                        bar_time = bar_time,
+                        bar_interval = PriceBar.M1,
+                        year     = now.year,
+                        month    = now.month,
+                        day      = now.day)
+    dummy_bar.put()
     
+    from mail import init_mails
     init_mails()
     
     self.response.write('lito')

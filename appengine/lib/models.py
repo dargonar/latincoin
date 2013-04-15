@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 import decimal
+import time
+
 from datetime import datetime, timedelta
 
 from google.appengine.ext import db, blobstore
@@ -387,29 +389,36 @@ class ForwardTx(db.Model):
   created_at            = db.DateTimeProperty(auto_now_add=True)
   updated_at            = db.DateTimeProperty(auto_now=True)
 
-class Ticker(db.Model):
-  IN_PROGRESS           = 'InProgress'
-  DONE                  = 'Done'
-  status                = db.StringProperty(required=True, choices=[IN_PROGRESS, DONE])
+class PriceBar(db.Model):
   
-  last_price            = DecimalProperty(required=True) #lo traemos de la ultima operacion
-  avg_price             = DecimalProperty(required=True)
-  high                  = DecimalProperty(required=True)
-  low                   = DecimalProperty(required=True)
-  volume                = DecimalProperty(required=True)
-  
-  open                  = DecimalProperty(required=True)
-  close                 = DecimalProperty(required=True)
-  
-  last_price_slope      = db.IntegerProperty(default=0) #lo traemos de la ultima operacion
-  avg_price_slope       = db.IntegerProperty(default=0)
-  high_slope            = db.IntegerProperty(default=0)
-  low_slope             = db.IntegerProperty(default=0)
-  volume_slope          = db.IntegerProperty(default=0)
-  
-  created_at            = db.DateTimeProperty(auto_now_add=True) # uno por HORA
-  updated_at            = db.DateTimeProperty(auto_now=True)
+  M1    = 60
+  H1    = 3600
+  H24   = 86400
 
+  open                  = db.IntegerProperty(required=True)
+  high                  = db.IntegerProperty(required=True)
+  low                   = db.IntegerProperty(required=True)
+  close                 = db.IntegerProperty(required=True)
+  volume                = db.IntegerProperty(required=True)
+  
+  bar_time              = db.IntegerProperty(required=True)
+  bar_interval          = db.IntegerProperty(required=True, choices=[M1,H1,H24])
+
+  year                  = db.IntegerProperty(required=True)
+  month                 = db.IntegerProperty(required=True)
+  day                   = db.IntegerProperty(required=True)
+  created_at            = db.DateTimeProperty(auto_now_add=True)
+
+  def next_bar(self):
+    now = time.time()
+
+    current_time_bar = int(now/self.bar_interval)
+    next_bar_time    = self.bar_time + self.bar_interval
+    
+    if current_time_bar >= next_bar_time:
+      return (True, next_bar_time, now)
+
+    return (False, 0, now)
 
 # <keyname= 'welcome' + LANG>
 # un registro por idioma    
@@ -421,7 +430,6 @@ class JinjaTemplate(db.Model):
   created_at            = db.DateTimeProperty(auto_now_add=True)
   updated_at            = db.DateTimeProperty(auto_now=True)
   type                  = db.StringProperty(indexed=False, default='txt')
-  pass
   
 # <keyname= 'mail_' + JinjaTemplate.key_name + LANG>
 # un registro por idioma

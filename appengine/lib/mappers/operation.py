@@ -1,4 +1,4 @@
-from mappers import Mapper
+from appengine.mapper import Mapper
 
 class OperationNotificationMapper(Mapper):
   KIND        = Operation
