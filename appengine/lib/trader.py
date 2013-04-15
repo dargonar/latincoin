@@ -9,7 +9,7 @@ from account_functions import get_account_balance
 
 from bitcoin_helper import zero_btc
 
-from mailer import send_depositreceivedbtc_email, send_acceptwithdrawrequestars_email, send_acceptwithdrawrequestbtc_email, send_donewithdrawrequestbtc_email, send_donewithdrawrequestars_email, mail_contex_for
+from mailer import enqueue_mail_tx
 
 class Trader:
 
@@ -39,11 +39,8 @@ class Trader:
 
       db.put([ftx, balance['BTC'], add_btc_op])
       
-      deferred.defer(send_depositreceivedbtc_email
-                        , mail_contex_for('send_depositreceivedbtc_email'
-                                        , ftx.user
-                                        , deposit_amount=ftx.value))
-      
+      enqueue_mail_tx('send_depositreceivedbtc_email', dict({'user_key':ftx.user, 'deposit_amount'=ftx.value}))
+    
       return True
 
     _tx()
@@ -66,16 +63,9 @@ class Trader:
 
       db.put([ao]) #, balance[ao.currency]
       
-      if ao.is_btc():
-        deferred.defer( send_donewithdrawrequestbtc_email
-                          , mail_contex_for('send_donewithdrawrequestbtc_email'
-                                          , ao.account
-                                          , account_operation   =  ao))
-      else:
-        deferred.defer( send_donewithdrawrequestars_email
-                          , mail_contex_for('send_donewithdrawrequestars_email'
-                                          , ao.account
-                                          , account_operation   =  ao))
+      mail = 'send_donewithdrawrequestbtc_email' if ao.is_btc() else 'send_donewithdrawrequestars_email'
+      enqueue_mail_tx(mail, dict({'user_key':str(ao.account.key()), 'account_operation_key':str(ao.key())}))
+      
       return [ao, u'ok']
 
     return _tx()
@@ -98,16 +88,9 @@ class Trader:
 
       db.put([ao]) #, balance[ao.currency]
       
-      if ao.is_btc():
-        deferred.defer( send_acceptwithdrawrequestbtc_email
-                          , mail_contex_for('send_acceptwithdrawrequestbtc_email'
-                                          , ao.account
-                                          , account_operation   =  ao))
-      else:
-        deferred.defer( send_acceptwithdrawrequestars_email
-                          , mail_contex_for('send_acceptwithdrawrequestars_email'
-                                          , ao.account
-                                          , account_operation   =  ao))
+      mail = 'send_acceptwithdrawrequestbtc_email' if ao.is_btc() else 'send_acceptwithdrawrequestars_email'
+      enqueue_mail_tx(mail, dict({'user_key':str(ao.account.key()), 'account_operation_key':str(ao.key())}))
+      
       return [ao, u'ok']
 
     return _tx()
@@ -132,7 +115,10 @@ class Trader:
       balance[ao.currency].amount += (-ao.amount)
 
       db.put([ao, balance[ao.currency]])
-
+      
+      mail = 'send_cancelwithdrawrequestbtc_email' if ao.is_btc() else 'send_cancelwithdrawrequestars_email'
+      enqueue_mail_tx(mail, dict({'user_key':str(ao.account.key()), 'account_operation_key':str(ao.key())}))
+      
       return [ao, u'ok']
 
     return _tx()
@@ -178,7 +164,10 @@ class Trader:
       balance[currency].amount -= amount
       
       db.put([balance[currency], withdraw_op])
-
+      
+      mail = 'send_withdrawrequestbtc_email' if bank_account is None else 'send_withdrawrequestars_email'
+      enqueue_mail_tx(mail, dict({'user_key':user, 'account_operation_key':str(withdraw_op.key())}))
+      
       return [withdraw_op, u'ok']
 
     return _tx()
@@ -209,8 +198,12 @@ class Trader:
       else:
         balance = user_balance['BTC']
         balance.amount_comp -= order.amount
-
+      
       db.put([order, balance])
+      
+      mail = 'send_cancelbid_email' if order.bid_ask == TradeOrder.BID_ORDER else 'send_cancelask_email'
+      enqueue_mail_tx(mail, dict({'user_key':str(order.user.key()), 'order_key':order_key}))
+    
       return True
 
     return _tx()
@@ -466,7 +459,10 @@ class Trader:
                     )
       to.put()
 
-
+      mail = 'send_newbid_email' if bid_ask == TradeOrder.BID_ORDER else 'send_newask_email'
+      enqueue_mail_tx(mail, dict({'user_key':user_key, 'order_key':str(to.key())}))
+      
+      
       # Itermaos las ordenes de a batch 20 (default appstore)
       # Si la orden es un ASK (venta) : traemos las bids ordenadas
       # Si la orden es un BID (compra): traemos las ask ordenadas
@@ -620,6 +616,10 @@ class Trader:
       balance = balance['BTC'] if bid_ask == TradeOrder.ASK_ORDER else balance['ARS']
 
       db.put([balance,to])
+      
+      mail = 'send_newbid_email' if bid_ask == TradeOrder.BID_ORDER else 'send_newask_email'
+      enqueue_mail_tx(mail, dict({'user_key':user, 'order_key':str(to.key())}))
+      
       return [to, u'ok']
 
     return _tx()

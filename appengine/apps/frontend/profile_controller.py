@@ -5,7 +5,6 @@ from urllib import quote_plus,unquote_plus
 
 from google.appengine.ext import db, blobstore
 from google.appengine.ext.webapp import blobstore_handlers
-from google.appengine.ext import deferred
 
 from google.appengine.api import images, files
 from google.appengine.api.images import get_serving_url
@@ -24,7 +23,7 @@ import json, re, urllib
 
 from appengine.file_upload import UploadHandler
 
-from mailer import send_passwordchanged_email, mail_contex_for
+from mailer import enqueue_mail_tx
 
 from onetimepass import *
 from gaeqrcode.PyQRNative import QRErrorCorrectLevel
@@ -236,7 +235,7 @@ class ProfileController(FrontendHandler, UploadHandler):
         to_save = user.change_password(new_password, self.request.remote_addr)
         db.put(to_save)
         # Mandamos email de aviso de cambio de clave
-        deferred.defer(send_passwordchanged_email, mail_contex_for('send_passwordchanged_email', user))
+        enqueue_mail_tx('send_passwordchanged_email', dict({'user_key':self.user}))
       _tx()
       
       self.set_ok(u'La contraseña fue modificada con éxito.')

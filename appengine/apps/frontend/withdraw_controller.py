@@ -12,8 +12,6 @@ from utils import FrontendHandler, need_auth, get_or_404
 from trader import Trader
 from forms.withdraw import WithdrawBTCForm, WithdrawCurrencyForm
 
-from mailer import send_withdrawrequestbtc_email, send_withdrawrequestars_email, send_cancelwithdrawrequestbtc_email, send_cancelwithdrawrequestars_email, mail_contex_for
-
 class WithdrawController(FrontendHandler):
   
   @need_auth()
@@ -40,11 +38,6 @@ class WithdrawController(FrontendHandler):
       self.set_error(order[1])
       return self.render_response('frontend/withdraw.html', **kwargs)
     
-    deferred.defer(send_withdrawrequestbtc_email
-                        , mail_contex_for('send_withdrawrequestbtc_email'
-                                        , get_or_404(self.user)
-                                        , account_operation   =  order[0]))
-      
     self.set_ok(u'El pedido de retiro fue realizado con éxito. (#%d)' % (order[0].key().id()) )
 
     return self.redirect(self.url_for('withdraw-btc'))
@@ -84,12 +77,6 @@ class WithdrawController(FrontendHandler):
       self.set_error(ret[1])
       return self.render_response('frontend/withdraw.html', **kwargs)
 
-    if ret[0].currency.lower() == 'ars':
-      deferred.defer( send_withdrawrequestars_email
-                        , mail_contex_for('send_withdrawrequestars_email'
-                                        , get_or_404(self.user)
-                                        , account_operation   =  ret[0]))
-                                        
     self.set_ok(u'El pedido de retiro fue realizado con éxito. (#%d)' % (ret[0].key().id()) )
 
     return self.redirect(self.url_for('withdraw-currency'))
@@ -109,16 +96,6 @@ class WithdrawController(FrontendHandler):
     
     if ret[0]:
       self.set_ok(u'El pedido de retiro fue cancelado.')
-      if ret[0].is_btc():
-        deferred.defer( send_cancelwithdrawrequestbtc_email
-                          , mail_contex_for('send_cancelwithdrawrequestbtc_email'
-                                          , get_or_404(self.user)
-                                          , account_operation   =  ret[0]))
-      else:
-        deferred.defer( send_cancelwithdrawrequestars_email
-                          , mail_contex_for('send_cancelwithdrawrequestars_email'
-                                          , get_or_404(self.user)
-                                          , account_operation   =  ret[0]))
     else:
       self.set_error(ret[1])
     

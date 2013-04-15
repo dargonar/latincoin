@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import logging
 
+from google.appengine.api import taskqueue
 from google.appengine.api import mail
 
 from webapp2 import uri_for as url_for, get_app, get_request
@@ -19,24 +20,29 @@ import sys
 #sys.path.append(os.path.join(os.path.dirname(__file__), ''))
 sys.path.append(os.path.join(os.path.abspath("."), "lib"))
 
-def mail_contex_for(fnc, user, **kwargs):
+def enqueue_mail(mail, **kwargs):
+  taskqueue.add(url=url_for('task-send-mail'), params=dict({'mail':mail}, **kwargs))
+  return
+
+def enqueue_mail_tx(mail, **kwargs):
+  taskqueue.add(url=url_for('task-send-mail'), params=dict({'mail':mail}, **kwargs), transactional=True)
+  return
+  
+def send_mail(mail, params):
+  ctx = mail_contex_for(mail, params)
+  getattr(self, mail)(ctx)
+    
+def mail_contex_for(fnc, **kwargs):
   
   base_context = {}
-  # if fnc == 'deposit_received_ars':
-    # base_context['deposit_amount']  = kwargs['deposit_amount'] 
-  # if fnc == 'deposit_received_btc': 
-    # base_context['deposit_amount']  = kwargs['deposit_amount'] 
-  # if fnc == 'withdraw_request_ars': 
-    # base_context['withdraw_amount']  = kwargs['withdraw_amount'] 
-    # base_context['withdraw_cbu']  = kwargs['withdraw_cbu'] 
-  # if fnc == 'withdraw_request_btc': 
-    # base_context['withdraw_amount']  = kwargs['withdraw_amount'] 
-    # base_context['withdraw_address']  = kwargs['withdraw_address']   
-  # if fnc == 'send_completedask_email' or fnc == 'send_completedbid_email' or fnc == 'send_newask_email' or fnc == 'send_newbid_email' or fnc == 'send_partiallycompletedask_email' or fnc == 'send_partiallycompletedbid_email' or fnc == 'send_cancelask_email' or fnc == 'send_cancelbid_email':
-    # base_context['order']        = kwargs['order']
-    # if fnc != 'send_newask_email' and fnc != 'send_newbid_email':
-      # base_context['opers']        = kwargs['opers']
-
+  user = db.get(db.Key(kwargs['user_key']))
+  
+  if fnc in ('send_newbid_email', 'send_newask_email', 'send_donewithdrawrequestbtc_email', 'send_donewithdrawrequestars_email'):
+    base_context['order'] = db.get(db.Key(kwargs['order_key']))
+  
+  if fnc in ('send_acceptwithdrawrequestbtc_email','send_acceptwithdrawrequestars_email'):
+    base_context['account_operation'] = db.get(db.Key(kwargs['account_operation_key']))
+  
   if fnc == 'send_forgotpassword_email':
     base_context['reset_link'] = url_for('account-reset', token=user.reset_password_token, _full=True)
     

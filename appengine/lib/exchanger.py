@@ -9,7 +9,7 @@ from models import TradeOrder, Operation, Account, AccountOperation, Dummy, Forw
 
 from bitcoin_helper import zero_btc
 
-from mail.mailer import send_depositreceivedbtc_email, mail_contex_for
+from mailer import enqueue_mail_tx
 
 def get_ohlc(from_ts, to_ts):
   
@@ -97,10 +97,7 @@ def add_btc_balance(ftx_key):
 
     db.put([ftx, balance['BTC'], add_btc_op])
     
-    deferred.defer(send_depositreceivedbtc_email
-                      , mail_contex_for('send_depositreceivedbtc_email'
-                                      , ftx.user
-                                      , deposit_amount=ftx.value))
+    enqueue_mail_tx('send_depositreceivedbtc_email', dict({'user_key':ftx.user, 'deposit_amount'=ftx.value}))
     
     return True
 
