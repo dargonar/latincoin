@@ -5,8 +5,7 @@ from random import uniform
 from google.appengine.ext import db
 
 from models import Account, TradeOrder, AccountBalance, Dummy, Operation, AccountOperation
-from trader import Trader
-from exchanger import get_account_balance
+from exchanger import get_account_balance, add_limit_trade
 
 class TestUtilMixin:
 
@@ -113,16 +112,18 @@ class TestUtilMixin:
     ppc    = Decimal(uniform(min_ppc,max_ppc))
     return self.aux_add_ask(user, amount, ppc)
 
-  def aux_create_new_user(self, name):
+  def aux_create_new_user(self, name, btc=Decimal(0), ars=Decimal(0)):
     user = Account()
     user.email    = name
     user.password = 'beto'
     user.put()
 
     balance_ars  = AccountBalance(parent=user, account=user, currency='ARS')
+    balance_ars.amount = ars
     balance_ars.put()
 
     balance_btc  = AccountBalance(parent=user, account=user, currency='BTC')
+    balance_btc.amount = btc
     balance_btc.put()
 
     return user
@@ -163,8 +164,7 @@ class TestUtilMixin:
     b_btc.put()
 
   def aux_add_trade(self, user, amount, ppc, bid_ask):
-    trader = Trader()
-    return trader.add_limit_trade(user, bid_ask, amount, ppc)
+    return add_limit_trade(user, bid_ask, amount, ppc)
 
   def aux_add_bid(self, user, amount, ppc):
     return self.aux_add_trade(user, amount, ppc, TradeOrder.BID_ORDER)

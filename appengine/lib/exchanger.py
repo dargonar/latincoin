@@ -5,17 +5,16 @@ from decimal import Decimal
 from google.appengine.ext import db
 from google.appengine.ext import deferred
 
-from models import TradeOrder, Operation, Account, AccountOperation, Dummy, ForwardTx, BankAccount
+from models import TradeOrder, Operation, Account, AccountOperation, Dummy, ForwardTx, BankAccount, AccountBalance
 
 from bitcoin_helper import zero_btc
 
 from mail.mailer import send_depositreceivedbtc_email, mail_contex_for
 
-def get_ohlc(from_ts, to_ts):
+def get_ohlc(from_ts, to_ts, prev_close=0):
   
   _open = high = low = close = None ; volume = 0
-  for o in Operation.all().filter('created_at >', from_ts).filter('created_at <=', to_ts):
-    
+  for o in Operation.all().filter('created_at >=', from_ts).filter('created_at <', to_ts):
     price  = int(o.ppc*Decimal('1e3'))
     vol    = int(o.traded_btc*Decimal('1e3'))
     
@@ -25,6 +24,8 @@ def get_ohlc(from_ts, to_ts):
     close = price
     
     volume = volume + vol
+  else:
+    _open = high = low = close = prev_close
 
   return {'open':_open, 'high':high, 'low':low, 'close':close, 'volume':volume}
 

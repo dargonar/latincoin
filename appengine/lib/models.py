@@ -391,6 +391,9 @@ class ForwardTx(db.Model):
 
 class PriceBar(db.Model):
   
+  def __repr__(self):
+    return 'pb: %s o:%08d h:%08d l:%08d c:%08d v:%08d' % ( datetime.fromtimestamp(self.bar_time*self.bar_interval), self.open, self.high, self.low, self.close, self.volume) 
+ 
   M1    = 60
   H1    = 3600
   H24   = 86400
@@ -413,12 +416,12 @@ class PriceBar(db.Model):
     now = time.time()
 
     current_time_bar = int(now/self.bar_interval)
-    next_bar_time    = self.bar_time + self.bar_interval
+    next_bar_time    = self.bar_time + 1
     
     if current_time_bar >= next_bar_time:
-      return (True, next_bar_time, now)
+      return (True, next_bar_time)
 
-    return (False, 0, now)
+    return (False, 0)
 
 # <keyname= 'welcome' + LANG>
 # un registro por idioma    
