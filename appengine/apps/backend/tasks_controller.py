@@ -31,25 +31,22 @@ class TasksController(RequestHandler):
   def build_next_bar(self, **kwargs):
     
     # Traemos la ultima barra de hora
-    last_bar = PriceBar.all().filter('bar_interval =', PriceBar.M1) \
+    last_bar = PriceBar.all().filter('bar_interval =', PriceBar.H1) \
                              .order('-bar_time') \
                              .get()
     
     # Tenemos que armar la siguiente?
     have_to_build, new_bar_time  = last_bar.next_bar()
-    logging.error('%s;%s' % (have_to_build, new_bar_time) )
     if not have_to_build:
       return
 
     # Limites de fechas
-    from_ts = datetime.fromtimestamp(last_bar.bar_time * last_bar.bar_interval)
-    to_ts   = datetime.fromtimestamp(new_bar_time * last_bar.bar_interval)
+    from_ts = datetime.fromtimestamp(new_bar_time * last_bar.bar_interval)
+    to_ts   = datetime.fromtimestamp((new_bar_time+1) * last_bar.bar_interval)
 
     ohlc = get_ohlc(from_ts, to_ts, last_bar.close)
-    date = datetime.fromtimestamp(new_bar_time * last_bar.bar_interval)
 
-    logging.error(ohlc)
-    logging.error(date)
+    date = datetime.fromtimestamp(new_bar_time * last_bar.bar_interval)
 
     # Aramamos el próximo bar
     next_bar = PriceBar(open         = ohlc['open'],
@@ -64,6 +61,7 @@ class TasksController(RequestHandler):
                         day          = date.day)
 
     next_bar.put()
+        
 
   def match_orders(self, **kwargs):
     

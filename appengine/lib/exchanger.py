@@ -17,14 +17,16 @@ def get_ohlc(from_ts, to_ts, prev_close=0):
   for o in Operation.all().filter('created_at >=', from_ts).filter('created_at <', to_ts):
     price  = int(o.ppc*Decimal('1e3'))
     vol    = int(o.traded_btc*Decimal('1e3'))
-    
+
     if not _open : _open = price
     if not high or price > high: high = price
     if not low or price < low: low = price      
     close = price
     
     volume = volume + vol
-  else:
+
+  # Si no habia nada en el intervalo ponemos ohlc en prev_close
+  if not _open:
     _open = high = low = close = prev_close
 
   return {'open':_open, 'high':high, 'low':low, 'close':close, 'volume':volume}

@@ -84,16 +84,16 @@ class TestOHLC(unittest.TestCase, TestUtilMixin):
                      seller            = dummy_user,
                      buyer             = dummy_user,
                      status            = Operation.OPERATION_PENDING,
-                     type              = Operation.OPERATION_BUY)
+                     type              = Operation.OPERATION_BUY,
+                     created_at        = datetime(o[0][0], o[0][1], o[0][2], o[0][3], o[0][4], o[0][5]))
 
       op.put()
 
-    print
-    for xx in Operation.all():
-      print xx
+    # print
+    # for xx in Operation.all():
+    #   print xx
 
-    return
-
+    # return
     print
 
     for i in xrange(20):
@@ -103,7 +103,7 @@ class TestOHLC(unittest.TestCase, TestUtilMixin):
                                .order('-bar_time') \
                                .get()
       
-      print "la last: " + str(last_bar)
+      #print "la last: " + str(last_bar)
       # Tenemos que armar la siguiente?
       have_to_build, new_bar_time  = last_bar.next_bar()
       if not have_to_build:
@@ -111,11 +111,12 @@ class TestOHLC(unittest.TestCase, TestUtilMixin):
         return
 
       # Limites de fechas
-      from_ts = datetime.fromtimestamp(last_bar.bar_time * last_bar.bar_interval)
-      to_ts   = datetime.fromtimestamp(new_bar_time * last_bar.bar_interval)
+      from_ts = datetime.fromtimestamp(new_bar_time * last_bar.bar_interval)
+      to_ts   = datetime.fromtimestamp((new_bar_time+1) * last_bar.bar_interval)
 
       ohlc = get_ohlc(from_ts, to_ts, last_bar.close)
-      print from_ts,to_ts,ohlc
+      # print from_ts,to_ts,ohlc
+      # return
 
       date = datetime.fromtimestamp(new_bar_time * last_bar.bar_interval)
 
@@ -140,4 +141,66 @@ class TestOHLC(unittest.TestCase, TestUtilMixin):
     self.testbed.deactivate()
 
   def test_BuildOHLC(self):
-    pass
+
+    #15/16/17/18
+    ops = [
+      [(2013,1,1,15,30,10), 1400, 5.5], #0 -
+      [(2013,1,1,15,31,10), 1500, 3.5], #1
+      [(2013,1,1,15,35,10), 1200, 1],   #2
+      [(2013,1,1,15,37,10), 1100, 10.5],#3
+      [(2013,1,1,15,39,10), 1000, 1],   #4
+      [(2013,1,1,15,55,10), 1600, 4],   #5
+      
+      [(2013,1,1,16,20,10), 2000, 5],   #6 -
+      [(2013,1,1,16,21,10), 1222, 4],   #7
+      [(2013,1,1,16,34,10), 1000, 12],  #8
+      [(2013,1,1,16,59,10), 1600, 15],  #9
+      
+      [(2013,1,1,17,30,10), 1250, 12],  #10 -
+      [(2013,1,1,17,31,10), 1255, 15],  #11
+      [(2013,1,1,17,32,10), 1600, 2],   #12
+      
+      [(2013,1,1,18,11,10), 1700, 4],   #13 -
+      [(2013,1,1,18,12,10), 1690, 5],   #14
+    ]
+
+    print '-----'
+
+    # 15-16   -> o:1400|h
+    def get_bar(dd):
+      bar_time = int(dd.strftime('%s'))/PriceBar.H1
+      return PriceBar.all().filter('bar_interval =', PriceBar.H1).filter('bar_time =',bar_time).get()
+    
+    bar15h = get_bar(datetime(2013,1,1,15))
+    self.assertEqual(bar15h.open, 1400*1e3)
+    self.assertEqual(bar15h.high, 1600*1e3)
+    self.assertEqual(bar15h.low,  1000*1e3)
+    self.assertEqual(bar15h.close,1600*1e3)
+
+    bar16h = get_bar(datetime(2013,1,1,16))
+    self.assertEqual(bar16h.open, 2000*1e3)
+    self.assertEqual(bar16h.high, 2000*1e3)
+    self.assertEqual(bar16h.low,  1000*1e3)
+    self.assertEqual(bar16h.close,1600*1e3)
+    
+
+    bar17h = get_bar(datetime(2013,1,1,17))
+    self.assertEqual(bar17h.open, 1250*1e3)
+    self.assertEqual(bar17h.high, 1600*1e3)
+    self.assertEqual(bar17h.low,  1250*1e3)
+    self.assertEqual(bar17h.close,1600*1e3)
+    
+    bar18h = get_bar(datetime(2013,1,1,18))
+    self.assertEqual(bar18h.open, 1700*1e3)
+    self.assertEqual(bar18h.high, 1700*1e3)
+    self.assertEqual(bar18h.low,  1690*1e3)
+    self.assertEqual(bar18h.close,1690*1e3)
+    
+    bar19h = get_bar(datetime(2013,1,1,19))
+    self.assertEqual(bar19h.open, 1690*1e3)
+    self.assertEqual(bar19h.high, 1690*1e3)
+    self.assertEqual(bar19h.low,  1690*1e3)
+    self.assertEqual(bar19h.close,1690*1e3)
+    
+
+      
