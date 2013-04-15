@@ -7,9 +7,9 @@ from webapp2 import uri_for as url_for, get_app, get_request
 from webapp2_extras import jinja2
 
 from config import config
-from utils import Jinja2Mixin
+
+from datastore_template import MyJinjaLoader, get_template
 from models import MailTemplate, JinjaTemplate
-from my_jinja2_loader import MyJinjaLoader, get_template
 
 from jinja2 import Environment, FunctionLoader, PackageLoader
 

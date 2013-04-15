@@ -51,6 +51,16 @@ indexes:
   - name: created_at
     direction: desc
 
+- kind: PriceBar
+  properties:
+  - name: bar_interval
+  - name: bar_time
+
+- kind: PriceBar
+  properties:
+  - name: bar_type
+  - name: bar_time
+
 - kind: TradeOrder
   properties:
   - name: bid_ask

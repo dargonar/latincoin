@@ -9,7 +9,25 @@ from models import TradeOrder, Operation, Account, AccountOperation, Dummy, Forw
 
 from bitcoin_helper import zero_btc
 
-from mailer import send_depositreceivedbtc_email, mail_contex_for
+from mail.mailer import send_depositreceivedbtc_email, mail_contex_for
+
+def get_ohlc(from_ts, to_ts):
+  
+  _open = high = low = close = None ; volume = 0
+  for o in Operation.all().filter('created_at >', from_ts).filter('created_at <=', to_ts):
+    
+    price  = int(o.ppc*Decimal('1e3'))
+    vol    = int(o.traded_btc*Decimal('1e3'))
+    
+    if not _open : _open = price
+    if not high or price > high: high = price
+    if not low or price < low: low = price      
+    close = price
+    
+    volume = volume + vol
+
+  return {'open':_open, 'high':high, 'low':low, 'close':close, 'volume':volume}
+
 
 def get_account_balance(account):
 

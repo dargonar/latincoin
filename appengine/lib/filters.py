@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 
 from google.appengine.ext import db
 
-from models import Ticker, Operation, TradeOrder
+from models import Operation, TradeOrder
 from re import *
 
 _slugify_strip_re = compile(r'[^\w\s-]')
