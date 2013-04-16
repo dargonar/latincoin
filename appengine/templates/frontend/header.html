@@ -3,12 +3,14 @@
 		<!-- BEGIN TOP NAVIGATION BAR -->
 		<div class="navbar-inner">
 			<div class="container-fluid">
+				{% if not is_index %}
 				<!-- BEGIN LOGO -->
-				<a class="brand" href="{{ url_for('home') }}" style="padding: 6px 0px 6px;margin-left: -20px;" title="LatinCoin">
-          <img src="/assets/img/logo_mini_simple.png" alt="logo" />
+        <a class="brand" href="{{ url_for('home') }}" style="padding: 6px 0px 6px;margin-left: -20px;" title="LatinCoin">
+          <img src="/assets/img/logo/iso_32.png" alt="logo" />
 				</a>
 				<!-- END LOGO -->
-				<!-- BEGIN RESPONSIVE MENU TOGGLER -->
+				{% endif %}
+        <!-- BEGIN RESPONSIVE MENU TOGGLER -->
 				<a href="javascript:;" class="btn-navbar collapsed" data-toggle="collapse" data-target=".nav-collapse">
 				<img src="/assets/img/menu-toggler.png" alt="" />
 				</a>          
