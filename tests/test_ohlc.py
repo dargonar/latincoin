@@ -198,6 +198,12 @@ class TestOHLC(unittest.TestCase, TestUtilMixin):
     self.assertEqual(bar19h.high, 1690*1e3)
     self.assertEqual(bar19h.low,  1690*1e3)
     self.assertEqual(bar19h.close,1690*1e3)
+          
+    bar20h = get_bar(datetime(2013,1,1,20))
+    self.assertEqual(bar20h.open, 1690*1e3)
+    self.assertEqual(bar20h.high, 1690*1e3)
+    self.assertEqual(bar20h.low,  1690*1e3)
+    self.assertEqual(bar20h.close,1690*1e3)
     
 
       

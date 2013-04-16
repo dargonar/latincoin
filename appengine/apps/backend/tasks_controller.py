@@ -28,7 +28,7 @@ from exchanger import get_account_balance, get_ohlc
 
 class TasksController(RequestHandler):
 
-  def build_next_bar(self, **kwargs):
+  def build_1h_bar(self, **kwargs):
     
     # Traemos la ultima barra de hora
     last_bar = PriceBar.all().filter('bar_interval =', PriceBar.H1) \
@@ -40,7 +40,7 @@ class TasksController(RequestHandler):
     if not have_to_build:
       return
 
-    # Limites de fechas
+    # Limites de fechas para calculo de la nueva barra
     from_ts = datetime.fromtimestamp(new_bar_time * last_bar.bar_interval)
     to_ts   = datetime.fromtimestamp((new_bar_time+1) * last_bar.bar_interval)
 
