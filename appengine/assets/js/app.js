@@ -2226,7 +2226,7 @@ var App = function () {
                         
             var attr = (aData[2] == 'new' ? 'data-mode="new"' : '');
 
-            var save_link = '<a href="#" class="edit btn mini blue"><i class="icon-save"></i>&nbsp;Guardar</a>';
+            var save_link = '<a href="#" class="edit btn mini green"><i class="icon-save"></i>&nbsp;Guardar</a>';
             var cancel_link = '<a href="#" class="cancel btn mini red" '+ attr +'><i class="icon-cancel"></i>&nbsp;Cancelar</a>'
             jqTds[2].innerHTML = save_link + '&nbsp' + cancel_link;
         }
@@ -2237,6 +2237,7 @@ var App = function () {
             oTable.fnUpdate(jqInputs[1].value, nRow, 1, false);
             oTable.fnUpdate('', nRow, 2, false);
             oTable.fnDraw();
+            oTable.fnDraw(); // llamamos dos veces porque sino rompe el disegno.
         }
         
         var oTable = $('#tabla_direcciones_bitcoin').dataTable({
@@ -2255,6 +2256,11 @@ var App = function () {
                     "sNext": "Sig."
                 }
             },
+            "aoColumns": [
+                            { "sWidth": "40%" },
+                            { "sWidth": "40%" },
+                            { "sWidth": "20%", "sClass": "center"},
+                        ],
         });
         
         oCurrentTable['tabla_direcciones_bitcoin'] = oTable;
@@ -2410,7 +2416,7 @@ var App = function () {
                         
             var attr = (aData[2] == 'new' ? 'data-mode="new"' : '');
 
-            var save_link = '<a href="#" class="edit btn mini blue"><i class="icon-save"></i>&nbsp;Guardar</a>';
+            var save_link = '<a href="#" class="edit btn mini green"><i class="icon-save"></i>&nbsp;Guardar</a>';
             var cancel_link = '<a href="#" class="cancel btn mini red" '+ attr +'><i class="icon-cancel"></i>&nbsp;Cancelar</a>'
             jqTds[2].innerHTML = save_link + '&nbsp' + cancel_link;
         }
@@ -2421,6 +2427,7 @@ var App = function () {
             oTable.fnUpdate(jqInputs[1].value, nRow, 1, false);
             oTable.fnUpdate('', nRow, 2, false);
             oTable.fnDraw();
+            oTable.fnDraw(); // llamamos dos veces porque sino rompe el disegno.
         }
         
         var oTable = $('#tabla_cuentas_bancarias').dataTable({
@@ -2439,6 +2446,11 @@ var App = function () {
                     "sNext": "Sig."
                 }
             },
+            "aoColumns": [
+                            { "sWidth": "40%" },
+                            { "sWidth": "40%" },
+                            { "sWidth": "20%", "sClass": "center"},
+                        ],
         });
         
         oCurrentTable['tabla_cuentas_bancarias'] = oTable;

@@ -1,16 +1,20 @@
   {%- macro form_input(field, label='', symbol='', disabled=False, hide=False, data_source='') -%}
     <div class="control-group {{'error' if field.errors else ''}}" {{'style="display:none"' if hide else '' }} >
-      {{'<span class="help-inline">'+field.errors.0+'</span>' if field.errors else ''}}
+      {{'<span class="help-inline">'+field.errors.0+'&nbsp;&nbsp;<span class="input-error tooltips" data-original-title="'+field.errors.0+'"><i class="icon-exclamation-sign"></i></span></span>' if field.errors else ''}}
       <label class="control-label">{{label}}</label>
-      <div class="controls">
+      <div class="controls input-icon">
         {% if symbol!='' %}
           <div class="input-prepend span10">
             <span class="add-on">{{symbol}}</span>
               {{ form_input_field(field, disabled=disabled, data_source=data_source, class='span9') }}
           </div>
         {% else %}
-          {{ form_input_field(field, disabled=disabled, data_source=data_source, class='span10') }}
+          {{ form_input_field(field, disabled=disabled, data_source=data_source, class='span8') }}
+          {% if field.name == 'btc_address' %}
+            &nbsp;&nbsp;<a href="{{url_for('profile-btc_address')}}" class="btn"><i class="icon-plus"></i> Nueva dirección</a>
+          {% endif %}
         {% endif %}
+        {# {'<span class="input-error tooltips" data-original-title="'+field.errors.0+'"><i class="icon-exclamation-sign"></i></span>' if field.errors else ''} #}
       </div>
     </div>
   {%- endmacro -%}
@@ -35,7 +39,7 @@
         <!-- BEGIN FORM-->
         <form action="{{ url_for('withdraw-btc')}}" method="POST" class="form-horizontal">
           <div class="row-fluid">
-            <div class="span8">
+            <div class="span12">
               
               {{form_input(form.btc_address, hide=False, symbol='', label='Dirección bitcoin', data_source=data_source)}}
               {{form_input(form.amount, hide=False, symbol='BTC', label='Cantidad de bitcoins ' )}}

@@ -26,7 +26,10 @@ class WithdrawBTCForm(Form):
     self.btc_address.choices = self.get_bitcoin_addresses(kwargs.get('user'))
 
   amount       = TextField()
-  btc_address  = SelectField(u'',[validators.Required(message=u'Debe indicar una dirección.')])
+  btc_address  = SelectField(u'',[validators.Required(message=u'Debe indicar una dirección.')
+                                  , validators.DataRequired(message=u'Debe indicar una dirección.')
+                                  #, validators.ValidationError(message=u'Debe configurar al menos una dirección bitcoin.')
+                                  ])
   
 
   def get_bitcoin_addresses(self, user):
