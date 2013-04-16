@@ -7,57 +7,61 @@
   {%endblock%}
   
   {%block html_body%}
-    <body class="fixed-top">
+    <body class="fixed-top" style="background-color: #ffffff !important;">
+      <div class="container-fluid">
+        <!-- BEGIN HEADER -->
+        {%include "frontend/header.html"%}
+        <!-- END HEADER -->
       
-      <!-- BEGIN HEADER -->
-      {%include "frontend/header.html"%}
-      <!-- END HEADER -->
-      
-      <header class="jumbotron subhead" style="margin-top:42px;">
-        <div class="container container-narrow">
-          <h1>BTC Exchanger</h1>
-          <p class="lead">ARGENTINA</p>
-          <div style="display:none;position:absolute; bottom:0px; right:0px;">
-            <a href="{{ url_for('account-login')}}" id="login-btn-off" class="btn green pull-left">
-            Ingresar / Registrarse&nbsp;<i class="m-icon-swapright m-icon-white"></i>
-            </a>
-          </div>
-        </div>
-      </header>
-      
-      <!-- BEGIN CONTAINER -->	
+        <!-- BEGIN PAGE HEADER-->
+				<div class="row-fluid" style="margin-top:42px;">
+					<div class="span12">
+						<!-- BEGIN PAGE TITLE & BREADCRUMB-->			
+						<center><h3 class="page-title">
+              <img src="/assets/img/latincoin.jpg" alt="LatinCoin" />
+						</h3>
+            </center>
+					</div>
+				</div>
+				<!-- END PAGE HEADER-->
+				<!-- BEGIN PAGE CONTENT-->				
+				<div class="row-fluid">
+					<div class="span12">
+						<div class="row-fluid page-404">
+							<div class="span12 number" style="text-align:center;line-height: 40px;font-size: 40px;font-weight:60;letter-spacing: -2px;">
+              	 El  primer mercado de bitcoins de la ARGENTINA
+							</div>
+              <div style="clear:both;"></div>
+							<div class="span3">
+              </div>
+              <div class="span6 details" style="text-align:right;">
+                <h4></h4>
+              </div>
+              <div class="span3">
+              </div>
+						</div>
+					</div>
+				</div>
+				<!-- END PAGE CONTENT-->
+        
+        
+        
+        <!-- BEGIN CONTAINER -->	
       <div class="container  row-fluid" style="width:75%;max-width:1024px;margin:0 auto;" >
         <!-- BEGIN PAGE -->
         <div class="page-content" style="border:none !important;margin-left:0px !important;">
           
           <!-- BEGIN PAGE CONTAINER-->
           <div class="container-fluid">
-            <!-- BEGIN PAGE HEADER-->
-            <div class="row-fluid">
-              <div class="span12">
-                
-                <!-- BEGIN PAGE TITLE & BREADCRUMB-->			
-                <h3 class="page-title">
-                  Bienvenido al primer mercado de bitcoins de la ARGENTINA
-                </h3>
-                <br/>
-                <!-- END PAGE TITLE & BREADCRUMB-->
-                <h4>Aquí encontrarás <b>precio</b> y <b>liquidez</b> para tus transacciones, sin moverte de tu casa.</h4>
-              </div>
-            </div>
-            
-            <div class="clearfix"></div>
-            
-            <br/><br/>
             <div class="row-fluid">
               <div class="span4 responsive" data-tablet="span6" data-desktop="span4">
-                <div class="dashboard-stat blue">
-                  <div class="details">
+                <div class="dashboard-stat yellow">
+                  <div class="details" style="min-height:170px;">
                     <div class="visual">
-                      <i class="icon-signin"></i>
+                      <i class="icon-lock"></i>
                     </div>
-                    <div class="number" style="font-size:24px;">
-                      Fundá tu cuenta a través de transferencia bancaria en pesos o transferencia de bitcoins
+                    <div class="number" style="font-size:24px;line-height:26px;">
+                      Opera con <b>seguridad</b> las 24hs del día sin moverte de tu casa
                     </div>
                   </div>
                   <!--<a class="more" href="#">
@@ -67,12 +71,13 @@
               </div>
               <div class="span4 responsive" data-tablet="span6" data-desktop="span4">
                 <div class="dashboard-stat green">
-                  <div class="details">
+                  <div class="details" style="min-height:170px;">
                     <div class="visual">
                       <i class="icon-signout"></i>
+                      <i class="icon-signin"></i>
                     </div>
-                    <div class="number" style="font-size:24px;">
-                      Retirá tus fondos a través de transferencia bancaria en pesos o transferencia de bitcoins
+                    <div class="number" style="font-size:24px;line-height:26px;">
+                      Retirá y depositá en <b>pesos</b> a través de transferencia bancaria
                     </div>
                   </div>
                   <!--<a class="more" href="#">
@@ -82,12 +87,12 @@
               </div>
               <div class="span4 responsive" data-tablet="span6  fix-offset" data-desktop="span4">
                 <div class="dashboard-stat purple">
-                  <div class="details">
+                  <div class="details" style="min-height:170px;">
                     <div class="visual">
-                    <i class="icon-certificate"></i>
+                    <i class="icon-star"></i>
                   </div>
                   <div class="number">0.6%</div>
-                    <div class="desc" style="font-size:24px;">Operá a tasas de mercado internacionales <br /><br /></div>
+                    <div class="number" style="font-size:24px;line-height:26px;">Operá a tasas de mercado internacionales <br /><br /></div>
                   </div>
                   <!--<a class="more" href="#">
                   View more <i class="m-icon-swapright m-icon-white"></i>
@@ -125,14 +130,14 @@
       </div>
       <!-- END CONTAINER -->
       
-      {% include "frontend/base_footer.html"%}
-      
-      {%include "frontend/base_javascripts.html"%}
-      <script type="text/javascript">
-        jQuery(document).ready(function() {			
-          // initiate layout and plugins
-          App.init();
-        });
-      </script>
-    </body>
-    {%endblock%}
+    </div>
+    {% include "frontend/base_footer.html"%}
+    {%include "frontend/base_javascripts.html"%}
+    <script type="text/javascript">
+      jQuery(document).ready(function() {			
+        // initiate layout and plugins
+        App.init();
+      });
+    </script>
+  </body>
+  {%endblock%}

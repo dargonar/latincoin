@@ -44,7 +44,12 @@
       <div class="form-actions">
         <button type="submit" class="btn green pull-left">{{'Registrarse'}}&nbsp;<i class="m-icon-swapright m-icon-white"></i></button>
       </div>
-
+      <div class="create-account">
+        <p>
+          {{'¿Ya está registrado?'}}&nbsp; 
+          <a href="{{url_for('account-login')}}" id="register-btn-off" class="">{{'Ingresar'}}</a>
+        </p>
+      </div>
     </form>
     <!-- END REGISTRATION FORM -->
     {%endblock%}

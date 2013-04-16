@@ -17,13 +17,13 @@
         <ul class="nav pull-right">
           <li class="dropdown user" style="height:42px;">
 						<div class="dropdown-toggle" style="margin-top: 3px;height: 26px;">
-              <span class="username">Ultimo precio: <span class="white_ticker">${{ticker.lastprice}}</span> <i class="maket_arrow {{ ticker.lastprice_slope|marketarrowfy }}"></i></span>
+              <span class="username">Ultimo precio: <span class="white_ticker">${# {ticker.lastprice} #}</span> <i class="maket_arrow {# { ticker.lastprice_slope|marketarrowfy } #}"></i></span>
               &nbsp;&nbsp;
-              <span class="username">HIGH: <span class="white_ticker"><span class="white_ticker">${{ticker.high}}</span> <i class="maket_arrow {{ ticker.high_slope|marketarrowfy }}"></i></span>
+              <span class="username">HIGH: <span class="white_ticker"><span class="white_ticker">${# {ticker.high} #}</span> <i class="maket_arrow {# { ticker.high_slope|marketarrowfy } #}"></i></span>
               &nbsp;&nbsp;
-              <span class="username">LOW: <span class="white_ticker">${{ticker.low}}</span> <i class="maket_arrow {{ ticker.low_slope|marketarrowfy }}"></i></span>
+              <span class="username">LOW: <span class="white_ticker">${# {ticker.low} #}</span> <i class="maket_arrow {# { ticker.low_slope|marketarrowfy } #}"></i></span>
               &nbsp;&nbsp;
-              <span class="username">Volumen: <span class="white_ticker">{{ticker.volume}}</span> <i class="maket_arrow {{ ticker.volume_slope|marketarrowfy }}"></i></span>
+              <span class="username">Volumen: <span class="white_ticker">{# {ticker.volume} #}</span> <i class="maket_arrow {# { ticker.volume_slope|marketarrowfy } #}"></i></span>
               
               {% if is_logged %}
               &nbsp;&nbsp;

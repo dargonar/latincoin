@@ -5,11 +5,11 @@ from google.appengine.ext import db
 from google.appengine.ext import deferred
 
 from models import TradeOrder, Operation, Account, AccountOperation, Dummy, ForwardTx, BankAccount
-from account_functions import get_account_balance
+from exchanger import get_account_balance
 
 from bitcoin_helper import zero_btc
 
-from mailer import enqueue_mail_tx
+from mail.mailer import enqueue_mail_tx
 
 class Trader:
 
@@ -39,7 +39,7 @@ class Trader:
 
       db.put([ftx, balance['BTC'], add_btc_op])
       
-      enqueue_mail_tx('send_depositreceivedbtc_email', dict({'user_key':ftx.user, 'deposit_amount'=ftx.value}))
+      enqueue_mail_tx('send_depositreceivedbtc_email', dict({'user_key':ftx.user, 'deposit_amount':ftx.value}))
     
       return True
 

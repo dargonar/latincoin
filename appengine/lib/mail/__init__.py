@@ -12,6 +12,40 @@ def init_mails():
   # partial templates ----------------------------------------------------------------  
   
   # ----------------------------------------------------------------------------------  
+  # user_btc_address_es
+  name = 'user_btc_address_es'
+  template_txt = """
+    ID:           #{{user_btc_address.key().id()|string}}
+    Address:      {{user_btc_address.address}}
+    Descripción:  {{user_btc_address.description)}}
+    Fecha:        {{user_btc_address.created_at.strftime("%Y-%m-%d %H:%M:%S")}}
+    --    
+  """.decode('utf-8')
+  
+  jinja_prt_tpl6 = JinjaTemplate.get_or_insert(name
+                                              , name      = name
+                                              , language  = 'es'
+                                              , source    = template_txt)
+  jinja_prt_tpl6.put()
+  
+  # ----------------------------------------------------------------------------------  
+  # bank_account_es
+  name = 'bank_account_es'
+  template_txt = """
+    ID:           #{{bank_account.key().id()|string}}
+    CBU:          {{bank_account.cbu}}
+    Descripción:  {{bank_account.description)}}
+    Fecha:        {{bank_account.created_at.strftime("%Y-%m-%d %H:%M:%S")}}
+    --    
+  """.decode('utf-8')
+  
+  jinja_prt_tpl5 = JinjaTemplate.get_or_insert(name
+                                              , name      = name
+                                              , language  = 'es'
+                                              , source    = template_txt)
+  jinja_prt_tpl5.put()
+  
+  # ----------------------------------------------------------------------------------  
   # trade_order_es
   name = 'trade_order_es'
   template_txt = """
@@ -784,13 +818,13 @@ def init_mails():
   
   # ----------------------------------------------------------------------------------
   # solicitud de retiro de bitcoins aceptada
-  name = 'accept_withdraw_request_btc_es'
+  name = 'done_withdraw_request_btc_es'
   template_txt = """
   Estimado {{user_email}},
   
   Este mail no requiere respuesta.
   
-  Los bitcoins solicitados para retiro fueron enviados a la dirección destino..
+  Los bitcoins solicitados para retiro fueron enviados a la dirección destino.
   
   Detalle de la operación: 
   
@@ -815,4 +849,274 @@ def init_mails():
                           , subject   = subject
                           , body_txt  = jinja_tpl20)
   mail_tpl20.put()
+  
+  # ----------------------------------------------------------------------------------
+  # modificacion de info personal
+  name = 'personal_info_changed_es'
+  template_txt = """
+  Estimado {{user_email}},
+  
+  Este mail no requiere respuesta.
+  
+  Su información personal ha sido modificada satisfactoriamente.
+  
+  {% include "signature_es" %}
+  """.decode('utf-8')
+  
+  jinja_tpl21 = JinjaTemplate.get_or_insert( name
+                             , name  = name
+                             , language  = 'es'
+                             , source    = template_txt)
+  jinja_tpl21.put()
+  
+  name = 'mail_' + name
+  subject = """[LatinCoin] Información personal modificada""".decode('utf-8')
+  mail_tpl21 = MailTemplate.get_or_insert(  name
+                          , name  = name
+                          , language  = 'es'
+                          , subject   = subject
+                          , body_txt  = jinja_tpl21)
+  mail_tpl21.put()
+  
+  # ----------------------------------------------------------------------------------
+  # archivo subido
+  name = 'validation_file_uploaded_es'
+  template_txt = """
+  Estimado {{user_email}},
+  
+  Este mail no requiere respuesta.
+  
+  El(Los) archivo(s) para validar su identidad y su domicilio fue(ron) recibido(s) satisfactoriamente.
+  
+  Será notificado cuando nuestro equipo finalice la verificación.
+  
+  {% include "signature_es" %}
+  """.decode('utf-8')
+  
+  jinja_tpl22 = JinjaTemplate.get_or_insert( name
+                             , name  = name
+                             , language  = 'es'
+                             , source    = template_txt)
+  jinja_tpl22.put()
+  
+  name = 'mail_' + name
+  subject = """[LatinCoin] Archivo(s) para validar identidad recibido(s)""".decode('utf-8')
+  mail_tpl22 = MailTemplate.get_or_insert(  name
+                          , name  = name
+                          , language  = 'es'
+                          , subject   = subject
+                          , body_txt  = jinja_tpl22)
+  mail_tpl22.put()
+  
+  # ----------------------------------------------------------------------------------
+  # identificación validada
+  name = 'identity_validated_es'
+  template_txt = """
+  Estimado {{user_email}},
+  
+  Este mail no requiere respuesta.
+  
+  Su identificación ha sido validada.
+  
+  {% include "signature_es" %}
+  """.decode('utf-8')
+  
+  jinja_tpl23 = JinjaTemplate.get_or_insert( name
+                             , name  = name
+                             , language  = 'es'
+                             , source    = template_txt)
+  jinja_tpl23.put()
+  
+  name = 'mail_' + name
+  subject = """[LatinCoin] Identificación validada""".decode('utf-8')
+  mail_tpl23 = MailTemplate.get_or_insert(  name
+                          , name  = name
+                          , language  = 'es'
+                          , subject   = subject
+                          , body_txt  = jinja_tpl23)
+  mail_tpl23.put()
+  
+  
+  # ----------------------------------------------------------------------------------
+  # identificación no validada
+  name = 'identity_not_validated_es'
+  template_txt = """
+  Estimado {{user_email}},
+  
+  Este mail no requiere respuesta.
+  
+  Su identificación no ha podido ser validada.
+  
+  {% include "signature_es" %}
+  """.decode('utf-8')
+  
+  jinja_tpl24 = JinjaTemplate.get_or_insert( name
+                             , name  = name
+                             , language  = 'es'
+                             , source    = template_txt)
+  jinja_tpl24.put()
+  
+  name = 'mail_' + name
+  subject = """[LatinCoin] Identificación no validada""".decode('utf-8')
+  mail_tpl24 = MailTemplate.get_or_insert(  name
+                          , name  = name
+                          , language  = 'es'
+                          , subject   = subject
+                          , body_txt  = jinja_tpl24)
+  mail_tpl24.put()
+  
+  # ----------------------------------------------------------------------------------
+  # bank_account_added
+  name = 'bank_account_added_es'
+  template_txt = """
+  Estimado {{user_email}},
+  
+  Este mail no requiere respuesta.
+  
+  Usted ha agregado una cuenta bancaria.
+  
+  Detalle de cuenta:
+  {% bank_account_es %}
+  
+  {% include "signature_es" %}
+  """.decode('utf-8')
+  
+  jinja_tpl25 = JinjaTemplate.get_or_insert( name
+                             , name  = name
+                             , language  = 'es'
+                             , source    = template_txt)
+  jinja_tpl25.put()
+  
+  name = 'mail_' + name
+  subject = """[LatinCoin] Nueva cuenta bancaria""".decode('utf-8')
+  mail_tpl25 = MailTemplate.get_or_insert(  name
+                          , name  = name
+                          , language  = 'es'
+                          , subject   = subject
+                          , body_txt  = jinja_tpl25)
+  mail_tpl25.put()
+  
+  # ----------------------------------------------------------------------------------
+  # bank_account_validated
+  name = 'bank_account_validated_es'
+  template_txt = """
+  Estimado {{user_email}},
+  
+  Este mail no requiere respuesta.
+  
+  Su cuenta bancaria ha sido validada.
+  
+  Detalle de cuenta:
+  {% bank_account_es %}
+  
+  {% include "signature_es" %}
+  """.decode('utf-8')
+  
+  jinja_tpl26 = JinjaTemplate.get_or_insert( name
+                             , name  = name
+                             , language  = 'es'
+                             , source    = template_txt)
+  jinja_tpl26.put()
+  
+  name = 'mail_' + name
+  subject = """[LatinCoin] Cuenta bancaria validada""".decode('utf-8')
+  mail_tpl26 = MailTemplate.get_or_insert(  name
+                          , name  = name
+                          , language  = 'es'
+                          , subject   = subject
+                          , body_txt  = jinja_tpl26)
+  mail_tpl26.put()
+  
+  # ----------------------------------------------------------------------------------
+  # bank_account_deleted
+  name = 'bank_account_deleted_es'
+  template_txt = """
+  Estimado {{user_email}},
+  
+  Este mail no requiere respuesta.
+  
+  Su cuenta bancaria ha sido eliminada.
+  
+  Detalle de cuenta:
+  {% bank_account_es %}
+  
+  {% include "signature_es" %}
+  """.decode('utf-8')
+  
+  jinja_tpl27 = JinjaTemplate.get_or_insert( name
+                             , name  = name
+                             , language  = 'es'
+                             , source    = template_txt)
+  jinja_tpl27.put()
+  
+  name = 'mail_' + name
+  subject = """[LatinCoin] Cuenta bancaria eliminada""".decode('utf-8')
+  mail_tpl27 = MailTemplate.get_or_insert(  name
+                          , name  = name
+                          , language  = 'es'
+                          , subject   = subject
+                          , body_txt  = jinja_tpl27)
+  mail_tpl27.put()
+  
+  # ----------------------------------------------------------------------------------
+  # btc_address_added
+  name = 'btc_address_added_es'
+  template_txt = """
+  Estimado {{user_email}},
+  
+  Este mail no requiere respuesta.
+  
+  Usted ha agregado una dirección de bitcoin.
+  
+  Detalle de la dirección:
+  {% user_btc_address_es %}
+  
+  {% include "signature_es" %}
+  """.decode('utf-8')
+  
+  jinja_tpl28 = JinjaTemplate.get_or_insert( name
+                             , name  = name
+                             , language  = 'es'
+                             , source    = template_txt)
+  jinja_tpl28.put()
+  
+  name = 'mail_' + name
+  subject = """[LatinCoin] Nueva dirección bitcoin""".decode('utf-8')
+  mail_tpl28 = MailTemplate.get_or_insert(  name
+                          , name  = name
+                          , language  = 'es'
+                          , subject   = subject
+                          , body_txt  = jinja_tpl28)
+  mail_tpl28.put()
+  
+  # ----------------------------------------------------------------------------------
+  # bank_account_deleted
+  name = 'btc_address_deleted_es'
+  template_txt = """
+  Estimado {{user_email}},
+  
+  Este mail no requiere respuesta.
+  
+  La dirección bitcoin ha sido eliminada.
+  
+  Detalle de la direccion:
+  {% user_btc_address_es %}
+  
+  {% include "signature_es" %}
+  """.decode('utf-8')
+  
+  jinja_tpl29 = JinjaTemplate.get_or_insert( name
+                             , name  = name
+                             , language  = 'es'
+                             , source    = template_txt)
+  jinja_tpl29.put()
+  
+  name = 'mail_' + name
+  subject = """[LatinCoin] Dirección bitcoin eliminada""".decode('utf-8')
+  mail_tpl29 = MailTemplate.get_or_insert(  name
+                          , name  = name
+                          , language  = 'es'
+                          , subject   = subject
+                          , body_txt  = jinja_tpl27)
+  mail_tpl29.put()
   

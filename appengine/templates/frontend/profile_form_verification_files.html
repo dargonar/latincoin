@@ -11,7 +11,7 @@
             <td class="name">
               <a href="#" title="{{file.filename}}" data-gallery="gallery" download="{{file.filename}}">{{file.filename}}</a>
             </td>
-            <td class="size"><span>{{file.filesize}} KB</span></td>
+            <td class="size"><span>{{('%0.2f'|format((file.filesize|float)/1024))}} KB</span></td>
             <td colspan="2">
               {% if file.is_valid %}
                 <span class="label label-success">Válido</span>

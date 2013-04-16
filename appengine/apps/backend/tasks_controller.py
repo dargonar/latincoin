@@ -25,7 +25,7 @@ from bitcoinrpc.authproxy import JSONRPCException
 
 from exchanger import get_account_balance, get_ohlc
 
-from mailer import send_mail
+from mail.mailer import send_mail
 
 class TasksController(RequestHandler):
 
