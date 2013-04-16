@@ -712,6 +712,8 @@ Page breadcrumb
   margin-bottom: 25px;
   border:0px !important;  
   /*HACK background-color: #eee; */
+  
+  display:none;
 }
 
 .page-content .breadcrumb a, 
