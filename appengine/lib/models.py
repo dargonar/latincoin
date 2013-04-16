@@ -138,7 +138,7 @@ class Account(db.Model):
       self.last_changepass_at   = datetime.now()
       self.last_changepass_ip   = remote_addr
 
-    to_save.append(self)
+    to_save = [self]
     return to_save
     
   def create_reset_token(self):
