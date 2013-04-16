@@ -12,7 +12,7 @@ from models import Account, AccountBalance, BitcoinAddress
 from utils import FrontendHandler
 from forms.account import SignUpForm, ForgetPasswordForm, ResetPasswordForm
 
-from mail.mailer import send_welcome_email, send_forgotpassword_email, send_passwordchanged_email, mail_contex_for
+from mail.mailer import enqueue_mail, enqueue_mail_tx 
 from bitcoin_helper import generate_new_address, encrypt_private
 
 class AccountController(FrontendHandler):
@@ -36,7 +36,7 @@ class AccountController(FrontendHandler):
     user.put()
 
     # Mandamos email de confirmacion
-    deferred.defer(send_welcome_email, mail_contex_for('send_welcome_email', user))
+    enqueue_mail('send_welcome_email', dict({'user_key':self.user}))
 
     return self.render_response('frontend/signup_success.html')
 
@@ -147,8 +147,7 @@ class AccountController(FrontendHandler):
     if user:
       user.create_reset_token()
       user.put()
-
-      deferred.defer(send_forgotpassword_email, mail_contex_for('send_forgotpassword_email',user))
+      enqueue_mail('send_forgotpassword_email', dict({'user_key':str(user.key())}))
 
     self.set_ok(u'Si su correo existe en nuestro sitio, recibirá un enlace para crear un nuevo password en su correo.')
     return self.redirect_to('account-login')
@@ -175,7 +174,7 @@ class AccountController(FrontendHandler):
     def _tx():
       to_save = user.change_password(self.reset_form.password.data, self.request.remote_addr, True)
       db.put(to_save)
-      deferred.defer(send_passwordchanged_email, mail_contex_for('send_passwordchanged_email', user))
+      enqueue_mail_tx('send_passwordchanged_email', dict({'user_key':str(user.key())}))
     _tx()
 
     self.set_ok(u'La contraseña fue cambiada con exito.')

@@ -5,7 +5,6 @@ from urllib import quote_plus,unquote_plus
 
 from google.appengine.ext import db, blobstore
 from google.appengine.ext.webapp import blobstore_handlers
-from google.appengine.ext import deferred
 
 from google.appengine.api import images, files
 from google.appengine.api.images import get_serving_url
@@ -24,7 +23,7 @@ import json, re, urllib
 
 from appengine.file_upload import UploadHandler
 
-from mailer import send_passwordchanged_email, mail_contex_for
+from mail.mailer import enqueue_mail_tx, enqueue_mail
 
 from onetimepass import *
 from gaeqrcode.PyQRNative import QRErrorCorrectLevel
@@ -108,7 +107,6 @@ class ProfileController(FrontendHandler, UploadHandler):
 
     if old_email != new_email:
       account.email_verified = False
-
       account.confirmation_token = generate_random_string(length=40)
       account.confirmation_sent_at = datetime.now()
 
@@ -117,6 +115,8 @@ class ProfileController(FrontendHandler, UploadHandler):
 
     account.save()
 
+    enqueue_mail('send_personalinfochanged_email', dict({'user_key':self.user}))
+    
     self.update_user_info(account)
     
     self.set_ok('Perfil guardado satisfactoriamente.')
@@ -155,9 +155,11 @@ class ProfileController(FrontendHandler, UploadHandler):
       kwargs['files'] = myfiles
       return self.render_response('frontend/profile.html', **kwargs)
     
+    logging.info('Upolad: recibimos files')
     results = self.handle_upload()
     for result in results:
       if result['is_valid']==False:
+        logging.info('Upolad: recibimos files [%s]', result['name'])
         continue
       #blob_key = files.blobstore.get_blob_key(result['blob_key'])
       blob_key = result['blob_key']
@@ -171,7 +173,10 @@ class ProfileController(FrontendHandler, UploadHandler):
                                                   not_valid_reason    = '')
       valid_file.save()
       result['blob_key']=''
-            
+    
+    if len(filter(lambda x:x['is_valid']==True,results))>0:
+      enqueue_mail('send_validationfileuploaded_email', dict({'user_key':self.user}))
+    
     data = {'files': results}
     return self.render_json_response(data)
   
@@ -236,7 +241,7 @@ class ProfileController(FrontendHandler, UploadHandler):
         to_save = user.change_password(new_password, self.request.remote_addr)
         db.put(to_save)
         # Mandamos email de aviso de cambio de clave
-        deferred.defer(send_passwordchanged_email, mail_contex_for('send_passwordchanged_email', user))
+        enqueue_mail_tx('send_passwordchanged_email', dict({'user_key':self.user}))
       _tx()
       
       self.set_ok(u'La contraseña fue modificada con éxito.')

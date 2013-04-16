@@ -19,7 +19,7 @@ from google.appengine.api import files
 from webapp2 import abort, cached_property, RequestHandler, Response, HTTPException, uri_for as url_for, get_app
 from webapp2_extras import jinja2, sessions, json
 
-from models import AccountBalance
+from models import AccountBalance #, Ticker
 from exchanger import get_account_balance
 
 from filters import *
@@ -209,7 +209,19 @@ class FrontendHandler(MyBaseHandler):
   def update_user_info(self, user):
     self.session['account.name'] = user.name if user.name and len(user.name) else user.email
     self.session['account.verified'] = user.email_verified
+  
+  # @property
+  # def ticker(self):
+    # data = memcache.get('ticker')
+    # if data is None:
+      # last_ticker = Ticker.all() \
+              # .order('created_at') \
+              # .get()
       
+      # data = SessionTicker(last_ticker)
+      # memcache.add('ticker', data, 60)
+    # return data 
+ 
   def do_logout(self):
     self.session.clear()
 

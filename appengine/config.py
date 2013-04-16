@@ -9,7 +9,7 @@ config['webapp2'] = {
 }
 
 config['webapp2_extras.sessions'] = {
-  'cookie_name' : 'btc-xchange',
+  'cookie_name' : 'latincoin',
 }
 
 config['webapp2_extras.jinja2'] = {
@@ -23,8 +23,8 @@ config['webapp2_extras.jinja2'] = {
 }
 
 config['my'] = {
-  'site_name'      : 'BTC-XChange',
-  'domain_name'    : 'www.btc-xchange.com.ar',
+  'site_name'      : 'LatinCoin',
+  'domain_name'    : 'www.latincin.com',
   'secret_key'     : 'x-ray X-RAY ] % # ~ * QUEBEC kilo . bravo $ [ whiskey # ! whiskey " @ / 1 $ = + 8',
   'secret_key_2'   : '% 4 [space] 1 $ > _ . } ] 8 ] ROMEO | ECHO ^ 6 tango 5 ZULU $ 0 % _ 1 1 8 3 { 4',
   'cold_wallet'    : '19eE72sBA5WUNvcXWpH5pn3Cg8mfUj3wQS',

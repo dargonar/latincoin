@@ -14,7 +14,7 @@
                 <li>No puede ser un estado de cuenta bancario.</li>
                 <li>No puede estar editado o modificado en modo alguno.</li>
                 <li>Debe haber sido expedido dentro de los últimos 3 meses.</li>
-                <li>Debe ser en formato JPEG (.jpg), PNG (.png) or PDF (.pdf).</li>
+                <li>Debe ser en formato JPEG (.jpg ó .jpeg), PNG (.png) or PDF (.pdf).</li>
               </ul>
             </p>
             
@@ -22,7 +22,7 @@
 						<!-- The file upload form used as target for the file upload widget -->
 						<form id="fileupload" action="{{url_for('profile-identity_validation')}}" method="POST" enctype="multipart/form-data">
 							<!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
-							<div class="row-fluid fileupload-buttonbar" id="file_dragzone">
+							<div class="row-fluid fileupload-buttonbar" id="dropzone">
 								<div class="span7">
 									<!-- The fileinput-button span is used to style the file input field as button -->
 									<span class="btn green fileinput-button">
@@ -30,7 +30,7 @@
                     <span>{{ 'Agregar archivos...' }}</span>
                     <input type="file" name="files[]" multiple>
 									</span>
-									<button type="submit" class="btn blue start">
+									<button type="submit" id="upload_file_button" class="btn blue btn-primary start disabled" style="dispaly:none;">
                     <i class="icon-upload icon-white"></i>
                     <span>{{ 'Subir archivos' }}</span>
 									</button>
@@ -49,6 +49,7 @@
 									<div class="progress progress-success progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100">
 										<div class="bar" style="width:0%;"></div>
 									</div>
+                  
 									<!-- The extended global progress information -->
 									<!--div class="progress-extended">&nbsp;</div -->
 								</div>
@@ -57,7 +58,7 @@
 							<div class="fileupload-loading"></div>
 							<br>
               
-              <div class="span12"> 
+              <div class="span11" id="files_table_container" > 
                 <table role="presentation" class="table table-striped" id="files_to_upload">
                   <tbody class="files" data-toggle="modal-gallery" data-target="#modal-gallery">
                   </tbody>

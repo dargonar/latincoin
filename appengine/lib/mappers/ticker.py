@@ -11,7 +11,6 @@ from taskqueue import Mapper
 from webapp2 import abort, cached_property, RequestHandler, Response, HTTPException, uri_for as url_for, get_app
 
 from models import Ticker, Operation, TradeOrder
-from mailer import send_partiallycompletedbid_email, send_completedbid_email, send_partiallycompletedask_email, send_completedask_email, mail_contex_for
 
 from appegine.mapper import Mapper
 
@@ -70,11 +69,11 @@ class TickerMapper(Mapper):
     
     self.ticker.high            = oper.ppc if oper.ppc>self.ticker.high else self.ticker.high
     self.ticker.low             = oper.ppc if oper.ppc<self.ticker.low else self.ticker.low
-    self.ticker.volume                += oper.traded_btc 
+    self.ticker.volume          += oper.traded_btc 
     if self.ticker.open == Decimal('0.0'):
-      self.ticker.open                = oper.ppc
-    self.ticker.close                 = oper.ppc
-    self.ticker.last_price            = oper.ppc
+      self.ticker.open            = oper.ppc
+    self.ticker.close           = oper.ppc
+    self.ticker.last_price      = oper.ppc
     
     logging.info(' MAPPER map finish')
     return ([],[])
@@ -91,10 +90,9 @@ class TickerMapper(Mapper):
     
     self.ticker.last_price_slope      = 1 if self.last_ticker.last_price>self.ticker.last_price else (-1 if self.last_ticker.last_price<self.ticker.last_price else 0)
     self.ticker.avg_price_slope       = 1 if self.last_ticker.avg_price>self.ticker.avg_price else (-1 if self.last_ticker.avg_price<self.ticker.avg_price else 0)
-    self.ticker.high_slope      = 1 if self.last_ticker.high>self.ticker.high else (-1 if self.last_ticker.high<self.ticker.high else 0)
-    self.ticker.low_slope       = 1 if self.last_ticker.low>self.ticker.low else (-1 if self.last_ticker.low<self.ticker.low else 0)
+    self.ticker.high_slope            = 1 if self.last_ticker.high>self.ticker.high else (-1 if self.last_ticker.high<self.ticker.high else 0)
+    self.ticker.low_slope             = 1 if self.last_ticker.low>self.ticker.low else (-1 if self.last_ticker.low<self.ticker.low else 0)
     self.ticker.volume_slope          = 1 if self.last_ticker.volume>self.ticker.volume else (-1 if self.last_ticker.volume<self.ticker.volume else 0)
     self.ticker.status                = Ticker.DONE
     
     self.ticker.put()
-    

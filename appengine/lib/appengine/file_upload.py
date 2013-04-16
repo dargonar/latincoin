@@ -14,12 +14,12 @@ from __future__ import with_statement
 from google.appengine.api import files, images
 from google.appengine.ext import blobstore, deferred
 from google.appengine.ext.webapp import blobstore_handlers
-import json, re, urllib, webapp2
+import json, re, urllib, webapp2, logging
 
 WEBSITE = 'http://blueimp.github.com/jQuery-File-Upload/'
 MIN_FILE_SIZE = 1 # bytes
 MAX_FILE_SIZE = 5000000 # bytes
-IMAGE_TYPES = re.compile('image/(gif|p?jpeg|(x-)?png)')
+IMAGE_TYPES = re.compile('image/(gif|p?jpeg|(x-)?png)|application/pdf')
 ACCEPT_FILE_TYPES = IMAGE_TYPES
 THUMBNAIL_MODIFICATOR = '=s80' # max width / height
 EXPIRATION_TIME = 300 # seconds
@@ -68,6 +68,7 @@ class UploadHandler(webapp2.RequestHandler):
         blob_keys = []
         for name, fieldStorage in self.request.POST.items():
             if type(fieldStorage) is unicode:
+                logging.error(' Upload API: type(fieldStorage) is unicode. [%s]', name)
                 continue
             result = {}
             result['name'] = re.sub(r'^.*\\', '',
@@ -113,11 +114,11 @@ class UploadHandler(webapp2.RequestHandler):
         pass
     
     def get(self):
-        self.redirect(WEBSITE)
+        pass #self.redirect(WEBSITE)
     
     def post(self):
-        if (self.request.get('_method') == 'DELETE'):
-            return self.delete()
+        # if (self.request.get('_method') == 'DELETE'):
+          # return self.delete()
         result = {'files': self.handle_upload()}
         s = json.dumps(result, separators=(',',':'))
         redirect = self.request.get('redirect')

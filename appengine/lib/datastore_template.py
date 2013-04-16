@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from google.appengine.api import memcache
+
 from jinja2 import BaseLoader, TemplateNotFound
 
 from models import JinjaTemplate

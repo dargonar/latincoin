@@ -25,6 +25,7 @@ from bitcoinrpc.authproxy import JSONRPCException
 
 from exchanger import get_account_balance, get_ohlc
 
+from mail.mailer import send_mail
 
 class TasksController(RequestHandler):
 
@@ -277,3 +278,10 @@ class TasksController(RequestHandler):
       db.put(block)
 
     _tx()
+
+  def send_mail(self, **kwargs):
+    self.request.charset = 'utf-8'
+    params = self.request.POST.mixed()
+    mail = self.request.POST.get('mail')
+    send_mail(mail, params)
+    return

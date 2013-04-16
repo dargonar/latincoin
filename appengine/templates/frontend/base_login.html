@@ -1,16 +1,16 @@
   {% extends "frontend/base.html"%}
   
   {%block html_body%}
-    <body class="login">
+    <body class="login" style="background-color:#ffffff !important;">
       <!-- BEGIN LOGO -->
       <div class="logo">
         <a href="{{url_for('home')}}" class="brand">
-          <img src="/assets/img/logo.png" alt="logo">
+          <img src="/assets/img/logo_mini.png" alt="logo">
         </a>
       </div>
       <!-- END LOGO -->
       <!-- BEGIN LOGIN -->
-      <div class="content">
+      <div class="content" style="border: 1px solid #eee;">
         {%block content%}
         {%endblock%}  
       </div>
