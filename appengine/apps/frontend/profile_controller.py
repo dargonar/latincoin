@@ -25,7 +25,7 @@ from appengine.file_upload import UploadHandler
 
 from mail.mailer import enqueue_mail
 
-from onetimepass import *
+import pyotp
 from gaeqrcode.PyQRNative import QRErrorCorrectLevel
 from gaeqrcode.PyQRNativeGAE import QRCode
 import base64
@@ -36,13 +36,17 @@ class ProfileController(FrontendHandler, UploadHandler):
   def otp_verify(self, **kwargs):
 
     try:
-      code   = int(self.request.POST['code'])
-      secret = self.request.POST['secret'] 
+      client_time  = int(self.request.POST['client_time'])
+      code         = int(self.request.POST['code'])
+      secret       = self.request.POST['secret'] 
     except:
       self.set_error('Código inválido #1.')
       return self.redirect_to('profile-otp')
 
-    if valid_hotp(code, secret):
+    logging.error('code:%s, secret:%s' % (code,secret))
+    totp = pyotp.TOTP(secret)
+
+    if totp.verify(code, for_time=client_time):
       self.set_ok('Código valido.')
     else:
       self.set_error('Código inválido #2.')
@@ -53,20 +57,18 @@ class ProfileController(FrontendHandler, UploadHandler):
   def otp(self, **kwargs):    
     kwargs['tab'] = 'otp';
     
-    secret = base64.b32encode( generate_random_string(10, pool=LOWERCASE_ALPHA) )
+    # https://github.com/nathforge/pyotp
+    secret = pyotp.random_base32()
+    totp = pyotp.TOTP(secret)
 
-    name = self.user_name
-    if '@' in name:
-      name = name[0:name.find('@')]
-
-    name = '%s@LatinCoin' % name
+    user = Account.get(self.user)
+    name = '%s@LatinCoin' % user.email[0:user.email.find('@')]
 
     kwargs['secret']  = secret
     kwargs['name']    = name
     
-    url = 'otpauth://totp/%s?secret=%s' % (name,secret)
-    kwargs['url'] = url
-
+    url = totp.provisioning_uri(name)
+    kwargs['url'] = totp.provisioning_uri(name)
     kwargs['img_url'] = quote_plus(url)
 
     kwargs['html'] = 'profile'

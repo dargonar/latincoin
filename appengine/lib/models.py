@@ -172,6 +172,9 @@ class Account(db.Model):
   def is_active(self):
     return self.confirmed_at != None
 
+  def is_exchanger(self):
+    return self.key().name() == 'xchg'
+    
   def user_need_captcha(self):
     return self.failed_attempts > 5
 

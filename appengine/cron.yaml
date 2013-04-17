@@ -22,3 +22,11 @@ cron:
 - description: aplica operaciones que no pudieron ser aplicadas
   url: /tasks/apply_operations
   schedule: every 1 minutes
+
+- description: arma el OHLC de la hora anterior
+  url: /tasks/build_1h_bar
+  schedule: every 1 minutes
+
+- description: elimina los usuarios registrados que no confirmaron en 1h
+  url: /tasks/remove_unconfirmed_users
+  schedule: every 30 minutes

@@ -92,6 +92,5 @@ class Mailo(object):
     # Envío el correo.
     mail.send_mail(sender=sender, #"%s <%s@%s>" % (context['domain_name'], sender, context['site_name']), 
                    to=context['user_email'],
-                   #subject="%s - %s" % (context['site_name'], subject),
                    subject=subject,
-                   body=body)
+                   body=body_txt)
