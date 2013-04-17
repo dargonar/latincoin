@@ -17,10 +17,10 @@ from bitcoin_helper import generate_new_address, encrypt_private
 
 class BackendController(FrontendHandler):
 
-  @need_admin_auth()
-  def deposits(self, **kwargs):
-    kwargs['html']='deposits'
-    return self.render_response('backend/deposits.html', **kwargs)
+  # @need_admin_auth()
+  # def deposits(self, **kwargs):
+    # kwargs['html']='deposits'
+    # return self.render_response('backend/deposits.html', **kwargs)
   
   @need_admin_auth()
   def withdrawals(self, **kwargs):
@@ -105,11 +105,6 @@ class BackendController(FrontendHandler):
     self.set_ok(u'El archivo fue actualizado satisfactoriamente.')
     # enviar mail
     return self.redirect_to('backend-list_user_files', user=str(file.account.key()))
-  
-  
-  @need_admin_auth()
-  def new_currency_deposit(self, **kwargs):
-    pass
   
   @need_admin_auth()
   def dashboard(self, **kwargs):

@@ -1,0 +1,47 @@
+  {% extends "backend/base_home.html"%}
+  
+  {%block content%}
+    <!-- BEGIN PAGE CONTAINER-->
+			<div class="container-fluid">
+				<!-- BEGIN PAGE HEADER-->
+				<div class="row-fluid">
+					<div class="span12">
+						<!-- BEGIN PAGE TITLE & BREADCRUMB-->			
+						<h3 class="page-title">
+							{{'Nuevo depósito en pesos'}} <small>{{account.email}}</small>
+						</h3>
+						<ul class="breadcrumb">
+							<li>
+								<i class="icon-home"></i>
+								<a href="trade.html">Inicio</a> 
+								<i class="icon-angle-right"></i>
+							</li>
+							<li><a href="#">Retiro</a></li>
+						</ul>
+						<!-- END PAGE TITLE & BREADCRUMB-->
+					</div>
+				</div>
+				<!-- END PAGE HEADER-->
+				<!-- BEGIN PAGE CONTENT-->
+				<div class="row-fluid profile">
+					<div class="span12">
+						{% if flash %}
+            <div class="alert alert-{{ 'error' if flash.type=='error' else 'success' }}">
+              <button class="close" data-dismiss="{{ 'error' if flash.type=='error' else 'success' }}" onclick="$(this).parent().remove();"></button>
+              {{flash.message}}
+            </div>
+            {% endif %}
+                
+						{% include 'backend/deposit_currency_form.html' %}		
+					</div>
+				</div>
+				<!-- END PAGE CONTENT-->
+			</div>
+  {%endblock%}
+  
+  
+  {%block javascript_run%}
+  {%endblock%}
+  
+  
+  

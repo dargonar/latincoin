@@ -5,7 +5,7 @@ from google.appengine.ext import db
 from google.appengine.ext import testbed
 from google.appengine.datastore import datastore_stub_util
 
-from bitcoinrpc.connection_helper import BlockChainProxy,EC2Proxy
+from bitcoinrpc.connection import BlockChainProxy,EC2Proxy
 
 class TestDualConnection(unittest.TestCase):
 

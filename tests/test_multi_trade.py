@@ -9,10 +9,15 @@ from google.appengine.ext import db
 from google.appengine.ext import testbed
 from google.appengine.datastore import datastore_stub_util
 
-from models import Account, TradeOrder, AccountBalance, Dummy, Operation, AccountOperation
-from trader import Trader
+import webapp2
 
-from exchanger import get_account_balance
+from config import config
+from urls import get_rules
+
+from models import Account, TradeOrder, AccountBalance, Dummy, Operation, AccountOperation
+#from trader import Trader
+
+from exchanger import *
 from my_test_utils import TestUtilMixin
 
 from bitcoin_helper import zero_btc
@@ -20,6 +25,9 @@ from bitcoin_helper import zero_btc
 class TestOrders(unittest.TestCase, TestUtilMixin):
 
   def setUp(self):
+    
+    # Creamos el contexto webapp2
+    app = webapp2.WSGIApplication(routes=get_rules(config), config=config)
     
     # First, create an instance of the Testbed class.
     self.testbed = testbed.Testbed()
@@ -42,8 +50,8 @@ class TestOrders(unittest.TestCase, TestUtilMixin):
     # Generamos 10 usuarios
     for i in xrange(10):
       
-      user = self.aux_create_new_user('usuario%d@test.com' % i)
-
+      user = self.aux_create_new_user('usuario%d@test.com' % i, create_bank_account=True)
+      
       for i in xrange(int(uniform(1,5))):
 
         ars = Decimal(uniform(100 , 50000))
@@ -72,12 +80,13 @@ class TestOrders(unittest.TestCase, TestUtilMixin):
 
   def test_BetoTest(self):
 
-    trader = Trader()
+    
     
     # Agregamos ordenes random
     for i in xrange(100):
       
-      user = str(self.users[int(uniform(0,10))].key())
+      account = self.users[int(uniform(0,10))]
+      user = str(account.key())
       bal  = get_account_balance(user)
 
       r = None
@@ -105,27 +114,30 @@ class TestOrders(unittest.TestCase, TestUtilMixin):
             print 'ya no puede sacar nada'
           else:
             print 'mando a sacar: %.5f %s' % (bal[currency].available()*cuanto, currency)
-            trader.add_widthdraw_order(user, currency, bal[currency].available()*cuanto)
-
+            if currency=='BTC':
+              add_withdraw_btc_order(user, bal[currency].available()*cuanto, '13WnH6hAbmeuHAWSnbsAcMcaWWkBsjZY27')
+            else:
+              add_withdraw_currency_order(user, bal[currency].available()*cuanto, str(account.bank_accounts[0].key()))
+            
       # 70% chances de correr el match_orders
       if uniform(1,100) > 30:
-        res = trader.match_orders() 
+        res = match_orders() 
         if res[0] is not None:
-          trader.apply_operation( str(res[0].key()) )
+          apply_operation( str(res[0].key()) )
 
       # 15% de chances de cancelar una orden
       if r and r[0] and uniform(1,100) > 85:
-        tmp = trader.cancel_order(str(r[0].key()))
+        tmp = cancel_order(str(r[0].key()))
         if tmp:
-          self.assertFalse(trader.cancel_order(str(r[0].key())))
+          self.assertFalse(cancel_order(str(r[0].key())))
 
     # Corremos las ultimas veces hasta que no se toquen las puntas
     print 'corremos una mas ...'
-    res = trader.match_orders()
+    res = match_orders()
     while res[0] is not None:
       print 'print una mas ...'
-      trader.apply_operation(str(res[0].key()))
-      res = trader.match_orders()
+      apply_operation(str(res[0].key()))
+      res = match_orders()
 
     bba = self.aux_get_best_bid_ask()
 

@@ -32,13 +32,15 @@ def get_rules():
         Route('/validate_user_file/<file>/<valid:(1|0)>',   name='validate_user_file',  handler='.BackendController:validate_user_file'),
         Route('/validate_user_file/<file>/<valid:(1|0)>/<invalid_reason>',   name='validate_user_file2',  handler='.BackendController:validate_user_file'),
         
-        Route('/new_currency_deposit/<user>',               name='new_currency_deposit',handler='.BackendController:new_currency_deposit'),
-        
         Route('/withdrawals',               name='withdrawals',       handler='.BackendController:withdrawals'),
-        Route('/deposits',                  name='deposits',          handler='.BackendController:deposits'),
         
       ]) ]) ]),
-
+      
+      PathPrefixRoute('/a/backend', [ NamePrefixRoute('backend-deposit-', [ HandlerPrefixRoute('apps.backend.deposit_controller', [
+        Route('/deposit/currency/<user>', name='currency',handler='.DepositController:currency'),
+        Route('/deposit/currency/list',   name='list',handler='.DepositController:list'),
+      ]) ]) ]),
+      
     ]
 
     return rules

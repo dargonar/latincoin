@@ -10,7 +10,7 @@ from google.appengine.ext import testbed
 from google.appengine.datastore import datastore_stub_util
 
 from models import Account, TradeOrder, AccountBalance, Dummy, Operation, AccountOperation
-from trader import Trader
+from exchanger import *
 
 from exchanger import get_account_balance
 from my_test_utils import TestUtilMixin
@@ -77,13 +77,13 @@ class TestMarketTrade(unittest.TestCase, TestUtilMixin):
     self.aux_add_bid(self.u(2), Decimal('5'), Decimal('400'))
     self.aux_add_bid(self.u(3), Decimal('5'), Decimal('500'))
 
-    trader = Trader()
-    p = trader.add_market_trade(self.u(3), TradeOrder.ASK_ORDER, Decimal('25'))
+    
+    p = add_market_trade(self.u(3), TradeOrder.ASK_ORDER, Decimal('25'))
     
     self.assertTrue(p[0] is not None) and self.assertEqual(p[1], u'ok')
 
     for s in p[0].sales:
-      r = trader.apply_operation(str(s.key()))
+      r = apply_operation(str(s.key()))
       self.assertTrue(r is not None)
 
     u0bal_post = get_account_balance(self.u(0))
@@ -123,13 +123,13 @@ class TestMarketTrade(unittest.TestCase, TestUtilMixin):
     self.aux_add_ask(self.u(2), Decimal('5'), Decimal('400'))
     self.aux_add_ask(self.u(3), Decimal('5'), Decimal('500'))
 
-    trader = Trader()
-    p = trader.add_market_trade(self.u(3), TradeOrder.BID_ORDER, Decimal('10'))
+    
+    p = add_market_trade(self.u(3), TradeOrder.BID_ORDER, Decimal('10'))
     
     self.assertTrue(p[0] is not None) and self.assertEqual(p[1], u'ok')
 
     for s in p[0].purchases:
-      r = trader.apply_operation(str(s.key()))
+      r = apply_operation(str(s.key()))
       self.assertTrue(r is not None)
 
     u0bal_post = get_account_balance(self.u(0))

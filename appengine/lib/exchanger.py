@@ -56,23 +56,37 @@ def get_account_balance(account):
 
   return balance
 
-# def add_ars_balance(user, amount):
+def add_currency_balance(user, amount, bank_account = None, currency='ARS'):
   
-#   @db.transactional(xg=False)
-#   def _tx():
+  assert(isinstance(user, basestring) and len(user) > 0 ), u'Key de user inválida'
+  assert(isinstance(amount, basestring) and len(amount) > 0 ), u'Amount inválido'
+  assert(isinstance(currency, basestring) and len(currency) > 0 ), u'Currency inválida'
+  
+  @db.transactional(xg=False)
+  def _tx():
     
-#     balance = get_account_balance(user)
+    balance = get_account_balance(user)
+    balance[currency].amount += Decimal(amount)
+    
+    account = Account.get(user)
+    bank_account_entity = None
+    if bank_account and len(bank_account)>0:
+      bank_account_entity = BankAccount.get(bank_account) 
+      
+    add_cur_op = AccountOperation( parent         = account, 
+                                   operation_type = AccountOperation.MONEY_IN, 
+                                   account        = account,
+                                   amount         = Decimal(amount),
+                                   currency       = currency,
+                                   bank_account   = bank_account_entity,
+                                   state          = AccountOperation.STATE_DONE)
 
-#     balance['ARS'].amount += Decimal(amount)
-#     balance['ARS'].put()
+    db.put([balance[currency], add_cur_op])
     
-#     from mailer import send_depositreceivedars_email, mail_contex_for
-#     deferred.defer(send_depositreceivedars_email
-#                       , mail_contex_for('send_depositreceivedars_email'
-#                                       , self
-#                                       , deposit_amount=amount))
-#     return True
-#   return _tx()
+    enqueue_mail('deposit_received', {'user_key':user, 'ao_key':str(add_cur_op.key())}, tx=True)
+    
+    return [add_cur_op, u'ok']
+  return _tx()
 
 def add_btc_balance(ftx_key):
 
@@ -179,9 +193,9 @@ def _add_withdraw_order(user, currency, amount, bank_account=None, btc_address=N
   return _tx()
 
 # validamos el cbu
-def add_withdraw_currency_order(user, amount, bank_account_key):
+def add_withdraw_currency_order(user, amount, bank_account_key, currency='ARS'):
   assert(isinstance(bank_account_key, basestring) and len(bank_account_key) > 0 ), u'CBU inválido'
-  return _add_withdraw_order(user, 'ARS', amount, bank_account=BankAccount.get(db.Key(bank_account_key)) )
+  return _add_withdraw_order(user, currency, amount, bank_account=BankAccount.get(db.Key(bank_account_key)) )
   
 # validamos que la direccion sea valida
 def add_withdraw_btc_order(user, amount, address):

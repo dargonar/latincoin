@@ -1,0 +1,47 @@
+  {%- macro form_input(field, label='', symbol='') -%}
+    <div class="control-group {{'error' if field.errors else ''}}" >
+      {{'<span class="help-inline">'+field.errors.0+'</span>' if field.errors else ''}}
+      <label class="control-label">{{label}}</label>
+      <div class="controls">
+        {% if symbol != '' %}
+        <div class="input-prepend span6">
+          <span class="add-on">{{symbol}}</span>
+            {{field(class='m-wrap span11')}}
+        </div>
+        {% else %}
+          {{field(class='m-wrap span8')}}
+        {% endif %}
+      </div>
+    </div>
+  {%- endmacro -%}
+
+  
+<div class="span12">
+  <div>
+    <!-- BEGIN GENERAL PORTLET-->
+    <div class="portlet">
+      <div class="portlet-title">
+        <h4><i class="icon-minus-sign"></i></h4>
+      </div>
+      <div class="portlet-body form">
+        <!-- BEGIN FORM-->
+        <form action="{{ url_for('backend-deposit-currency', user=user_key)}}" method="POST" class="form-horizontal">
+          <div class="row-fluid">
+            <div class="span12">
+              
+              {{form_input(form.bank_account, symbol='', label='Cuenta Bancaria')}}
+              {{form_input(form.amount, symbol='$', label='Cantidad de pesos')}} 
+
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn blue">Depositar fondos</button>
+          </div>
+        </form>
+
+  
+      </div>
+    </div>
+  </div>
+</div>

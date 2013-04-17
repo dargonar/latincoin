@@ -2,12 +2,17 @@
 from google.appengine.api import memcache
 from google.appengine.ext import db
 
-from utils import FrontendHandler, need_auth
+from utils import FrontendHandler, need_auth, get_or_404
 
 from gaeqrcode.PyQRNative import QRErrorCorrectLevel
 from gaeqrcode.PyQRNativeGAE import QRCode
 
-from models import BitcoinAddress, Account, AccountOperation
+from jinja2 import Environment, FunctionLoader, PackageLoader
+from jinja2.environment import Template
+
+from mail.mailer import get_template_key
+from datastore_template import MyJinjaLoader, get_template
+from models import JinjaTemplate, BitcoinAddress, Account, AccountOperation
 
 class DepositController(FrontendHandler):
 
@@ -65,4 +70,8 @@ class DepositController(FrontendHandler):
     kwargs['tab'] = 'currency';
     kwargs['html'] = 'deposito'
     
+    template_key    = get_template_key('account_information')
+    jinja_template  = JinjaTemplate.get_by_key_name(template_key)
+    kwargs['account_information'] = self.jinja2.environment.from_string(jinja_template.source).render()
+    kwargs['account'] = get_or_404(self.user)
     return self.render_response('frontend/deposit.html', **kwargs)

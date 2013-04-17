@@ -13,7 +13,7 @@ TEST_PATH   Path to package containing test modules
 
 def main(sdk_path, test_path, pattern):
     sys.path.insert(0, sdk_path)
-    sys.path[0:0] = ['../appengine/lib', '../appengine/distlib', '../appengine']
+    sys.path[0:0] = ['../appengine/lib', '../appengine/distlib', '../appengine', '../appengine/distlib/bitcoinrpc']
 
     import dev_appserver
     dev_appserver.fix_sys_path()

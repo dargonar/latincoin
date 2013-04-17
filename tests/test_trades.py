@@ -9,7 +9,7 @@ from google.appengine.ext import testbed
 from google.appengine.datastore import datastore_stub_util
 
 from models import Account, TradeOrder, AccountBalance
-from trader import Trader
+from exchanger import *
 
 from bitcoin_helper import zero_btc
 
@@ -50,10 +50,10 @@ class DemoTestCase(unittest.TestCase):
     self.testbed.deactivate()
 
   def test_AddAskOrder(self):
-    trader = Trader() 
+    #exchanger = Exchanger() 
     
     # Agrega order
-    res = trader.add_limit_trade( str(self.users[0].key()) , 
+    res = add_limit_trade( str(self.users[0].key()) , 
                                   TradeOrder.ASK_ORDER, 
                                   Decimal('10'), 
                                   Decimal('300') )
@@ -73,10 +73,10 @@ class DemoTestCase(unittest.TestCase):
     self.assertEqual(order.bid_ask, TradeOrder.ASK_ORDER)
 
   def test_AddBidOrder(self):
-    trader = Trader() 
+    #exchanger = Exchanger() 
     
     # Agrega order
-    res = trader.add_limit_trade( str(self.users[0].key()) , 
+    res = add_limit_trade( str(self.users[0].key()) , 
                                   TradeOrder.BID_ORDER, 
                                   Decimal('10'), 
                                   Decimal('90') )
@@ -100,10 +100,10 @@ class DemoTestCase(unittest.TestCase):
 
 
   def test_NoBTC(self):
-    trader = Trader() 
+    #exchanger = Exchanger() 
     
     # No hay balance BTC
-    res = trader.add_limit_trade( str(self.users[0].key()) , 
+    res = add_limit_trade( str(self.users[0].key()) , 
                                   TradeOrder.BID_ORDER, 
                                   Decimal('101'), 
                                   Decimal('300') )
@@ -111,10 +111,10 @@ class DemoTestCase(unittest.TestCase):
     self.assertEqual( None, res[0] )
 
   def test_NoARS(self):
-    trader = Trader() 
+    #exchanger = Exchanger() 
     
     # No hay balance ARS
-    res = trader.add_limit_trade( str(self.users[0].key()) , 
+    res = add_limit_trade( str(self.users[0].key()) , 
                                   TradeOrder.BID_ORDER, 
                                   Decimal('10'), 
                                   Decimal('300') )
@@ -122,17 +122,17 @@ class DemoTestCase(unittest.TestCase):
     self.assertEqual( None, res[0] )
 
   def test_InvalidKey(self):
-    trader = Trader() 
-    self.assertRaises( AssertionError, trader.add_limit_trade, None ,  TradeOrder.BID_ORDER,  Decimal('10'), Decimal('300') )
+    #exchanger = Exchanger() 
+    self.assertRaises( AssertionError, add_limit_trade, None ,  TradeOrder.BID_ORDER,  Decimal('10'), Decimal('300') )
 
   def test_InvalidOrderType(self):
-    trader = Trader() 
-    self.assertRaises( AssertionError, trader.add_limit_trade, str(self.users[0].key()) , 'moko',  Decimal('10'), Decimal('300') )
+    #exchanger = Exchanger() 
+    self.assertRaises( AssertionError, add_limit_trade, str(self.users[0].key()) , 'moko',  Decimal('10'), Decimal('300') )
 
   def test_NegativeAmount(self):
-    trader = Trader() 
-    self.assertRaises( AssertionError, trader.add_limit_trade, str(self.users[0].key()) , 'moko',  Decimal('-10'), Decimal('300') )
+    #exchanger = Exchanger() 
+    self.assertRaises( AssertionError, add_limit_trade, str(self.users[0].key()) , 'moko',  Decimal('-10'), Decimal('300') )
 
   def test_NegativePPC(self):
-    trader = Trader() 
-    self.assertRaises( AssertionError, trader.add_limit_trade, str(self.users[0].key()) , 'moko',  Decimal('10'), Decimal('-300') )    
+    #exchanger = Exchanger() 
+    self.assertRaises( AssertionError, add_limit_trade, str(self.users[0].key()) , 'moko',  Decimal('10'), Decimal('-300') )    

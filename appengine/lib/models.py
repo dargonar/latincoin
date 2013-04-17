@@ -49,7 +49,9 @@ class SystemConfig(db.Model):
 
   max_bid_amount          = DecimalProperty(default=decimal.Decimal('21e8'))
   min_bid_amount          = DecimalProperty(default=decimal.Decimal('0'))
-
+  
+  cur_deposit_fee         = DecimalProperty(default=decimal.Decimal('1'))
+  
   def can_trade(self):
     return self.trade_enable == 'Y'
     

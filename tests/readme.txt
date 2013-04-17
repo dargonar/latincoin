@@ -1,0 +1,1 @@
+test_multi_trade.py tira error porque quiere mandar mail.

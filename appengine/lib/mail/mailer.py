@@ -64,9 +64,6 @@ class Mailo(object):
     base_context = dict(base_context, **kwargs)
     return base_context
 
-  def get_mailtemplate_key(self, template, language='es'):
-    return '%s_%s' % (template, language)
-
   def send_user_email(self, email_type, context):
     
     #logging.info('os.path[%s]   sys.path[%s]', os.path.abspath("."), sys.path)
@@ -74,7 +71,7 @@ class Mailo(object):
     template = email_type
     sender   = 'admin@latincoin.com'
       
-    template_key = self.get_mailtemplate_key(template)  
+    template_key = get_template_key(template)  
     mail_template = MailTemplate.get_by_key_name(template_key)
     
     if mail_template is None:
@@ -94,4 +91,7 @@ class Mailo(object):
                    to=context['user_email'],
                    #subject="%s - %s" % (context['site_name'], subject),
                    subject=subject,
-                   body=body)
+                   body=body_txt)
+
+def get_template_key(template, language='es'):
+    return '%s_%s' % (template, language)

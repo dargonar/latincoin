@@ -7,10 +7,50 @@ from config import config
 from models import MailTemplate, JinjaTemplate
 
 def init_mails():
-    
   # ----------------------------------------------------------------------------------  
   # partial templates ----------------------------------------------------------------  
+    
+  # ----------------------------------------------------------------------------------  
+  # account_information_es
+  name = 'account_information_es'
+  template_txt = """
+    <div class="well" style="font-size:16px;">
+      <address>
+        <i>Beneficiario:</i><br />
+        <strong>Diventi SRL.</strong><br />
+        Avda. Mosconi 3223 Piso 7 Oficina C, CABA<br />
+        Argentina, CP 1419<br />
+      </address>
+      <address>
+        <i>CUIT:</i><br />
+        <strong>30-71041292-4</strong><br />
+      </address>
+      <address>
+        <i>Número de cuenta:</i><br />
+        <strong>097-9977/8</strong><br />
+      </address>
+      <address>
+        <i>Tipo de cuenta:</i><br />
+        <strong>Cuenta corriente en pesos</strong><br />
+      </address>
+      <address>
+        <i>Banco:</i><br />
+        <strong>Banco Santander Río SA.</strong><br />
+      </address>
+      <h4>Para transferencia bancaria 24hs.</h4>
+      <address>
+        <i>CBU:</i><br />
+        <strong>0720097720000000997786</strong><br />
+      </address>
+    </div>
+  """.decode('utf-8')
   
+  jinja_template = JinjaTemplate(key_name=name
+                                              , name      = name
+                                              , language  = 'es'
+                                              , source    = template_txt)
+  jinja_template.put()
+                            
   # ----------------------------------------------------------------------------------  
   # user_btc_address_es
   name = 'user_btc_address_es'
@@ -669,5 +709,3 @@ def init_mails():
                           , subject   = subject
                           , body_txt  = template_txt)
   mail_template.put()
-  
-  

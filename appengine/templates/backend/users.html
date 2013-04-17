@@ -69,7 +69,7 @@
                           <a href="{{url_for('backend-validate_user', user=user.key()|string, valid='0')}}" class="red btn mini"><i class="icon-remove"></i>&nbsp;Invalidar Identidad</a>
                           {% endif %}
                           <br />
-                          <a href="{{url_for('backend-new_currency_deposit', user=user.key()|string)}}" class="btn mini"><i class="icon-money"></i>&nbsp;Nuevo depósito ARS</a>
+                          <a href="{{url_for('backend-deposit-currency', user=user.key()|string)}}" class="btn mini"><i class="icon-money"></i>&nbsp;Nuevo depósito ARS</a>
                         </td>
                       </tr>
                       {% endfor%}

@@ -4,6 +4,7 @@ import unittest
 from time import sleep
 from decimal import Decimal
 from datetime import datetime
+from time import mktime
 
 from google.appengine.ext import db
 from google.appengine.ext import testbed
@@ -50,7 +51,8 @@ class TestOHLC(unittest.TestCase, TestUtilMixin):
     ]
 
     # 1/1/2013 14:00
-    bar_time = int(datetime(2013,1,1,14,00,00).strftime('%s'))/PriceBar.H1
+    bar_time = int(mktime(datetime(2013,1,1,14,00,00).timetuple())/PriceBar.H1)
+    #bar_time = int(datetime(2013,1,1,14,00,00).strftime('%Y%m%d%H%M%S'))/PriceBar.H1
     date = datetime.fromtimestamp(bar_time*PriceBar.H1)
 
     dummy_bar = PriceBar.get_or_insert('dummy_bar',
@@ -165,7 +167,8 @@ class TestOHLC(unittest.TestCase, TestUtilMixin):
 
     # 15-16   -> o:1400|h
     def get_bar(dd):
-      bar_time = int(dd.strftime('%s'))/PriceBar.H1
+      bar_time = int(mktime(dd.timetuple())/PriceBar.H1)
+      #bar_time = int(dd.strftime('%s'))/PriceBar.H1
       return PriceBar.all().filter('bar_interval =', PriceBar.H1).filter('bar_time =',bar_time).get()
     
     bar15h = get_bar(datetime(2013,1,1,15))

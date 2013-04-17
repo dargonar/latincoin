@@ -8,45 +8,10 @@
                           <h4><i class="icon-plus-sign"></i> Transfiera o deposite sus pesos en esta cuenta bancaria.</h4>
                         </div>
                         <div class="portlet-body">
-                          <!-- div class="row-fluid">
-                            <div class="span12">
-                              <p></p>
-                            </div>
-                          </div -->
-                          
                           <div class="row-fluid">
                             <div class="span6">
-                              <div class="well" style="font-size:16px;">
-                                <address>
-                                  <i>Beneficiario:</i><br />
-                                  <strong>Diventi SRL.</strong><br />
-                                  Avda. Mosconi 3223 Piso 7 Oficina C, CABA<br />
-                                  Argentina, CP 1419<br />
-                                </address>
-                                <address>
-                                  <i>CUIT:</i><br />
-                                  <strong>30-71041292-4</strong><br />
-                                </address>
-                                <address>
-                                  <i>Número de cuenta:</i><br />
-                                  <strong>097-9977/8</strong><br />
-                                </address>
-                                <address>
-                                  <i>Tipo de cuenta:</i><br />
-                                  <strong>Cuenta corriente en pesos</strong><br />
-                                </address>
-                                <address>
-                                  <i>Banco:</i><br />
-                                  <strong>Banco Santander Río SA.</strong><br />
-                                </address>
-                                <h4>Para transferencia bancaria 24hs.</h4>
-                                <address>
-                                  <i>CBU:</i><br />
-                                  <strong>0720097720000000997786</strong><br />
-                                </address>
-                              </div>
+                              {{ account_information }}
                             </div>
-                            
                           </div>
                         </div>
                       </div>
@@ -65,10 +30,12 @@
                             <h4>Instrucciones</h4>
                             <!-- p>{{'Ingrese la cantidad que desea depositar y reciba todas las instrucciones en su dirección de correo electrónico.'}}</p -->
                             <p>{{'Para poder comprar bitcoins debe acreditar fondos en su cuenta.'}}</strong>.</p>
-                            <p>{{'Realice una transferencia bancaria al CBU que figura en pantalla, o bien deposite por ventanilla en la cuenta del banco que también figura en pantalla.'}}</p>
-                            <p>{{'Una vez realizado el depósito o transferencia, <b>debe enviar un correo electrónico</b> a <a href="mailto:soporte@latincoin.com">soporte@latincoin.com</a> desde la cuenta de correo registrada en <b>LatinCoin</b> <b>adjuntando el comprobante</b> de depósito o transferencia.'}}</p>
-                            <p>{{'El <b>valor mínimo</b> de depósito es de <b>$250</b> pesos argentinos.'}}</p>
-                            <p>{{'La acreditación de los valores tiene una tasa de impuestos y costos de <strong>0.6%</strong>.'}}</p>
+                            <p>{{'Acredite fondos en su cuenta realizando una transferencia bancaria al CBU que figura en pantalla, o bien deposite por ventanilla en la cuenta del banco indicada.'}}</p>
+                            <p>{{'Una vez realizado el depósito o transferencia, <b>debe enviar un correo electrónico</b> a <a href="mailto:soporte@latincoin.com">soporte@latincoin.com</a> desde la cuenta de correo registrada en <b>LatinCoin</b>.'}}</p>
+                            <p>{{'Utilize el siguiente asunto: "Depósito <b style="color:#FF0000;">%s</b>" y recuerde <b>adjuntar comprobante</b> de depósito o transferencia en formato pdf o imagen.'|format(account.key().id()|string)}}</p>
+                            
+                            <p>{{'El <b>valor mínimo</b> de depósito es de <b>$%.2f</b> pesos argentinos.'|format(system_config.min_curr_deposit|float)}}</p>
+                            <p>{{'La acreditación de los valores tiene una tasa de impuestos y costos de <strong>%%%.2f</strong>.'|format(system_config.cur_deposit_fee|float)}}</p>
                             <p>{{'Ante cualquier duda por favor contáctese con <a href="mailto:soporte@latincoin.com">soporte@latincoin.com</a>.'}}</p>
                           </div>
                         </div>

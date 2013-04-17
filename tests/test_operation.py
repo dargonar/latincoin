@@ -9,9 +9,8 @@ from google.appengine.ext import testbed
 from google.appengine.datastore import datastore_stub_util
 
 from models import Account, TradeOrder, AccountBalance, Dummy, Operation, AccountOperation
-from trader import Trader
 
-from exchanger import get_account_balance
+from exchanger import *
 
 from my_test_utils import *
 from bitcoin_helper import zero_btc
@@ -94,8 +93,8 @@ class TestOperation(unittest.TestCase, TestUtilMixin):
     self.aux_add_ask(self.u(4), Decimal('10'), Decimal('301'))
     self.aux_add_ask(self.u(4), Decimal('10'), Decimal('302'))
 
-    trader = Trader() 
-    op = trader.match_orders()
+     
+    op = match_orders()
     self.assertEqual( True, op[0] != None )
     dummy = db.get(op[0].key())
     
@@ -109,7 +108,7 @@ class TestOperation(unittest.TestCase, TestUtilMixin):
     self.aux_assert_pending_op(ops[0], self.users[0], self.users[1], res1[0], res2[0], Decimal('2'), Decimal('300'))
 
     # No camina
-    self.assertRaises( AssertionError, trader.apply_operation, 1)
+    self.assertRaises( AssertionError, apply_operation, 1)
 
     self.assertEqual(ops[0].status,Operation.OPERATION_PENDING)
 
@@ -122,7 +121,7 @@ class TestOperation(unittest.TestCase, TestUtilMixin):
 
     # La aplico dos veces (de onda)
     for i in xrange(2):
-      res = trader.apply_operation(str(ops[0].key()))
+      res = apply_operation(str(ops[0].key()))
       self.assertEqual(True, res != None)
 
       opdone = db.get(ops[0].key())
