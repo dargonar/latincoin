@@ -18,6 +18,20 @@ def get_rules():
         Route('/build_1h_bar',              name='build-1h-bar',        handler='.TasksController:build_1h_bar'),
         Route('/notify_operations',         name='notify-operations',   handler='.TasksController:notify_operations'),
       ]) ]) ]),
+      
+      Route('/a/backend',                   name='backend',         handler='apps.backend.backend_controller.BackendController:home'),
+      
+      PathPrefixRoute('/a/backend', [ NamePrefixRoute('backend-', [ HandlerPrefixRoute('apps.backend.backend_controller', [
+        Route('/login',                     name='login',             handler='.BackendController:login'),
+        Route('/logout',                    name='logout',            handler='.BackendController:logout'),
+        Route('/dashboard',                 name='dashboard',         handler='.BackendController:dashboard'),
+        
+        Route('/users',                     name='users',             handler='.BackendController:users'),
+        Route('/list_user_files/<key>',     name='list_user_files',   handler='.BackendController:list_user_files'),
+        
+        Route('/withdrawals',               name='withdrawals',       handler='.BackendController:withdrawals'),
+        Route('/deposits',                  name='deposits',          handler='.BackendController:deposits'),
+      ]) ]) ]),
 
     ]
 

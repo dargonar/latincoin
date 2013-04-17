@@ -1,0 +1,26 @@
+<!-- BEGIN SIDEBAR MENU -->        	
+			<ul>
+				<li style="background-color:#ffffff;"><center><img src="/assets/img/logo/logotipow200.png" alt="LatinCoin" /></center></li>
+        <li class="start {{ 'active' if html=='users' else '' }} ">
+					<a href="{{ url_for('backend-users') }}">
+            <i class="icon-group"></i> 
+            <span class="title">{{'Usuarios'}}</span>
+            <span class="{{ 'selected' if html=='users' else '' }}"></span>
+					</a>
+				</li>
+				<li class="{{ 'active' if html=='deposits' else '' }} ">
+					<a href="{{ url_for('backend-deposits') }}">
+					<i class="icon-signin"></i> 
+					<span class="title">{{'Depósitos'}}</span>
+					<span class="{{ 'selected' if html=='deposits' else '' }}"></span>
+					</a>
+				</li>
+				<li class="{{ 'active' if html=='withdrawals' else '' }} ">
+					<a href="{{ url_for('backend-withdrawals') }}">
+            <i class="icon-signout"></i> 
+            <span class="title">{{'Retiros'}}</span>
+            <span class="{{ 'selected' if html=='withdrawals' else '' }}"></span>
+					</a>
+				</li>
+			</ul>
+			<!-- END SIDEBAR MENU -->

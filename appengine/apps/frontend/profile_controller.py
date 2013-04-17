@@ -311,8 +311,8 @@ class ProfileController(FrontendHandler, UploadHandler):
       row.append(bankacc.cbu)
       row.append(bankacc.description)
       
-      edit_link   = '<a href="#" key="%s" class="edit btn mini purple"><i class="icon-edit"></i>&nbsp;Editar</a>' % str(bankacc.key())
-      remove_link = '<a href="%s" class="delete btn mini black"><i class="icon-trash"></i>&nbsp;Borrar</a>' % self.url_for( 'profile-bank_account_delete', key=str(bankacc.key()) )
+      edit_link   = '<a href="#" key="%s" class="edit btn mini"><i class="icon-edit"></i>&nbsp;Editar</a>' % str(bankacc.key())
+      remove_link = '<a href="%s" class="delete btn mini red"><i class="icon-trash"></i>&nbsp;Borrar</a>' % self.url_for( 'profile-bank_account_delete', key=str(bankacc.key()) )
       row.append( '%s&nbsp;%s' % (edit_link,remove_link))
 
       bankaccs['aaData'].append(row)
@@ -370,8 +370,8 @@ class ProfileController(FrontendHandler, UploadHandler):
       row.append(addr.address)
       row.append(addr.description)
       
-      edit_link   = '<a href="#" key="%s" class="edit btn mini purple"><i class="icon-edit"></i>&nbsp;Editar</a>' % str(addr.key())
-      remove_link = '<a href="%s" class="delete btn mini black"><i class="icon-trash"></i>&nbsp;Borrar</a>' % self.url_for( 'profile-btc_address_delete', key=str(addr.key()) )
+      edit_link   = '<a href="#" key="%s" class="edit btn mini"><i class="icon-edit"></i>&nbsp;Editar</a>' % str(addr.key())
+      remove_link = '<a href="%s" class="delete btn mini red"><i class="icon-trash"></i>&nbsp;Borrar</a>' % self.url_for( 'profile-btc_address_delete', key=str(addr.key()) )
       row.append( '%s&nbsp;%s' % (edit_link,remove_link))
 
       addrs['aaData'].append(row)

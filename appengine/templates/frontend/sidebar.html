@@ -1,13 +1,10 @@
 <!-- BEGIN SIDEBAR MENU -->        	
 			<ul>
-				
-        <li style="display:none;">
-					<!-- BEGIN SIDEBAR TOGGLER BUTTON -->
+				<li><center><img src="/assets/img/logo/logotipow200.png" alt="LatinCoin" /></center></li>
+        <!--li>
 					<div class="sidebar-toggler hidden-phone"></div>
-					<!-- BEGIN SIDEBAR TOGGLER BUTTON -->
-				</li>
-				<li style="display:none;">
-					<!-- BEGIN RESPONSIVE QUICK SEARCH FORM -->
+				</li-->
+				<!--li>
 					<form class="sidebar-search">
 						<div class="input-box">
 							<a href="javascript:;" class="remove"></a>
@@ -15,19 +12,18 @@
 							<input type="button" class="submit" value=" " />
 						</div>
 					</form>
-					<!-- END RESPONSIVE QUICK SEARCH FORM -->
-				</li>
-				<li class="start {{ 'active' if html=='trade' else '' }} ">
+				</li-->
+				<li class="has-sub {{ 'active' if html=='trade' else '' }} ">
 					<a href="{{ url_for('trade-new') }}">
             <i class="icon-money"></i> 
-            <span class="title">Comprar / Vender</span>
+            <span class="title">{{'Comprar / Vender'}}</span>
             <span class="{{ 'selected' if html=='trade' else '' }}"></span>
 					</a>
 				</li>
 				<li class="has-sub {{ 'active' if html=='history' else '' }} ">
 					<a href="{{ url_for('trade-history') }}">
 					<i class="icon-table"></i> 
-					<span class="title">Mis Ordenes</span>
+					<span class="title">{{'Mis Ordenes'}}</span>
 					<span class="{{ 'selected' if html=='history' else '' }}"></span>
 					</a>
 				</li>
@@ -35,21 +31,21 @@
 				<li class="has-sub {{ 'active' if html=='deposito' else '' }} ">
 					<a href="{{ url_for('deposit-btc') }}">
             <i class="icon-signin"></i> 
-            <span class="title">Depósito</span>
+            <span class="title">{{'Depósito'}}</span>
             <span class="{{ 'selected' if html=='deposito' else '' }}"></span>
 					</a>
 				</li>
         <li class="has-sub {{ 'active' if html=='withdraw' else '' }} ">
 					<a href="{{ url_for('withdraw-btc') }}">
             <i class="icon-signout"></i> 
-            <span class="title">Retiro</span>
+            <span class="title">{{'Retiro'}}</span>
             <span class="{{ 'selected' if html=='withdraw' else '' }}"></span>
 					</a>
 				</li>
         <li class="has-sub {{ 'active' if html=='profile' else '' }} ">
 					<a href="{{ url_for('profile-personal_info') }}">
 					<i class="icon-user"></i> 
-					<span class="title">Perfil</span>
+					<span class="title">{{'Perfil'}}</span>
 					<span class="{{ 'selected' if html=='profile' else '' }}"></span>
 					</a>
 				</li>

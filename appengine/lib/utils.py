@@ -19,7 +19,7 @@ from google.appengine.api import files
 from webapp2 import abort, cached_property, RequestHandler, Response, HTTPException, uri_for as url_for, get_app
 from webapp2_extras import jinja2, sessions, json
 
-from models import AccountBalance
+from models import AccountBalance , Account
 from exchanger import get_account_balance
 
 from filters import *
@@ -55,6 +55,22 @@ def create_blobstore_file(data, name, mime_type='application/octet-stream'):
   return blob_key
   # ------ END HACK -------- #
 
+class need_admin_auth(object):
+  def __init__(self, code=0, url='backend-login'):
+    self.url      = url
+    self.code     = code
+
+  def __call__(self, f):
+    def validate_user(handler, *args, **kwargs):
+      if handler.is_logged and handler.is_admin:
+        return f(handler, *args, **kwargs)
+      
+      if self.code:
+        handler.abort(self.code)
+      else:
+        return handler.redirect_to(self.url)
+      
+    return validate_user
 
 class need_auth(object):
   def __init__(self, code=0, url='account-login'):
@@ -129,6 +145,7 @@ class Jinja2Mixin(object):
     
     env.globals['session']      = self.session
     env.globals['is_logged']    = self.is_logged
+    env.globals['is_admin']     = self.is_admin
     env.globals['is_verified']  = self.is_verified
     env.globals['ars_balance']  = self.ars_balance
     env.globals['btc_balance']  = self.btc_balance
@@ -141,8 +158,10 @@ class Jinja2Mixin(object):
     env.filters['label_for_order']= do_label_for_order
     env.filters['orderamountfy']  = do_orderamountfy
     env.filters['time_distance_in_words']  = do_time_distance_in_words
+    env.filters['short_time_distance_in_words']  = do_short_time_distance_in_words
     env.filters['label_for_oper'] = do_label_for_oper
     env.filters['operation_type'] = do_operation_type
+    env.filters['format_btc'] = do_format_btc
     
   def render_response(self, _template, **context):
     # Renders a template and writes the result to the response.
@@ -200,10 +219,11 @@ class FrontendHandler(MyBaseHandler):
   def do_login(self, user):
 
     balance = get_account_balance(user)
-    self.session['account.btc']  = str(balance['BTC'].key())
-    self.session['account.ars']  = str(balance['ARS'].key())
-    self.session['account.user'] = str(user.key())
-    self.session['account.logged'] = True
+    self.session['account.btc']     = str(balance['BTC'].key())
+    self.session['account.ars']     = str(balance['ARS'].key())
+    self.session['account.user']    = str(user.key())
+    self.session['account.logged']  = True
+    self.session['account.rol']     = user.rol
     self.update_user_info(user)
   
   def update_user_info(self, user):
@@ -227,7 +247,7 @@ class FrontendHandler(MyBaseHandler):
 
   @property
   def btc_balance(self):
-    return '%.8f' % self.try_get_balance('btc')
+    return self.try_get_balance('btc') # '%.8f' % 
 
   @property
   def ars_balance(self):
@@ -236,7 +256,11 @@ class FrontendHandler(MyBaseHandler):
   @property
   def is_logged(self):
     return self.session_value('account.logged', False)
-
+  
+  @property 
+  def is_admin(self):
+    return self.session_value('account.rol', None)==Account.ADMIN_ROL
+    
   @property
   def is_verified(self):
     return self.session_value('account.verified', False)

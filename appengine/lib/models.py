@@ -119,6 +119,14 @@ class Account(db.Model):
   last_changepass_ip    = db.StringProperty()
   last_bad_changepass_at= db.DateTimeProperty()
   last_bad_changepass_ip= db.StringProperty()
+  
+  USER_ROL      = 'USER'
+  ADMIN_ROL     = 'ADMIN'
+
+  rol                   = db.StringProperty(choices=[USER_ROL, ADMIN_ROL], required=True, default=USER_ROL)
+  
+  def is_admin(self):
+    return self.rol == Account.ADMIN_ROL
     
   def fail_change_pass(self, remote_addr):
     self.last_bad_changepass_at = datetime.now()

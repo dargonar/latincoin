@@ -1,0 +1,93 @@
+  {% extends "backend/base_home.html"%}
+  
+  {%block content%}
+    <!-- BEGIN PAGE CONTAINER-->
+			<div class="container-fluid">
+				<!-- BEGIN PAGE HEADER-->
+				<div class="row-fluid">
+					<div class="span12">
+						<!-- BEGIN PAGE TITLE & BREADCRUMB-->			
+						<h3 class="page-title">
+							Usuarios				
+							<small>listar y más</small>
+						</h3>
+					</div>
+				</div>
+				<!-- END PAGE HEADER-->
+				<div id="users">
+					<div class="row-fluid">
+            <div class="span12">
+              {% if flash %}
+              <div class="alert alert-{{ 'error' if flash.type=='error' else 'success' }}">
+                <button class="close" data-dismiss="{{ 'error' if flash.type=='error' else 'success' }}" onclick="$(this).parent().remove();"></button>
+                {{flash.message}}
+              </div>
+              {% endif %}
+                
+              <h4>Search Form</h4>
+               <form action="{{url_for('backend-users')}}" method="POST">
+                  <div class="input-append">  
+                     <input class="m-wrap" size="10" type="text" placeholder="email de usuario" name="email" /><button type="submit" class="btn red">{{'Buscar'}}</button>
+                  </div>
+               </form>
+            </div>
+          </div>
+					
+          <div class="clearfix"></div>
+          
+          <div class="row-fluid">
+            <div class="span12">
+              <div class="portlet box blue">
+                <div class="portlet-title">
+                  <h4><i class="icon-group"></i>Usuarios</h4>
+                </div>
+                <div class="portlet-body">
+                  <!--table class="table table-condensed table-hover"-->
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        <th>Apellido y Nombre</th>
+                        <th>Email</th>
+                        <th>Rol</th>
+                        <th></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for user in users.run(limit=10) %}
+                      <tr class="tooltips {{ loop.cycle('odd', 'even') }}"">
+                        <td>{{ user.key()|string }}</td>
+                        <td>{{'%s, %s'|format(user.last_name, user.name)}}</td>
+                        <td>{{user.email}}</td>
+                        <td>{{user.rol}} - {{'Identidad OK' if user.identity_is_validated else 'Identidad NOT OK'}}</td>
+                        <td class="hidden-480"> 
+                          <a href="{{url_for('backend-list_user_files', key=user.key()|string)}}" class="edit btn mini"><i class="icon-file"></i>&nbsp;Ver archivos</a>
+                        </td>
+                      </tr>
+                      {% endfor%}
+                    </tbody>
+                  </table>
+                </div>
+						</div>
+            </div>
+          </div>
+					<div class="clearfix"></div>
+          <div class="row-fluid">
+            <div class="span12">
+            actions?
+            </div>
+          </div>
+				</div>
+			</div>
+			<!-- END PAGE CONTAINER-->		
+    {%endblock%}
+    
+    {%block javascript_run%}
+    <script>
+      jQuery(document).ready(function() {			
+        // initiate layout and plugins
+        App.setPage("index");
+        App.init();
+      });
+    </script>
+    {%endblock%}

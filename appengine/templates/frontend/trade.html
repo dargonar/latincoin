@@ -48,7 +48,7 @@
                       <div class="portlet-title">
                         <h4>
                           <i class="icon-money hidden-320"></i>
-                          <span class="hidden-480">Nueva orden de compra</span>
+                          <span class="hidden-480">{{'Comprar bitcoins'}}{# {'Nueva orden de compra'} #}</span>
                            &nbsp;
                         </h4>
                        </div>
@@ -68,11 +68,13 @@
                         </div -->
                         <div class="portlet-body">
                           <div class="well">
-                            <h4>Instrucciones</h4>
-                            <p>Para adicionar bitcoins em sua conta basta enviar para qualquer um dos endereços ao lado.</p>
-                            <p>Após algumas confirmações de rede o valor será automaticamente creditado e você será avisado por email. Esta operação pode demandar de vários minutos até poucas horas.</p>
-                            <p>Para aumentar o seu anonimato, poderão ser criados novos endereços a cada 24 horas.</p>
-                            <p>Qualquer dúvida entre em contato com o suporte.</p>
+                            <h4>{{'Instrucciones'}}</h4>
+                            <p>{{'Para comprar bitcoins debe <a href="%s">acreditar fondos en su cuenta</a>.'|format(url_for('deposit-currency')) }}</p>
+                            <p>{{'Una vez acreditados los fondos puede generar órdenes de compra <b>limitadas</b> o <b>a mercado</b>.'}}</p>
+                            <p>{{'La <b>orden a mercado (o de mercado)</b> se ejecuta al precio actual del mercado, y es inmediata: se completa al momento o se cancela. Esta orden solo se ejecutará si hay contrapartida suficiente para cubrir todo el volumen de la orden.'}}</p>
+                            <p>{{'La <b>orden limitada</b> se limita al precio que indiquemos, es decir que las compras no superarán al precio. Esta orden puede ejecutarse parcialmente si no hay volumen y precio de contrapartida de venta suficiente. Esta orden o bien se ejecuta al momento, o bien queda pendiente hasta que una orden de venta conforme el precio, o bien hasta que el usuario la cancele.'}}</p>
+                            <p>{{'Usted puede finalizar la orden cancelándola en cualquier momento que la misma esté <b>activa</b>.'}}</p>
+                            <p>{{'Ante cualquier duda por favor contáctese con <a href="mailto:soporte@latincoin.com">soporte@latincoin.com</a>.'}}</p>
                           </div>
                         </div>
                       </div>
@@ -96,7 +98,7 @@
                       <div class="portlet-title">
                         <h4>
                           <i class="icon-money hidden-320"></i>
-                          <span class="hidden-480">Nueva orden de venta</span>
+                          <span class="hidden-480">{{'Vender bitcoins'}}{# {'Nueva orden de venta'} #}</span>
                            &nbsp;
                         </h4>
                        </div>
@@ -117,11 +119,13 @@
                         </div -->
                         <div class="portlet-body">
                           <div class="well">
-                            <h4>Instrucciones</h4>
-                            <p>Para adicionar bitcoins em sua conta basta enviar para qualquer um dos endereços ao lado.</p>
-                            <p>Após algumas confirmações de rede o valor será automaticamente creditado e você será avisado por email. Esta operação pode demandar de vários minutos até poucas horas.</p>
-                            <p>Para aumentar o seu anonimato, poderão ser criados novos endereços a cada 24 horas.</p>
-                            <p>Qualquer dúvida entre em contato com o suporte.</p>
+                            <h4>{{'Instrucciones'}}</h4>
+                            <p>{{'Para vender bitcoins debe <a href="%s">acreditar bitcoins en su cuenta</a>.'|format(url_for('deposit-btc')) }}</p>
+                            <p>{{'Una vez acreditados los bitcoins puede generar órdenes de venta <b>limitadas</b> o <b>a mercado</b>.'}}</p>
+                            <p>{{'La <b>orden a mercado (o de mercado)</b> se ejecuta al precio actual del mercado, y es inmediata: se completa al momento o se cancela. Esta orden solo se ejecutará si hay contrapartida suficiente para cubrir todo el volumen de la orden.'}}</p>
+                            <p>{{'La <b>orden limitada</b> se limita al precio que indiquemos, es decir que las ventas no serán inferiores al precio. Esta orden puede ejecutarse parcialmente si no hay volumen y precio de contrapartida de compra suficiente. Esta orden o bien se ejecuta al momento, o bien queda pendiente hasta que una orden de compra conforme el precio, o bien hasta que el usuario la cancele.'}}</p>
+                            <p>{{'Usted puede finalizar la orden cancelándola en cualquier momento que la misma esté <b>activa</b>.'}}</p>
+                            <p>{{'Ante cualquier duda por favor contáctese con <a href="mailto:soporte@latincoin.com">soporte@latincoin.com</a>.'}}</p>
                           </div>
                         </div>
                       </div>

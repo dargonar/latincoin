@@ -43,9 +43,9 @@ Page sidebar
    border-bottom: 1px solid transparent !important;
 }
 
-.page-sidebar > ul > li:nth-child(3) > a {
+/*.page-sidebar > ul > li:nth-child(3) > a {
   border-top-color: transparent !important;
-}
+}*/
 
 .page-sidebar > ul > li > a i {
    color: #808080;
