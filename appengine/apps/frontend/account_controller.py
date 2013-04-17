@@ -180,7 +180,7 @@ class AccountController(FrontendHandler):
     def _tx():
       to_save = user.change_password(self.reset_form.password.data, self.request.remote_addr, True)
       db.put(to_save)
-      enqueue_mail_tx('password_changed', dict({'user_key':str(user.key())}))
+      enqueue_mail('password_changed', {'user_key':str(user.key())})
     _tx()
 
     self.set_ok(u'La contraseña fue cambiada con exito.')
@@ -305,18 +305,18 @@ class AccountController(FrontendHandler):
 
     from bitcoinrpc.connection import get_proxy
     
-    last_block = 231713
+    #last_block = 231713
     #last_block = get_proxy(s.remote_rpc).getblockcount()
 
-    from models import Block
-    b = Block( key=db.Key.from_path('Block',last_block), processed='Y', number=last_block, hash='n/a', txs=0)
-    b.put()
+    #from models import Block
+    #b = Block( key=db.Key.from_path('Block',last_block), processed='Y', number=last_block, hash='n/a', txs=0)
+    #b.put()
 
     from models import PriceBar
     import time
     nowts = time.time()
 
-    bar_time = int(nowts/PriceBar.M1)
+    bar_time = int(nowts/PriceBar.H1)
 
     now = datetime.fromtimestamp(bar_time)
 
@@ -328,7 +328,7 @@ class AccountController(FrontendHandler):
                         close    = 0,
                         volume   = 0, 
                         bar_time = bar_time,
-                        bar_interval = PriceBar.M1,
+                        bar_interval = PriceBar.H1,
                         year     = now.year,
                         month    = now.month,
                         day      = now.day)

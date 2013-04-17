@@ -89,7 +89,7 @@ class TasksController(RequestHandler):
   def apply_operations(self, **kwargs):
     
     for op in Operation.all().filter('status =', Operation.OPERATION_PENDING):
-      exchanger.apply_operation(op.key())
+      exchanger.apply_operation(str(op.key()))
 
   def update_btc_balance(self, **kwargs):
   

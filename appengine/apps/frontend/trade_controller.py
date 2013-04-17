@@ -4,7 +4,7 @@ from decimal import Decimal
 from google.appengine.ext import db
 from google.appengine.api import taskqueue
 
-from webapp2 import cached_property, url_for
+from webapp2 import cached_property, uri_for as url_for
 
 import exchanger
 
@@ -94,6 +94,8 @@ class TradeController(FrontendHandler):
     if 'history' in self.request.referer:
       return self.redirect(self.request.referer)
 
+    # Notificamos por mail, mismo rationale que add_trade_order (ver mas arriba)
+    enqueue_mail('cancel_order', {'user_key':self.user, 'order_key':key})
 
     return self.redirect(self.url_for('trade-new') + ('?active_tab=%s' % bid_ask))
 

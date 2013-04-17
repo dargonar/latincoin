@@ -7,9 +7,9 @@ from google.appengine.ext import deferred
 
 from webapp2 import cached_property
 
+import exchanger
 from models import TradeOrder, BankAccount, UserBitcoinAddress, AccountOperation
 from utils import FrontendHandler, need_auth, get_or_404
-from trader import Trader
 from forms.withdraw import WithdrawBTCForm, WithdrawCurrencyForm
 
 class WithdrawController(FrontendHandler):
@@ -30,8 +30,7 @@ class WithdrawController(FrontendHandler):
     if not form.validate():
       return self.render_response('frontend/withdraw.html', **kwargs)
 
-    trader = Trader()
-    order = trader.add_withdraw_btc_order(str(self.user), Decimal(form.amount.data), form.btc_address.data)
+    order = exchanger.add_withdraw_btc_order(str(self.user), Decimal(form.amount.data), form.btc_address.data)
     
     # Verificamos si se pudo ingresar la orden
     if not order[0]:
@@ -69,8 +68,7 @@ class WithdrawController(FrontendHandler):
       self.set_error(u'El CBU es inválido y/o no ha sido verificado que Ud. sea el propietario de la cuenta.')
       return self.render_response('frontend/withdraw.html', **kwargs)
     
-    trader = Trader()  
-    ret    = trader.add_withdraw_currency_order(self.user, Decimal(form.amount.data), str(bank_account.key()))
+    ret = exchanger.add_withdraw_currency_order(self.user, Decimal(form.amount.data), str(bank_account.key()))
     
     # Verificamos si se pudo ingresar la orden
     if not ret[0]:
@@ -91,8 +89,7 @@ class WithdrawController(FrontendHandler):
     
     oper = self.mine_or_404(kwargs['key'], code=500, msg=u'Operación inválida')
 
-    trader = Trader()
-    ret = trader.cancel_withdraw_order(str(oper.key()))
+    ret = exchanger.cancel_withdraw_order(str(oper.key()))
     
     if ret[0]:
       self.set_ok(u'El pedido de retiro fue cancelado.')

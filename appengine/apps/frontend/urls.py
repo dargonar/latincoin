@@ -5,7 +5,8 @@ from webapp2_extras.routes import PathPrefixRoute, NamePrefixRoute, HandlerPrefi
 def get_rules():
     
     rules = [
-      #Route(r'/<bety:.*>', name='soon',        handler='apps.frontend.main_controller.MainController:soon'), # mover donde corresponda      
+
+      # Route(r'/<bety:.*>', name='soon',        handler='apps.frontend.main_controller.MainController:soon'), # mover donde corresponda      
       
       # hacks
       Route('/init', name='a8', handler='apps.frontend.account_controller.AccountController:init_all'),
@@ -58,7 +59,7 @@ def get_rules():
         Route('/btc_address_delete/<key>',    name='btc_address_delete',              handler='.ProfileController:btc_address_delete'),
         Route('/btc_address_list',            name='btc_address_list',                handler='.ProfileController:btc_address_list'),
         Route('/bank_account',                name='bank_account',                    handler='.ProfileController:bank_account'),
-        Route('/bank_account_delete/<key>',   name='bank_account_delete',             handler='.ProfileController:btc_address_delete'),
+        Route('/bank_account_delete/<key>',   name='bank_account_delete',             handler='.ProfileController:bank_account_delete'),
         Route('/bank_account_list',           name='bank_account_list',               handler='.ProfileController:bank_account_list'),
         Route('/otp',                         name='otp',                             handler='.ProfileController:otp'),
         Route('/otp/image/<url>',             name='otp-image',                       handler='.ProfileController:otp_image'),

@@ -418,11 +418,11 @@ class PriceBar(db.Model):
   H1    = 3600
   H24   = 86400
 
-  open                  = db.IntegerProperty(required=True)
-  high                  = db.IntegerProperty(required=True)
-  low                   = db.IntegerProperty(required=True)
-  close                 = db.IntegerProperty(required=True)
-  volume                = db.IntegerProperty(required=True)
+  open                  = db.IntegerProperty(default=0)
+  high                  = db.IntegerProperty(default=0)
+  low                   = db.IntegerProperty(default=0)
+  close                 = db.IntegerProperty(default=0)
+  volume                = db.IntegerProperty(default=0)
   
   bar_time              = db.IntegerProperty(required=True)
   bar_interval          = db.IntegerProperty(required=True, choices=[M1,H1,H24])
@@ -455,11 +455,10 @@ class JinjaTemplate(db.Model):
 # un registro por idioma
 class MailTemplate(db.Model):
   name                  = db.StringProperty()
-  subject               = db.StringProperty()
+  subject               = db.TextProperty()
   language              = db.StringProperty(choices=['es', 'en', 'pt'], default='es', indexed=True)
-  body_txt              = db.ReferenceProperty(JinjaTemplate, collection_name='txt_mail_templates')
-  #body_html             = db.ReferenceProperty(JinjaTemplate, collection_name='html_mail_templates')
-  
+  body_txt              = db.TextProperty()
+  body_html             = db.TextProperty()
   created_at            = db.DateTimeProperty(auto_now_add=True)
   updated_at            = db.DateTimeProperty(auto_now=True)
   

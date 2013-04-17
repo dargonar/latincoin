@@ -294,6 +294,10 @@ class ProfileController(FrontendHandler, UploadHandler):
                              description = form.description.data)
 
     bank_acc.put()
+
+    # Notificamos por mail
+    enqueue_mail('bank_account_added', {'user_key':self.user, 'bank_account_key': str(bank_acc.key()), 'edit':key and len(key)} )
+
     self.response.out.write("ok")
     return
       
@@ -352,6 +356,10 @@ class ProfileController(FrontendHandler, UploadHandler):
                                      address     = form.address.data, 
                                      description = form.description.data)
     user_addy.put()
+    
+    # Notificamos por mail
+    enqueue_mail('btc_address_added', {'user_key':self.user, 'btc_address_key': str(user_addy.key()), 'edit':key and len(key)} )
+
     self.response.out.write("ok")
     return
   
@@ -384,7 +392,10 @@ class ProfileController(FrontendHandler, UploadHandler):
     btc_address = self.mine_or_404(kwargs['key'])
     btc_address.active = False
     btc_address.put()
-    
+
+    # Notificamos por mail
+    enqueue_mail('btc_address_deleted', {'user_key':self.user, 'btc_address_key': str(btc_address.key())} )
+
     self.set_ok(u'La dirección fue eliminada correctamente.')
     return self.redirect(self.request.referer)
 
@@ -395,6 +406,9 @@ class ProfileController(FrontendHandler, UploadHandler):
     bank_account.active = False
     bank_account.put()
     
+    # Notificamos por mail
+    enqueue_mail('bank_account_deleted', {'user_key':self.user, 'bank_account_key': str(bank_account.key())} )
+
     self.set_ok(u'La cuenta bancaria fue eliminada correctamente.')
     return self.redirect(self.request.referer)
   

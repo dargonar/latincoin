@@ -215,10 +215,6 @@ def cancel_order(order_key):
       balance = user_balance['BTC']
       balance.amount_comp -= order.amount
 
-    # Notificamos por mail
-    user_key = str(TradeOrder.user.get_value_for_datastore(order))
-    enqueue_mail('withdraw_request', {'user_key':user_key, 'order_key':order_key}, tx=True)
-
     db.put([order, balance])
     return True
 
@@ -493,7 +489,7 @@ def add_market_trade(user_key, bid_ask, amount_wanted):
     total_currency  = Decimal('0')
     
 
-    res             = [to, u'No se pude llenar la orden']
+    res             = [to, u'No se pude completar la orden']
 
     # Las iteramos y vamos viendo si "llenamos" la market order
     for order in orders:
@@ -602,7 +598,7 @@ def add_limit_trade(user, bid_ask, amount, ppc):
 
     if bid_ask == TradeOrder.ASK_ORDER:
       if balance['BTC'].available() < amount:
-        return [None, u'No tiene suficiente balance disponible en BTC']
+        return [None, u'No tiene suficiente balance disponible en BTC (disponible %.8f) ' % balance['BTC'].available() ]
       else:
         balance['BTC'].amount_comp += amount
     
