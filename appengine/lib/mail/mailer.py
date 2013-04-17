@@ -14,6 +14,7 @@ from datastore_template import MyJinjaLoader, get_template
 from models import MailTemplate, JinjaTemplate, UserBitcoinAddress, BankAccount, TradeOrder, AccountOperation
 
 from jinja2 import Environment, FunctionLoader, PackageLoader
+from jinja2.environment import Template
 
 # import os
 # import sys
@@ -41,12 +42,12 @@ class Mailo(object):
       base_context['reset_link'] = url_for('account-reset', token=user.reset_password_token, _full=True)
     
     if fnc in ('btc_address_deleted', 'btc_address_added'):
-      base_context['user_btc_address'] = UserBitcoinAddress.get(db.Key(kwargs['user_btc_address_key']))
+      base_context['user_btc_address'] = UserBitcoinAddress.get(db.Key(kwargs['btc_address_key']))
     
     if fnc in ('bank_account_not_validated', 'bank_account_validated', 'bank_account_added', 'bank_account_deleted'):
       base_context['bank_account'] = BankAccount.get(db.Key(kwargs['bank_account_key']))
       
-    if fnc in ('new_order', 'completed_order'):
+    if fnc in ('new_order', 'cancel_order', 'completed_order'):
       base_context['order'] = TradeOrder.get(db.Key(kwargs['order_key']))
     
     if fnc in ('deposit_received', 'withdraw_request', 'accept_withdraw_request', 'cancel_withdraw_request', 'done_withdraw_request'):
@@ -64,11 +65,8 @@ class Mailo(object):
     return base_context
 
   def get_mailtemplate_key(self, template, language='es'):
-    return 'mail_%s_%s' % (template, language)
-
-  def get_jinjatemplate_key(self, template, language='es'):
     return '%s_%s' % (template, language)
-    
+
   def send_user_email(self, email_type, context):
     
     #logging.info('os.path[%s]   sys.path[%s]', os.path.abspath("."), sys.path)
@@ -80,21 +78,19 @@ class Mailo(object):
     mail_template = MailTemplate.get_by_key_name(template_key)
     
     if mail_template is None:
-      raise Exception(u'Imposible obtener mail template [%s][%s].' % (template, template_key)) 
-    
-    subject  = mail_template.subject 
-    
+      raise Exception(u'Imposible obtener mail template [%s].' % template_key)
+
     j2              = jinja2.get_jinja2(app=get_app())
     j2_environment  = Environment(  autoescape=True
                                   , loader=FunctionLoader(get_template)) # my_jinja2_loader.
     
+    subject = j2_environment.from_string(mail_template.subject).render(**context)
+
     # Armo el body en plain text.
-    body_tpl = j2_environment.get_template(self.get_jinjatemplate_key(template))
-                                #, **context)  
-    body = body_tpl.render(**context)
+    body_txt = j2_environment.from_string(mail_template.body_txt).render(**context)
     
     # Envío el correo.
     mail.send_mail(sender=sender, #"%s <%s@%s>" % (context['domain_name'], sender, context['site_name']), 
                    to=context['user_email'],
-                   subject="%s - %s" % (context['site_name'], subject),
-                   body=body)
+                   subject=subject,
+                   body=body_txt)

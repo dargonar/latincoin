@@ -455,11 +455,10 @@ class JinjaTemplate(db.Model):
 # un registro por idioma
 class MailTemplate(db.Model):
   name                  = db.StringProperty()
-  subject               = db.StringProperty()
+  subject               = db.TextProperty()
   language              = db.StringProperty(choices=['es', 'en', 'pt'], default='es', indexed=True)
-  body_txt              = db.ReferenceProperty(JinjaTemplate, collection_name='txt_mail_templates')
-  #body_html             = db.ReferenceProperty(JinjaTemplate, collection_name='html_mail_templates')
-  
+  body_txt              = db.TextProperty()
+  body_html             = db.TextProperty()
   created_at            = db.DateTimeProperty(auto_now_add=True)
   updated_at            = db.DateTimeProperty(auto_now=True)
   
