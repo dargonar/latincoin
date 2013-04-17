@@ -108,6 +108,10 @@ class BackendController(FrontendHandler):
   
   
   @need_admin_auth()
+  def new_currency_deposit(self, **kwargs):
+    pass
+  
+  @need_admin_auth()
   def dashboard(self, **kwargs):
     kwargs['html']='dashboard'
     return self.render_response('backend/dashboard.html', **kwargs)
