@@ -19,7 +19,7 @@ from google.appengine.api import files
 from webapp2 import abort, cached_property, RequestHandler, Response, HTTPException, uri_for as url_for, get_app
 from webapp2_extras import jinja2, sessions, json
 
-from models import AccountBalance #, Ticker
+from models import AccountBalance
 from exchanger import get_account_balance
 
 from filters import *

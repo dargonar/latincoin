@@ -2,13 +2,16 @@
 from decimal import Decimal
 
 from google.appengine.ext import db
+from google.appengine.api import taskqueue
 
-from webapp2 import cached_property
+from webapp2 import cached_property, url_for
+
+import exchanger
 
 from models import TradeOrder
 from utils import FrontendHandler, need_auth, get_or_404
-from trader import Trader
 from forms.trade import BidForm, AskForm
+from mail.mailer import enqueue_mail
 
 class TradeController(FrontendHandler):
   
@@ -34,27 +37,31 @@ class TradeController(FrontendHandler):
     if not form_validated:
       return self.render_response('frontend/trade.html', active_tab=bid_ask, **kwargs)
 
-    trader = Trader()
-
     # Es una market order?
     if form.market():
-      trade = trader.add_market_trade(self.user, 'B' if bid_ask == 'bid' else 'A', 
+      trade = exchanger.add_market_trade(self.user, 'B' if bid_ask == 'bid' else 'A', 
                                     Decimal(form.amount()) )
     else:
-      trade = trader.add_limit_trade(self.user, 'B' if bid_ask == 'bid' else 'A', 
+      trade = exchanger.add_limit_trade(self.user, 'B' if bid_ask == 'bid' else 'A', 
                                     Decimal(form.amount()), Decimal(form.ppc()))
 
-    user = get_or_404(self.user)
     # Verificamos si se pudo ingresar la orden
     if not trade[0]:
       self.set_error(trade[1])
       return self.render_response('frontend/trade.html', active_tab=bid_ask, **kwargs)
     
     self.set_ok(u'La orden fue %s con éxito. (#%d)' % ('ingresada' if form.market() else 'completada',trade[0].key().id()) )
-    
-    #TODO: mandar a ejecutar
-    #if not form.market():
-    #taskqueue.execute()
+
+    # Si fue una orden de mercado, mandamos el mail correspondiente
+    # Lo hacemos aca por que no se si un encolamiento puede frenar una transaccion
+    # Es mas importante que se realize el trade que mandar el mail, por eso lo hacemos afuera
+    order_key = str(trade[0].key())
+    if form.market():
+      enqueue_mail('completed_order', {'user_key':self.user, 'order_key':order_key})
+      taskqueue.add(url=url_for('task-apply-operations'))    
+    else:
+      enqueue_mail('new_order', {'user_key':self.user, 'order_key':order_key})
+      taskqueue.add(url=url_for('task-match-orders'))    
 
     return self.redirect(self.url_for('trade-new') + ('?active_tab=%s' % bid_ask))
 
@@ -74,8 +81,7 @@ class TradeController(FrontendHandler):
     # Verificamos que la orden sea del usuario que esta logueado
     order = self.mine_or_404(key)
 
-    trader = Trader()
-    result = trader.cancel_order(key)
+    result = exchanger.cancel_order(key)
 
     if result:
       self.set_ok(u'La orden (#%d) fue cancelada con éxito.' % order.key().id())

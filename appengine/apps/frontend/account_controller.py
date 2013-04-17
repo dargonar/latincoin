@@ -12,7 +12,7 @@ from models import Account, AccountBalance, BitcoinAddress
 from utils import FrontendHandler
 from forms.account import SignUpForm, ForgetPasswordForm, ResetPasswordForm
 
-from mail.mailer import enqueue_mail, enqueue_mail_tx 
+from mail.mailer import enqueue_mail 
 from bitcoin_helper import generate_new_address, encrypt_private
 
 class AccountController(FrontendHandler):
@@ -36,7 +36,7 @@ class AccountController(FrontendHandler):
     user.put()
 
     # Mandamos email de confirmacion
-    enqueue_mail('send_welcome_email', dict({'user_key':self.user}))
+    enqueue_mail('welcome', {'user_key':str(user.key())})
 
     return self.render_response('frontend/signup_success.html')
 
@@ -67,6 +67,12 @@ class AccountController(FrontendHandler):
     # No hay codigo o ya expiro el tiempo
     if not user or not user.can_confirm():
       self.set_error(u'<strong>Código de registro inválido o expirado</strong>')
+      
+      # Borramos al usuario si estaba expirado para que se puede volver a registrar.
+      if user: 
+        #logging.error('No va mas')
+        user.delete()
+
       return self.redirect_to('account-signup')
 
     @db.transactional(xg=True)
@@ -147,7 +153,7 @@ class AccountController(FrontendHandler):
     if user:
       user.create_reset_token()
       user.put()
-      enqueue_mail('send_forgotpassword_email', dict({'user_key':str(user.key())}))
+      enqueue_mail('forgot_password', {'user_key':str(user.key())} )
 
     self.set_ok(u'Si su correo existe en nuestro sitio, recibirá un enlace para crear un nuevo password en su correo.')
     return self.redirect_to('account-login')
@@ -174,7 +180,7 @@ class AccountController(FrontendHandler):
     def _tx():
       to_save = user.change_password(self.reset_form.password.data, self.request.remote_addr, True)
       db.put(to_save)
-      enqueue_mail_tx('send_passwordchanged_email', dict({'user_key':str(user.key())}))
+      enqueue_mail_tx('password_changed', dict({'user_key':str(user.key())}))
     _tx()
 
     self.set_ok(u'La contraseña fue cambiada con exito.')
@@ -299,8 +305,8 @@ class AccountController(FrontendHandler):
 
     from bitcoinrpc.connection import get_proxy
     
-    last_block = 230099
-    last_block = get_proxy(s.remote_rpc).getblockcount()
+    last_block = 231713
+    #last_block = get_proxy(s.remote_rpc).getblockcount()
 
     from models import Block
     b = Block( key=db.Key.from_path('Block',last_block), processed='Y', number=last_block, hash='n/a', txs=0)

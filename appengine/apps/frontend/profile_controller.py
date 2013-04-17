@@ -23,7 +23,7 @@ import json, re, urllib
 
 from appengine.file_upload import UploadHandler
 
-from mail.mailer import enqueue_mail_tx, enqueue_mail
+from mail.mailer import enqueue_mail
 
 from onetimepass import *
 from gaeqrcode.PyQRNative import QRErrorCorrectLevel
@@ -115,7 +115,7 @@ class ProfileController(FrontendHandler, UploadHandler):
 
     account.save()
 
-    enqueue_mail('send_personalinfochanged_email', dict({'user_key':self.user}))
+    enqueue_mail('personal_info_changed', {'user_key': str(account.key())} )
     
     self.update_user_info(account)
     
@@ -241,7 +241,8 @@ class ProfileController(FrontendHandler, UploadHandler):
         to_save = user.change_password(new_password, self.request.remote_addr)
         db.put(to_save)
         # Mandamos email de aviso de cambio de clave
-        enqueue_mail_tx('send_passwordchanged_email', dict({'user_key':self.user}))
+        enqueue_mail('password_changed', {'user_key': str(user.key()) })
+      
       _tx()
       
       self.set_ok(u'La contraseña fue modificada con éxito.')

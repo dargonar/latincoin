@@ -14,7 +14,9 @@ def get_rules():
         Route('/match_orders',              name='match-orders',        handler='.TasksController:match_orders'),
         Route('/apply_operations',          name='apply-operations',    handler='.TasksController:apply_operations'),
         Route('/build_next_bar',            name='build-next-bar',      handler='.TasksController:build_next_bar'),
-        Route('/send_mail/<mail>',          name='send-mail',           handler='.TasksController:send_mail'),
+        Route('/send_mail',                 name='send-mail',           handler='.TasksController:send_mail'),
+        Route('/build_1h_bar',              name='build-1h-bar',        handler='.TasksController:build_1h_bar'),
+        Route('/notify_operations',         name='notify-operations',   handler='.TasksController:notify_operations'),
       ]) ]) ]),
 
     ]
