@@ -306,11 +306,11 @@ class AccountController(FrontendHandler):
     from bitcoinrpc.connection import get_proxy
     
     #last_block = 231713
-    last_block = get_proxy(s.remote_rpc).getblockcount()
+    #last_block = get_proxy(s.remote_rpc).getblockcount()
 
-    from models import Block
-    b = Block( key=db.Key.from_path('Block',last_block), processed='Y', number=last_block, hash='n/a', txs=0)
-    b.put()
+    #from models import Block
+    #b = Block( key=db.Key.from_path('Block',last_block), processed='Y', number=last_block, hash='n/a', txs=0)
+    #b.put()
 
     from models import PriceBar
     import time

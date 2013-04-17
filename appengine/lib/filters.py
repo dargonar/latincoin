@@ -13,9 +13,8 @@ _slugify_strip_re = compile(r'[^\w\s-]')
 _slugify_hyphenate_re = compile(r'[-\s]+')
 
 def do_format_btc(value):
-  dval = Decimal(value)
-  #slen = len('%.8f' % dval)
-  return '%s%s' % (('%.2f' % dval), ('<small>%s</small>' % (('%.9f' % dval)[-6:][:5])))
+  sval = '%.8f' % Decimal(value)
+  return '%s<small>%s</small>' % (sval[0:sval.index('.')+3],sval[sval.index('.')+3:])
   
 # def trunc(f, n):
   # '''Truncates/pads a float f to n decimal places without rounding'''

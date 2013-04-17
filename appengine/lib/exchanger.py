@@ -598,7 +598,7 @@ def add_limit_trade(user, bid_ask, amount, ppc):
 
     if bid_ask == TradeOrder.ASK_ORDER:
       if balance['BTC'].available() < amount:
-        return [None, u'No tiene suficiente balance disponible en BTC']
+        return [None, u'No tiene suficiente balance disponible en BTC (disponible %.8f) ' % balance['BTC'].available() ]
       else:
         balance['BTC'].amount_comp += amount
     

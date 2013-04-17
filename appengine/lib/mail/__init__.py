@@ -14,7 +14,7 @@ def init_mails():
 
   # ----------------------------------------------------------------------------------  
   # include "user_btc_address_es
-  name = 'include "user_btc_address_es'
+  name = 'user_btc_address_es'
   template_txt = """
     ID:           #{{user_btc_address.key().id()|string}}
     Address:      {{user_btc_address.address}}

@@ -5,7 +5,8 @@ from webapp2_extras.routes import PathPrefixRoute, NamePrefixRoute, HandlerPrefi
 def get_rules():
     
     rules = [
-      #Route(r'/<bety:.*>', name='soon',        handler='apps.frontend.main_controller.MainController:soon'), # mover donde corresponda      
+
+      # Route(r'/<bety:.*>', name='soon',        handler='apps.frontend.main_controller.MainController:soon'), # mover donde corresponda      
       
       # hacks
       Route('/init', name='a8', handler='apps.frontend.account_controller.AccountController:init_all'),
