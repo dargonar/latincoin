@@ -159,6 +159,8 @@
       App.init();
       App.initUniform('.fileupload-toggle-checkbox'); // initialize uniform checkboxes
       
+      $("#client_time").val( Math.floor(new Date().getTime()/1000) );
+
 		});
 	</script>
   {%endblock%}

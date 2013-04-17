@@ -12,7 +12,7 @@ from google.appengine.ext import db
 from webapp2 import RequestHandler, uri_for as url_for
 
 from config import config
-from models import PriceBar, Block, BitcoinAddress, ForwardTx, Operation, get_system_config
+from models import Account, PriceBar, Block, BitcoinAddress, ForwardTx, Operation, get_system_config
 
 from utils import create_blobstore_file, read_blobstore_file, remove_blobstore_file
 from google.appengine.api import taskqueue
@@ -28,6 +28,16 @@ import exchanger
 from mail.mailer import send_mail
 
 class TasksController(RequestHandler):
+
+  def remove_unconfirmed_users(self, **kwargs):
+    
+    to_delete = []
+    
+    for user in Account.all().filter('confirmed_at =', None):
+      if not user.can_confirm() and not user.is_exchanger():
+        to_delete.append(user)
+
+    db.delete(to_delete)
 
   def notify_operations(self, **kwargs):
     # TODO: Hacerlo!
