@@ -297,6 +297,9 @@ class AccountOperation(db.Model):
   def set_done(self):
     self.state = self.STATE_DONE
 
+  def format(self):
+    return '%s %.8f' % (self.currency, self.amount)
+
   def __repr__(self):
     return 'ao: %s %s %s %.5f' % (self.operation_type, self.account.key(), self.currency, self.amount)
 
@@ -371,11 +374,8 @@ class Operation(db.Model):
   created_at            = db.DateTimeProperty(auto_now_add=True)
   updated_at            = db.DateTimeProperty(auto_now=True)
   type                  = db.StringProperty(required=True, choices=[OPERATION_BUY, OPERATION_SELL]) # , 'BUY', 'SELL', 'NA'
-  
-  buyer_was_notified    = db.BooleanProperty(default=False)
-  seller_was_notified   = db.BooleanProperty(default=False)
-  traders_were_notified = db.BooleanProperty(default=False, indexed=True)
-  last_notification     = db.DateTimeProperty()
+  traders_notified      = db.BooleanProperty(default=False)
+
   
 class BitcoinAddress(db.Model):
   user                  = db.ReferenceProperty(Account, collection_name='bitcoin_addresses', required=True)
@@ -396,6 +396,18 @@ class ForwardTx(db.Model):
   forwarded             = db.StringProperty(default='N')
   created_at            = db.DateTimeProperty(auto_now_add=True)
   updated_at            = db.DateTimeProperty(auto_now=True)
+
+  def is_forwarded(self):
+    return self.forwarded == 'Y'
+
+  def is_credited(self):
+    return self.forwarded == 'D'
+
+  def set_forwarded(self):
+    self.forwarded = 'Y'
+
+  def set_credited(self):
+    self.forwarded = 'D'
 
 class PriceBar(db.Model):
   

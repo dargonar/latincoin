@@ -23,13 +23,32 @@ from electrum.bitcoin import address_from_private_key
 from bitcoinrpc import connection
 from bitcoinrpc.authproxy import JSONRPCException
 
-from exchanger import get_account_balance, get_ohlc
+import exchanger
 
 from mail.mailer import send_mail
 
 class TasksController(RequestHandler):
 
-  def build_next_bar(self, **kwargs):
+  def notify_operations(self, **kwargs):
+    # TODO: Hacerlo!
+    pass    
+    # # Traemos todas las operaciones "Aplicadas" (status=OPERATION_DONE) y las
+    # # agrupamos por TradeOrder para informarle a cada uno de los "duenos"
+    # orders = {}
+    
+    # for op in Operation.all().filter('traders_notified =', False).filter('status =', Operation.OPERATION_DONE):
+      
+    #   bid = str(Operation.purchase_order.get_value_for_datastore(op))
+    #   ask = str(Operation.sale_order.get_value_for_datastore(op))
+
+    #   if bid not in bids: bids[bid] = []
+    #   if ask not in asks: asks[ask] = []
+
+    #   bids.append(op)
+    #   asks.append(op)
+
+
+  def build_1h_bar(self, **kwargs):
     
     # Traemos la ultima barra de hora
     last_bar = PriceBar.all().filter('bar_interval =', PriceBar.H1) \
@@ -41,11 +60,11 @@ class TasksController(RequestHandler):
     if not have_to_build:
       return
 
-    # Limites de fechas
+    # Limites de fechas para calculo de la nueva barra
     from_ts = datetime.fromtimestamp(new_bar_time * last_bar.bar_interval)
     to_ts   = datetime.fromtimestamp((new_bar_time+1) * last_bar.bar_interval)
 
-    ohlc = get_ohlc(from_ts, to_ts, last_bar.close)
+    ohlc = exchanger.get_ohlc(from_ts, to_ts, last_bar.close)
 
     # Aramamos el próximo bar
     next_bar = PriceBar(open         = ohlc['open'],
@@ -65,14 +84,12 @@ class TasksController(RequestHandler):
     if not sconfig.can_trade():
       return
 
-    trader = Trader()
-    tmp = trader.match_orders()
+    exchanger.match_orders()
 
   def apply_operations(self, **kwargs):
     
-    trader = Trader()
     for op in Operation.all().filter('status =', Operation.OPERATION_PENDING):
-      tmp = trader.apply_operation(op.key())
+      exchanger.apply_operation(op.key())
 
   def update_btc_balance(self, **kwargs):
   
@@ -81,12 +98,11 @@ class TasksController(RequestHandler):
     access = connection.get_proxy( sconfig.remote_rpc )
     current_block = access.getblockcount()
 
-    trader = Trader()
     for ftx in ForwardTx.all().filter('forwarded =', 'Y'):
 
       # Esta confirmada la transaccion original?
       if current_block > ftx.in_block + int(sconfig.confirmations):
-        trader.add_btc_balance(str(ftx.key()))
+        exchanger.add_btc_balance(str(ftx.key()))
 
   def forward_txs(self, **kwargs):
   
@@ -282,6 +298,8 @@ class TasksController(RequestHandler):
   def send_mail(self, **kwargs):
     self.request.charset = 'utf-8'
     params = self.request.POST.mixed()
+
+    logging.error('tomalo:'+  str(params))
+
     mail = self.request.POST.get('mail')
     send_mail(mail, params)
-    return

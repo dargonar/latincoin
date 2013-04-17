@@ -9,7 +9,7 @@ from models import TradeOrder, Operation, Account, AccountOperation, Dummy, Forw
 
 from bitcoin_helper import zero_btc
 
-from mail.mailer import enqueue_mail_tx
+from mail.mailer import enqueue_mail
 
 def get_ohlc(from_ts, to_ts, prev_close=0):
   
@@ -82,11 +82,11 @@ def add_btc_balance(ftx_key):
   def _tx():
 
     ftx = ForwardTx.get(ftx_key)
-    if ftx.forwarded != 'Y':
+    if not ftx.is_forwarded():
       return
 
-    ftx.forwarded = 'D'
-    
+    ftx.set_credited()
+
     balance = get_account_balance(ftx.user)
     balance['BTC'].amount += ftx.value
 
@@ -100,8 +100,10 @@ def add_btc_balance(ftx_key):
 
     db.put([ftx, balance['BTC'], add_btc_op])
     
-    enqueue_mail_tx('send_depositreceivedbtc_email', dict({'user_key':ftx.user, 'deposit_amount':ftx.value}))
-    
+    # Notificamos por mail
+    user_key = str(ForwardTx.user.get_value_for_datastore(ftx))
+    enqueue_mail('deposit_received', {'user_key':user_key, 'ao_key':str(add_btc_op.key())}, tx=True)
+
     return True
 
   _tx()
@@ -127,6 +129,10 @@ def cancel_withdraw_order(order_key):
     balance[ao.currency].amount += (-ao.amount)
 
     db.put([ao, balance[ao.currency]])
+
+    # Notificamos por mail
+    user_key = str(AccountOperation.account.get_value_for_datastore(ao))
+    enqueue_mail('cancel_withdraw_request', {'user_key':user_key, 'ao_key':str(ao.key())}, tx=True)
 
     return [ao, u'ok']
 
@@ -164,6 +170,9 @@ def _add_withdraw_order(user, currency, amount, bank_account=None, btc_address=N
     balance[currency].amount -= amount
     
     db.put([balance[currency], withdraw_op])
+
+    # Notificamos por mail
+    enqueue_mail('withdraw_request', {'user_key':str(user_key), 'ao_key':str(withdraw_op.key())}, tx=True)
 
     return [withdraw_op, u'ok']
 
@@ -205,6 +214,10 @@ def cancel_order(order_key):
     else:
       balance = user_balance['BTC']
       balance.amount_comp -= order.amount
+
+    # Notificamos por mail
+    user_key = str(TradeOrder.user.get_value_for_datastore(order))
+    enqueue_mail('withdraw_request', {'user_key':user_key, 'order_key':order_key}, tx=True)
 
     db.put([order, balance])
     return True
@@ -313,7 +326,7 @@ def apply_operation(operation_key):
                                   state          = AccountOperation.STATE_DONE)
 
     op.status = Operation.OPERATION_DONE
-    logging.info('  OPERATION_DONE')
+    #logging.info('  OPERATION_DONE')
 
     to_save =  [op]
 
@@ -346,10 +359,10 @@ def apply_operation(operation_key):
 # y acomoda las TradeOrders
 def match_orders():
 
+  parent = Dummy.get_by_key_name('trade_orders')
+
   @db.transactional(xg=True)
   def _tx():
-    
-    parent = Dummy.get_by_key_name('trade_orders')
 
     # Tomamos la mejor (mas alta) BID activa
     best_bid = TradeOrder.all() \
@@ -550,11 +563,12 @@ def add_market_trade(user_key, bid_ask, amount_wanted):
        
         db.put(to_save)
         res = [to, u'ok']
+
         break
 
     # Borramos el market order si lo habiamos creado
     if res[1] != u'ok':
-      
+       
       if res[0]:
         res[0].delete()
 
@@ -602,7 +616,7 @@ def add_limit_trade(user, bid_ask, amount, ppc):
     # y mandamos a guardar las dos cosas juntas.
     # Si el usuario modifico su balance de alguna manera (retiro, otra order, etc)
     # la transaccion se vuelve a ejecutar y si no da el balance no se mete.
-    
+
     to = TradeOrder(parent = Dummy.get_by_key_name('trade_orders'), 
           user             = db.Key(user),
           original_amount  = amount,
@@ -616,7 +630,6 @@ def add_limit_trade(user, bid_ask, amount, ppc):
         )
 
     balance = balance['BTC'] if bid_ask == TradeOrder.ASK_ORDER else balance['ARS']
-
     db.put([balance,to])
     return [to, u'ok']
 

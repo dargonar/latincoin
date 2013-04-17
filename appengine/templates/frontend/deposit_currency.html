@@ -76,5 +76,32 @@
                     </div>
                     <!-- END WELLS PORTLET-->
                   </div>
+
+
+                  <!-- BEGIN EXAMPLE TABLE PORTLET-->
+                  <div id="btc_in" class="portlet box light-grey">
+                    <div class="portlet-title">
+                      <h4><i class="icon-table"></i>{{ 'Depósito de BTC' }}</h4>
+                      <div class="tools">
+                        <a id="my_btc_in_table-refresh" href="javascript:;" class="reload"></a>
+                      </div>
+                    </div>
+                    <div class="portlet-body">
+                      <div class="clearfix">
+                      </div>
+                      {% set hide_items = '' if True else 'display:none;' %}
+                      <table id="my_btc_in_table" class="table table-striped table-bordered table-hover jquery-table" >
+                        <thead>
+                          <tr>
+                            <th >{{'# Nro. Operacion'}}</th>
+                            <th>{{'Fecha'}}</th>
+                            <th>{{'Cantidad(BTC)'}}</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
 				
                   
