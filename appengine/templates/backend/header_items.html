@@ -1,0 +1,24 @@
+    <ul class="nav pull-right">
+      {% if is_logged %}
+      <!-- display:none si no esta  logeado -->
+      <li class="dropdown user">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+        <i class="profile_user_icon icon-user"></i> <!--img alt="" src="/assets/img/avatar1_small.jpg" /-->
+        <span class="username">{{user_name}}</span>
+        <i class="icon-angle-down"></i>
+        </a>
+        <ul class="dropdown-menu">
+          <!--li><a href="calendar.html"><i class="icon-calendar"></i> My Calendar</a></li -->
+          <!--li><a href="#"><i class="icon-tasks"></i> My Tasks</a></li-->
+          <li class="divider"></li>
+          <li><a href="{{url_for('backend-logout')}}"><i class="icon-off"></i> Log Out</a></li>
+        </ul>
+      </li>
+      {% else %}
+      <li class="dropdown user">
+        <a href="{{url_for('backend-login')}}">Ingresar</a>
+      </li> 
+      {% endif %}
+
+    </ul>
+    

@@ -1,0 +1,25 @@
+  {% extends "backend/base.html"%}
+  
+  {%block html_body%}
+    <body class="login" style="background-color:#ffffff !important;">
+      <!-- BEGIN LOGO -->
+      <div class="logo">
+        <a href="{{url_for('home')}}" class="brand">
+          <img src="/assets/img/logo/logotipow200.png" alt="logo">
+        </a>
+      </div>
+      <!-- END LOGO -->
+      <!-- BEGIN LOGIN -->
+      <div class="content" style="border: 1px solid #eee;">
+        {%block content%}
+        {%endblock%}  
+      </div>
+      <!-- END LOGIN -->
+      <!-- BEGIN COPYRIGHT -->
+      <div class="copyright">
+        {% include "backend/base_copyright.html"%}
+      </div>
+      <!-- END COPYRIGHT -->
+    </body>
+{%endblock%}
+  

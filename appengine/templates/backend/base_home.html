@@ -1,0 +1,39 @@
+  {% extends "backend/base.html"%}
+
+  {%block html_body%}
+    <body class="fixed-top">
+      <!-- BEGIN HEADER -->
+      {%include "backend/header.html"%}
+      <!-- END HEADER -->
+      
+      <!-- BEGIN BODY -->
+        <!-- BEGIN CONTAINER -->
+        <div class="page-container row-fluid">
+          
+          <!-- BEGIN SIDEBAR -->
+          <div class="page-sidebar nav-collapse collapse">
+            {%include "backend/sidebar.html"%}
+          </div>
+          <!-- END SIDEBAR -->
+          <!-- BEGIN PAGE -->
+          <div class="page-content">
+            
+            {%block content%}
+            {%endblock%}
+            
+          </div>
+          <!-- END PAGE -->
+        </div>
+        <!-- END CONTAINER -->
+      <!-- BEGIN BODY -->
+      
+      {% include "backend/base_footer.html"%}
+      
+      <!-- BEGIN JAVASCRIPTS -->
+      {%include "backend/base_javascripts.html"%}
+      <!-- END JAVASCRIPTS -->
+        <!-- END JAVASCRIPTS -->
+      {%block javascript_run%}
+      {%endblock%}
+    </body>
+  {%endblock%}

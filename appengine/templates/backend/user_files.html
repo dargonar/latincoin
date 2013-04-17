@@ -1,0 +1,93 @@
+  {% extends "backend/base_home.html"%}
+  
+  {%block content%}
+    <!-- BEGIN PAGE CONTAINER-->
+			<div class="container-fluid">
+				<!-- BEGIN PAGE HEADER-->
+				<div class="row-fluid">
+					<div class="span12">
+						<!-- BEGIN PAGE TITLE & BREADCRUMB-->			
+						<h3 class="page-title">
+							{{'Archivos de %s'|format(user.email)}}
+						</h3>
+					</div>
+				</div>
+				<!-- END PAGE HEADER-->
+				<div id="files">
+					<div class="row-fluid">
+            <div class="span12">
+              {% if flash %}
+              <div class="alert alert-{{ 'error' if flash.type=='error' else 'success' }}">
+                <button class="close" data-dismiss="{{ 'error' if flash.type=='error' else 'success' }}" onclick="$(this).parent().remove();"></button>
+                {{flash.message}}
+              </div>
+              {% endif %}
+                
+              <div class="portlet box blue">
+                <div class="portlet-title">
+                  <h4><i class="icon-group"></i>{{'Archivos'}}</h4>
+                </div>
+                <div class="portlet-body">
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        <th>Nombre</th>
+                        <th>Tamaño</th>
+                        <th>Link</th>
+                        <th></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for file in files %}
+                        <tr class="template-download fade in">
+                          <td class="preview">
+                            <a href="{{file.serving_url}}=s80" title="tuti_250.png" data-gallery="gallery" download="tuti_250.png"><img src="{{file.serving_url}}=s80"></a>
+                          </td>
+                          <td class="name">
+                            <a href="#" title="{{file.filename}}" data-gallery="gallery" download="{{file.filename}}">{{file.filename}}</a>
+                          </td>
+                          <td class="size"><span>{{('%0.2f'|format((file.filesize|float)/1024))}} KB</span></td>
+                          <td colspan="2">
+                            {% if file.is_valid %}
+                              <span class="label label-success">Válido</span>
+                            {% else %}
+                              {% if file.not_valid_reason == ''%}
+                                <span class="label label-warning">Pendiente</span>
+                              {% else %}
+                                <span class="label label-important">No válido</span> {{file.not_valid_reason}}
+                              {% endif %}
+                            {% endif %}
+                          </td>
+                          <td>
+                            <a href="{{url_for('profile-delete_file', key=file.key()|string)}}" class="btn btn-danger delete"><i class="icon-trash icon-white"></i> Validar</a>
+                            <a href="{{url_for('profile-delete_file', key=file.key()|string)}}" class="btn btn-danger delete"><i class="icon-trash icon-white"></i> Validar</a>
+                          </td>
+                        </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+						</div>
+            </div>
+          </div>
+					<div class="clearfix"></div>
+          <div class="row-fluid">
+            <div class="span12">
+            actions?
+            </div>
+          </div>
+				</div>
+			</div>
+			<!-- END PAGE CONTAINER-->		
+    {%endblock%}
+    
+    {%block javascript_run%}
+    <script>
+      jQuery(document).ready(function() {			
+        // initiate layout and plugins
+        App.setPage("index");
+        App.init();
+      });
+    </script>
+    {%endblock%}

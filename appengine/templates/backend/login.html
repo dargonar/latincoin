@@ -1,0 +1,39 @@
+  {% extends "backend/base_login.html"%}
+  
+  {%block content%}
+    <!-- BEGIN LOGIN FORM -->
+    <form id="login-form" class="form-vertical login-form" action="{{url_for('backend-login')}}" method="POST">
+      <h3 class="form-title">{{ 'Ingrese a su cuenta' }}</h3>
+      <div class="control-group">
+
+      {% if flash %}
+      <div class="alert alert-{{flash.type}}">
+        <button class="close" data-dismiss="alert"></button>
+        {{flash.message}}
+      </div>
+      {% endif %}
+
+        <div class="controls">
+          <div class="input-icon left">
+            <i class="icon-user"></i>
+            <input name="email" class="m-wrap" type="text" placeholder="{{'E-mail'}}" />
+          </div>
+        </div>
+      </div>
+      <div class="control-group">
+        <div class="controls">
+          <div class="input-icon left">
+            <i class="icon-lock"></i>
+            <input name="password" class="m-wrap" type="password" style="" placeholder="{{'Contraseña'}}" />
+          </div>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="btn green pull-left">{{'Ingresar'}}&nbsp;<i class="m-icon-swapright m-icon-white"></i></button>
+        <!-- a href="#" id="login-btn-off" onclick="$('#login-form').submit()" class="btn green pull-left">
+        {{'Ingresar'}} <i class="m-icon-swapright m-icon-white"></i>
+        </a -->
+      </div>
+    </form>
+    <!-- END LOGIN FORM -->        
+  {%endblock%}

@@ -16,6 +16,20 @@ def get_rules():
         Route('/build_next_bar',            name='build-next-bar',      handler='.TasksController:build_next_bar'),
         Route('/send_mail/<mail>',          name='send-mail',           handler='.TasksController:send_mail'),
       ]) ]) ]),
+      
+      Route('/a/backend',                   name='backend',         handler='apps.backend.backend_controller.BackendController:home'),
+      
+      PathPrefixRoute('/a/backend', [ NamePrefixRoute('backend-', [ HandlerPrefixRoute('apps.backend.backend_controller', [
+        Route('/login',                     name='login',             handler='.BackendController:login'),
+        Route('/logout',                    name='logout',            handler='.BackendController:logout'),
+        Route('/dashboard',                 name='dashboard',         handler='.BackendController:dashboard'),
+        
+        Route('/users',                     name='users',             handler='.BackendController:users'),
+        Route('/list_user_files/<key>',     name='list_user_files',   handler='.BackendController:list_user_files'),
+        
+        Route('/withdrawals',               name='withdrawals',       handler='.BackendController:withdrawals'),
+        Route('/deposits',                  name='deposits',          handler='.BackendController:deposits'),
+      ]) ]) ]),
 
     ]
 

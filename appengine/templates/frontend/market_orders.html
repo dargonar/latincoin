@@ -18,7 +18,7 @@
 									</thead>
 									<tbody>
 										{% for ask in asks.run(limit=10) %}
-                    <tr class="tooltips {{ loop.cycle('odd', 'even') }}" data-original-title="Hace {{ask.created_at|time_distance_in_words}}">
+                    <tr class="tooltips {{ loop.cycle('odd', 'even') }}" data-original-title="Hace {{ask.created_at|short_time_distance_in_words}}">
 											<td>{{ ask.key().id()|string }}</td>
 											<td>${{'%0.2f'|format(ask.ppc|float)}}</td>
 											<td>{{'%0.5f'|format(ask.amount|float)}}</td>
@@ -51,7 +51,7 @@
 									</thead>
 									<tbody>
 										{% for bid in bids.run(limit=10) %}
-                    <tr class="tooltips {{ loop.cycle('odd', 'even') }}" data-original-title="Hace {{bid.created_at|time_distance_in_words}}">
+                    <tr class="tooltips {{ loop.cycle('odd', 'even') }}" data-original-title="Hace {{bid.created_at|short_time_distance_in_words}}">
 											<td>{{ bid.key().id()|string }}</td>
 											<td>${{'%0.2f'|format(bid.ppc|float)}}</td>
 											<td>{{'%0.5f'|format(bid.amount|float)}}</td>

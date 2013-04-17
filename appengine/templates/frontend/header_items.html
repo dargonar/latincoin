@@ -28,7 +28,7 @@
               {% if is_logged %}
               &nbsp;&nbsp;
               <span class="username">Balance:<span class="white_ticker"></span>
-              &nbsp;<span class="white_ticker">{{btc_balance}}</span>&nbsp;BTC&nbsp;-
+              &nbsp;<span class="white_ticker">{{btc_balance|format_btc}}</span>&nbsp;BTC&nbsp;-
               &nbsp;<span class="white_ticker">{{ars_balance}}</span>&nbsp;ARS</span>
               {% endif %}
 
