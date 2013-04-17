@@ -25,7 +25,7 @@
                 
               <div class="portlet box blue">
                 <div class="portlet-title">
-                  <h4><i class="icon-group"></i>{{'Archivos'}}</h4>
+                  <h4><i class="icon-file"></i>{{'Archivos'}}</h4>
                 </div>
                 <div class="portlet-body">
                   <table class="table">
@@ -34,8 +34,9 @@
                         <th>#</th>
                         <th>Nombre</th>
                         <th>Tamaño</th>
-                        <th>Link</th>
-                        <th></th>
+                        <th colspan="2">Estado</th>
+                        <th>Validar</th>
+                        <th>Invalidar</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -55,13 +56,18 @@
                               {% if file.not_valid_reason == ''%}
                                 <span class="label label-warning">Pendiente</span>
                               {% else %}
-                                <span class="label label-important">No válido</span> {{file.not_valid_reason}}
+                                <span class="label label-important">No válido</span> <br/>[{{file.not_valid_reason}}]
                               {% endif %}
                             {% endif %}
                           </td>
                           <td>
-                            <a href="{{url_for('profile-delete_file', key=file.key()|string)}}" class="btn btn-danger delete"><i class="icon-trash icon-white"></i> Validar</a>
-                            <a href="{{url_for('profile-delete_file', key=file.key()|string)}}" class="btn btn-danger delete"><i class="icon-trash icon-white"></i> Validar</a>
+                            <a href="{{url_for('backend-validate_user_file', file=file.key()|string, valid='1')}}" class="btn green"><i class="icon-ok icon-white"></i> Validar</a>
+                          </td>
+                          <td>
+                            <form action="{{url_for('backend-validate_user_file', file=file.key()|string, valid='0')}}" method="GET">
+                              <input type="text" placeholder="Motivo de invalidación" name="invalid_reason" />
+                              <button type="submit" class="btn red invalidate_file"><i class="icon-remove icon-white"></i> Invalidar</button>
+                            </form>
                           </td>
                         </tr>
                       {% endfor %}
@@ -83,11 +89,7 @@
     {%endblock%}
     
     {%block javascript_run%}
-    <script>
-      jQuery(document).ready(function() {			
-        // initiate layout and plugins
-        App.setPage("index");
-        App.init();
-      });
+    <script type="text/javascript">
+      
     </script>
     {%endblock%}

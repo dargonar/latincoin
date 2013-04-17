@@ -26,8 +26,12 @@ def get_rules():
         Route('/logout',                    name='logout',            handler='.BackendController:logout'),
         Route('/dashboard',                 name='dashboard',         handler='.BackendController:dashboard'),
         
-        Route('/users',                     name='users',             handler='.BackendController:users'),
-        Route('/list_user_files/<key>',     name='list_user_files',   handler='.BackendController:list_user_files'),
+        Route('/users',                                     name='users',               handler='.BackendController:users'),
+        Route('/validate_user/<user>/<valid:(1|0)>',        name='validate_user',       handler='.BackendController:validate_user'),
+        Route('/list_user_files/<user>',                    name='list_user_files',     handler='.BackendController:list_user_files'),
+        Route('/validate_user_file/<file>/<valid:(1|0)>',   name='validate_user_file',  handler='.BackendController:validate_user_file'),
+        Route('/validate_user_file/<file>/<valid:(1|0)>/<invalid_reason>',   name='validate_user_file2',  handler='.BackendController:validate_user_file'),
+        
         
         Route('/withdrawals',               name='withdrawals',       handler='.BackendController:withdrawals'),
         Route('/deposits',                  name='deposits',          handler='.BackendController:deposits'),

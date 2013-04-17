@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 
 from google.appengine.ext import db
 
-from models import Operation, TradeOrder
+from models import Operation, TradeOrder, Account
 from re import *
 
 _slugify_strip_re = compile(r'[^\w\s-]')
@@ -29,6 +29,13 @@ def do_operation_type(oper):
     return 'Venta'
   return 'NA'
 
+def do_label_for_user_identity(user):
+  tmp = '<span class="label %s">%s</span>'
+  if user.identity_is_validated == True:
+    return tmp % ('label-success', 'Validado')
+  return tmp % ('label-important', 'Invalidado')
+
+    
 def do_label_for_oper(oper):
   tmp = '<span class="label %s">%s</span>'
   

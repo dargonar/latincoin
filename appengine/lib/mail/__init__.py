@@ -573,6 +573,38 @@ def init_mails():
   mail_tpl22.put()
   
   # ----------------------------------------------------------------------------------
+  # archivo subido
+  name = 'validation_file_validated_es'
+  template_txt = """
+  Estimado {{user_name}},
+  
+  Este mail no requiere respuesta.
+  
+  El archivo "{{file.filename}}" ha sido {{'validado' if file.is_valid else 'invalidado'}}.
+  {% if file.is_valid == False %}
+  
+  Motivo de rechazo: {{file.not_valid_reason}}.
+  
+  {% endif %}
+  {% include "signature_es" %}
+  """.decode('utf-8')
+  
+  jinja_tpl22_1 = JinjaTemplate.get_or_insert( name
+                             , name  = name
+                             , language  = 'es'
+                             , source    = template_txt)
+  jinja_tpl22_1.put()
+  
+  name = 'mail_' + name
+  subject = """[LatinCoin] Archivo para validar identidad evaluado""".decode('utf-8')
+  mail_tpl22_1 = MailTemplate.get_or_insert(  name
+                          , name  = name
+                          , language  = 'es'
+                          , subject   = subject
+                          , body_txt  = jinja_tpl22_1)
+  mail_tpl22_1.put()
+  
+  # ----------------------------------------------------------------------------------
   # identificación validada
   name = 'identity_validated_es'
   template_txt = """
@@ -580,7 +612,12 @@ def init_mails():
   
   Este mail no requiere respuesta.
   
-  Su identificación ha sido validada.
+  {% if user.identity_is_validated %}
+    Su identidad ha sido validada.
+  {% else %}
+    Su identidad no ha podido ser validada.
+    Por favor revise los correos de evaluación de archivos de validación previamente recibidos.
+  {% endif %}
   
   {% include "signature_es" %}
   """.decode('utf-8')
@@ -592,7 +629,7 @@ def init_mails():
   jinja_tpl23.put()
   
   name = 'mail_' + name
-  subject = """[LatinCoin] Identificación validada""".decode('utf-8')
+  subject = """[LatinCoin] Identidad evaluada""".decode('utf-8')
   mail_tpl23 = MailTemplate.get_or_insert(  name
                           , name  = name
                           , language  = 'es'
@@ -600,34 +637,6 @@ def init_mails():
                           , body_txt  = jinja_tpl23)
   mail_tpl23.put()
   
-  
-  # ----------------------------------------------------------------------------------
-  # identificación no validada
-  name = 'identity_not_validated_es'
-  template_txt = """
-  Estimado {{user_name}},
-  
-  Este mail no requiere respuesta.
-  
-  Su identificación no ha podido ser validada.
-  
-  {% include "signature_es" %}
-  """.decode('utf-8')
-  
-  jinja_tpl24 = JinjaTemplate.get_or_insert( name
-                             , name  = name
-                             , language  = 'es'
-                             , source    = template_txt)
-  jinja_tpl24.put()
-  
-  name = 'mail_' + name
-  subject = """[LatinCoin] Identificación no validada""".decode('utf-8')
-  mail_tpl24 = MailTemplate.get_or_insert(  name
-                          , name  = name
-                          , language  = 'es'
-                          , subject   = subject
-                          , body_txt  = jinja_tpl24)
-  mail_tpl24.put()
   
   # ----------------------------------------------------------------------------------
   # bank_account_added

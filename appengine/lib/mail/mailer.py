@@ -11,7 +11,7 @@ from webapp2_extras import jinja2
 from config import config
 
 from datastore_template import MyJinjaLoader, get_template
-from models import MailTemplate, JinjaTemplate, UserBitcoinAddress, BankAccount, TradeOrder, AccountOperation
+from models import MailTemplate, JinjaTemplate, UserBitcoinAddress, BankAccount, TradeOrder, AccountOperation, AccountValidationFile
 
 from jinja2 import Environment, FunctionLoader, PackageLoader
 
@@ -34,6 +34,12 @@ class Mailo(object):
     base_context = {}
     user = db.get(db.Key(kwargs['user_key']))
 
+    if fnc == 'identity_validated':
+      base_context['user'] = user
+    
+    if fnc =='validation_file_validated':
+      base_context['file'] = AccountValidationFile.get(db.Key(kwargs['file_key']))
+      
     if fnc == 'welcome':
       base_context['confirm_link'] = url_for('account-confirm', token=user.confirmation_token, _full=True)
     
@@ -96,5 +102,6 @@ class Mailo(object):
     # Envío el correo.
     mail.send_mail(sender=sender, #"%s <%s@%s>" % (context['domain_name'], sender, context['site_name']), 
                    to=context['user_email'],
-                   subject="%s - %s" % (context['site_name'], subject),
+                   #subject="%s - %s" % (context['site_name'], subject),
+                   subject=subject,
                    body=body)

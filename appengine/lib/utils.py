@@ -154,14 +154,15 @@ class Jinja2Mixin(object):
     
     # cargamos el ticker
     #env.globals['ticker']         = self.ticker
-    env.filters['marketarrowfy']  = do_marketarrowfy
-    env.filters['label_for_order']= do_label_for_order
-    env.filters['orderamountfy']  = do_orderamountfy
-    env.filters['time_distance_in_words']  = do_time_distance_in_words
+    env.filters['marketarrowfy']            = do_marketarrowfy
+    env.filters['label_for_order']          = do_label_for_order
+    env.filters['orderamountfy']            = do_orderamountfy
+    env.filters['time_distance_in_words']   = do_time_distance_in_words
     env.filters['short_time_distance_in_words']  = do_short_time_distance_in_words
-    env.filters['label_for_oper'] = do_label_for_oper
-    env.filters['operation_type'] = do_operation_type
-    env.filters['format_btc'] = do_format_btc
+    env.filters['label_for_oper']           = do_label_for_oper
+    env.filters['operation_type']           = do_operation_type
+    env.filters['format_btc']               = do_format_btc
+    env.filters['label_for_user_identity']  = do_label_for_user_identity
     
   def render_response(self, _template, **context):
     # Renders a template and writes the result to the response.
