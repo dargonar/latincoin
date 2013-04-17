@@ -4,7 +4,7 @@ from decimal import Decimal
 from google.appengine.ext import db
 from google.appengine.api import taskqueue
 
-from webapp2 import cached_property, url_for
+from webapp2 import cached_property, uri_for as url_for
 
 import exchanger
 

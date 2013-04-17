@@ -12,7 +12,7 @@ from models import Account, AccountValidationFile
 from utils import FrontendHandler, need_admin_auth
 from forms.account import SignUpForm, ForgetPasswordForm, ResetPasswordForm
 
-from mail.mailer import enqueue_mail, enqueue_mail_tx 
+from mail.mailer import enqueue_mail 
 from bitcoin_helper import generate_new_address, encrypt_private
 
 class BackendController(FrontendHandler):

@@ -10,6 +10,23 @@ def init_mails():
     
   # ----------------------------------------------------------------------------------  
   # partial templates ----------------------------------------------------------------  
+
+  # ----------------------------------------------------------------------------------  
+  # buy_sell
+  name = 'user_btc_address_es'
+  template_txt = """
+    ID:           #{{user_btc_address.key().id()|string}}
+    Address:      {{user_btc_address.address}}
+    Descripción:  {{user_btc_address.description)}}
+    Fecha:        {{user_btc_address.created_at.strftime("%Y-%m-%d %H:%M:%S")}}
+    --    
+  """.decode('utf-8')
+  
+  jinja_prt_tpl6 = JinjaTemplate.get_or_insert(name
+                                              , name      = name
+                                              , language  = 'es'
+                                              , source    = template_txt)
+  jinja_prt_tpl6.put()
   
   # ----------------------------------------------------------------------------------  
   # user_btc_address_es
@@ -375,7 +392,7 @@ def init_mails():
   jinja_tpl11.put()
   
   name = 'mail_' + name
-  subject = """[LatinCoin] Se acreditaron fondos a su cuenta""".decode('utf-8')
+  subject = """[LatinCoin] Se han acreditado fondos a su cuenta""".decode('utf-8')
   mail_tpl11 = MailTemplate.get_or_insert(  name
                           , name  = name
                           , language  = 'es'
