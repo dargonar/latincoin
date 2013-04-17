@@ -19,15 +19,17 @@ class BackendController(FrontendHandler):
 
   @need_admin_auth()
   def deposits(self, **kwargs):
+    kwargs['html']='deposits'
     return self.render_response('backend/deposits.html', **kwargs)
   
   @need_admin_auth()
   def withdrawals(self, **kwargs):
+    kwargs['html']='withdrawals'
     return self.render_response('backend/withdrawals.html', **kwargs)
   
   @need_admin_auth()
   def users(self, **kwargs):
-    
+    kwargs['html']='users'
     if self.request.method == 'GET':
       kwargs['users'] = Account.all()
       return self.render_response('backend/users.html', **kwargs)
@@ -39,7 +41,7 @@ class BackendController(FrontendHandler):
   
   @need_admin_auth()
   def list_user_files(self, **kwargs):
-    
+    kwargs['html']='users'
     if self.request.method != 'GET':
       return self.redirect_to('backend-users')
     
@@ -53,6 +55,7 @@ class BackendController(FrontendHandler):
     
   @need_admin_auth()
   def dashboard(self, **kwargs):
+    kwargs['html']='dashboard'
     return self.render_response('backend/dashboard.html', **kwargs)
     
   def home(self, **kwargs):
