@@ -17,10 +17,10 @@ def do_format_btc(value):
   #slen = len('%.8f' % dval)
   return '%s%s' % (('%.2f' % dval), ('<small>%s</small>' % (('%.9f' % dval)[-6:][:5])))
   
-def trunc(f, n):
-  '''Truncates/pads a float f to n decimal places without rounding'''
-  slen = len('%.*f' % (n, f))
-  return str(f)[:slen]
+# def trunc(f, n):
+  # '''Truncates/pads a float f to n decimal places without rounding'''
+  # slen = len('%.*f' % (n, f))
+  # return str(f)[:slen]
     
 def do_operation_type(oper):
   if oper.type == oper.OPERATION_BUY:
