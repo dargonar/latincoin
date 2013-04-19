@@ -1158,82 +1158,83 @@ var App = function () {
         //Interactive Chart
         function chart2() {
             function randValue() {
-                return (Math.floor(Math.random() * (1 + 40 - 20))) + 20;
+                return 0; //(Math.floor(Math.random() * (1 + 40 - 20))) + 20;
             }
             var pageviews = [
-                [1, randValue()],
-                [2, randValue()],
-                [3, 2 + randValue()],
-                [4, 3 + randValue()],
-                [5, 5 + randValue()],
-                [6, 10 + randValue()],
-                [7, 15 + randValue()],
-                [8, 20 + randValue()],
-                [9, 25 + randValue()],
-                [10, 30 + randValue()],
-                [11, 35 + randValue()],
-                [12, 25 + randValue()],
-                [13, 15 + randValue()],
-                [14, 20 + randValue()],
-                [15, 45 + randValue()],
-                [16, 50 + randValue()],
-                [17, 65 + randValue()],
-                [18, 70 + randValue()],
-                [19, 85 + randValue()],
-                [20, 80 + randValue()],
-                [21, 75 + randValue()],
-                [22, 80 + randValue()],
-                [23, 75 + randValue()],
-                [24, 70 + randValue()],
-                [25, 65 + randValue()],
-                [26, 75 + randValue()],
-                [27, 80 + randValue()],
-                [28, 85 + randValue()],
-                [29, 90 + randValue()],
-                [30, 95 + randValue()]
+                [1, 550],
+                [2, 500],
+                [3, 450 + randValue()],
+                [4, 460 + randValue()],
+                [5, 400 + randValue()],
+                [6, 300 + randValue()],
+                [7, 250 + randValue()],
+                [8, 200 + randValue()],
+                [9, 190 + randValue()],
+                [10, 150 + randValue()],
+                [11, 120 + randValue()],
+                [12, 110 + randValue()],
+                [13, 100 + randValue()],
+                [14, 50 + randValue()],
+                [15, 25 + randValue()],
+                // [16, 50 + randValue()],
+                // [17, 65 + randValue()],
+                // [18, 70 + randValue()],
+                // [19, 85 + randValue()],
+                // [20, 80 + randValue()],
+                // [21, 75 + randValue()],
+                // [22, 80 + randValue()],
+                // [23, 75 + randValue()],
+                // [24, 70 + randValue()],
+                // [25, 65 + randValue()],
+                // [26, 75 + randValue()],
+                // [27, 80 + randValue()],
+                // [28, 85 + randValue()],
+                // [29, 90 + randValue()],
+                // [30, 95 + randValue()]
             ];
             var visitors = [
-                [1, randValue() - 5],
-                [2, randValue() - 5],
-                [3, randValue() - 5],
-                [4, 6 + randValue()],
-                [5, 5 + randValue()],
-                [6, 20 + randValue()],
-                [7, 25 + randValue()],
-                [8, 36 + randValue()],
-                [9, 26 + randValue()],
-                [10, 38 + randValue()],
-                [11, 39 + randValue()],
-                [12, 50 + randValue()],
-                [13, 51 + randValue()],
-                [14, 12 + randValue()],
-                [15, 13 + randValue()],
+                // [1, randValue() - 5],
+                // [2, randValue() - 5],
+                // [3, randValue() - 5],
+                // [4, 6 + randValue()],
+                // [5, 5 + randValue()],
+                // [6, 20 + randValue()],
+                // [7, 25 + randValue()],
+                // [8, 36 + randValue()],
+                // [9, 26 + randValue()],
+                // [10, 38 + randValue()],
+                // [11, 39 + randValue()],
+                // [12, 50 + randValue()],
+                // [13, 51 + randValue()],
+                // [14, 12 + randValue()],
+                // [15, 13 + randValue()],
                 [16, 14 + randValue()],
-                [17, 15 + randValue()],
-                [18, 15 + randValue()],
-                [19, 16 + randValue()],
-                [20, 17 + randValue()],
-                [21, 18 + randValue()],
-                [22, 19 + randValue()],
-                [23, 20 + randValue()],
-                [24, 21 + randValue()],
-                [25, 14 + randValue()],
-                [26, 24 + randValue()],
-                [27, 25 + randValue()],
-                [28, 26 + randValue()],
-                [29, 27 + randValue()],
-                [30, 31 + randValue()]
+                [17, 115 + randValue()],
+                [18, 115 + randValue()],
+                [19, 116 + randValue()],
+                [20, 117 + randValue()],
+                [21, 118 + randValue()],
+                [22, 119 + randValue()],
+                [23, 120 + randValue()],
+                [24, 121 + randValue()],
+                [25, 140 + randValue()],
+                [26, 240 + randValue()],
+                [27, 250 + randValue()],
+                [28, 260 + randValue()],
+                [29, 270 + randValue()],
+                [30, 310 + randValue()]
             ];
 
             var plot = $.plot($("#chart_2"), [{
                 data: pageviews,
-                label: "Unique Visits"
+                label: "Bids"
             }, {
                 data: visitors,
-                label: "Page Views"
+                label: "Asks"
             }], {
                 series: {
                     lines: {
+                        steps: true,
                         show: true,
                         lineWidth: 2,
                         fill: true,
@@ -1246,7 +1247,7 @@ var App = function () {
                         }
                     },
                     points: {
-                        show: true
+                        show: false
                     },
                     shadowSize: 2
                 },
@@ -1256,9 +1257,10 @@ var App = function () {
                     tickColor: "#eee",
                     borderWidth: 0
                 },
-                colors: ["#d12610", "#37b7f3", "#52e136"],
+                colors: ['#94c13e','#4e8cd9'],
+                //colors: ["#d12610", "#37b7f3", "#52e136"],
                 xaxis: {
-                    ticks: 11,
+                    ticks: [[0, 1200], [1 ,  1100], [2 ,  1000], [3 ,  900], [4 ,  800], [5 ,  700], [6 ,  600], [7 ,  500], [8 ,  400], [9 ,  350], [10 ,  300], [11 ,  250], [12 ,  200], [13 ,  150], [14 ,  1], [15 ,  1], [16 ,  100], [17 ,  150], [18 ,  200], [19 ,  250], [20 ,  300], [21 ,  350], [22 ,  400], [23 ,  500], [24 , 600], [25 ,  700], [26 ,  800], [27 ,  900], [28 ,  1000], [29 ,  1100], [30 ,  1200]],
                     tickDecimals: 0
                 },
                 yaxis: {
@@ -1483,11 +1485,11 @@ var App = function () {
         }
 
         //graph
-        chart1();
+        // chart1();
         chart2();
-        chart3();
-        chart4();
-        chart5();
+        // chart3();
+        // chart4();
+        // chart5();
     }
 
     var handleChartGraphs = function () {
@@ -1500,28 +1502,6 @@ var App = function () {
                 data: Math.floor((Math.random() - 1) * 100) + 1
             }
         }
-
-        $.plot($("#graph_1"), graphData, {
-            series: {
-                pie: {
-                    show: true,
-                    radius: 1,
-                    label: {
-                        show: true,
-                        radius: 1,
-                        formatter: function (label, series) {
-                            return '<div style="font-size:8pt;text-align:center;padding:2px;color:white;">' + label + '<br/>' + Math.round(series.percent) + '%</div>';
-                        },
-                        background: {
-                            opacity: 0.8
-                        }
-                    }
-                }
-            },
-            legend: {
-                show: false
-            }
-        });
 
         $.plot($("#graph_2"), graphData, {
             series: {
@@ -1544,41 +1524,8 @@ var App = function () {
                 show: false
             }
         });
-
-        $.plot($("#graph_3"), graphData, {
-            series: {
-                pie: {
-                    show: true
-                }
-            },
-            grid: {
-                hoverable: true,
-                clickable: true
-            }
-        });
-        $("#graph_3").bind("plothover", pieHover);
-        $("#graph_3").bind("plotclick", pieClick);
-
-        function pieHover(event, pos, obj) {
-            if (!obj) return;
-            percent = parseFloat(obj.series.percent).toFixed(2);
-            $("#hover").html('<span style="font-weight: bold; color: ' + obj.series.color + '">' + obj.series.label + ' (' + percent + '%)</span>');
-        }
-
-        function pieClick(event, pos, obj) {
-            if (!obj) return;
-            percent = parseFloat(obj.series.percent).toFixed(2);
-            alert('' + obj.series.label + ': ' + percent + '%');
-        }
-
-        $.plot($("#graph_4"), graphData, {
-            series: {
-                pie: {
-                    innerRadius: 0.5,
-                    show: true
-                }
-            }
-        });
+        
+      
     }
 
     var handleFancyBox = function () {
@@ -3189,7 +3136,7 @@ var App = function () {
 
             if (App.isPage("charts")) {
                 handleCharts(); // handles plot charts
-                handleChartGraphs();
+                //handleChartGraphs();
             }
 
             if (App.isPage("sliders")) {

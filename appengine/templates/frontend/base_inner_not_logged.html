@@ -1,0 +1,47 @@
+  {% extends "frontend/base.html"%}
+  
+  {%block html_head%}
+  <!-- Index -->
+  <link href="/assets/google-code-prettify/prettify.css" rel="stylesheet" />
+  <link href="/assets/css/docs.css" rel="stylesheet" />
+  {%endblock%}
+  
+  {%block html_body%}
+    <body style="background-color: #ffffff !important;">
+      
+      {% set is_index = True %}
+      {%include "frontend/header.html"%}
+      
+      <div class="container-fluid">
+        
+        <div class="row-fluid grid1000 navbar_margined">
+          <div class="span12" style="float:left; position:relative;">
+            <a href="{{url_for('home')}}" title="LatinCoin">
+              <img src="/assets/img/logo/logotipow200.png" alt="LatinCoin" />
+            </a>
+					</div>
+				</div>
+				<!-- END PAGE HEADER-->
+				
+        <!-- BEGIN PAGE CONTENT-->				
+				<div id="static_container" class="row-fluid grid1000">
+            {% block content%}
+            {%endblock%}
+        </div>
+          <!-- END PAGE CONTENT-->
+      </div>
+    {% include "frontend/base_main_footer.html" %}
+    {% include "frontend/base_javascripts.html" %}
+    <script type="text/javascript">
+      jQuery(document).ready(function() {			
+        App.init();
+        var footer = jQuery('#main_footer');
+        var footer_bottom = footer.offset().top+footer.height()+10;
+        if($(document).height()>footer_bottom)
+          footer.addClass('main_footer_fixed');
+      });
+    </script>
+    {%block run_javascript%}
+    {%endblock%}
+  </body>
+  {%endblock%}

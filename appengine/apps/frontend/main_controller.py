@@ -6,7 +6,7 @@ from utils import FrontendHandler
 from models import TradeOrder, Operation
 
 class MainController(FrontendHandler):
-  def home(self, **kwargs):
+  def get_active_orders(self):
     data = memcache.get('index_html_tables')
     if data is None:
       index_html_tables = {}
@@ -14,7 +14,10 @@ class MainController(FrontendHandler):
       index_html_tables['operations']     = self.render_template('frontend/market_operations.html', opers = self.get_operations())
       data = index_html_tables
       memcache.add('index_html_tables', data, 60)
+    return data
     
+  def home(self, **kwargs):
+    data = self.get_active_orders()
     return self.render_response('frontend/index.html', _tables=data, home=True)
   
   
@@ -69,12 +72,46 @@ class MainController(FrontendHandler):
 
   
   def terms(self, **kwargs):
-    return self.render_response('frontend/terminos.html', **kwargs)
-  
-  def contact(self, **kwargs):
-    return self.render_response('frontend/index.html', **kwargs)
+    return self.render_response('frontend/static/terms.html', **kwargs)
   
   def soon(self, **kwargs):
-    return self.render_response('frontend/soon.html', **kwargs)
+    return self.render_response('frontend/static/soon.html', **kwargs)
+  
+  def about_us(self, **kwargs):
+    return self.render_response('frontend/static/about_us.html', **kwargs)
     
+  def terms(self, **kwargs):
+    return self.render_response('frontend/static/terms.html', **kwargs)
+    
+  def privacy(self, **kwargs):
+    return self.render_response('frontend/static/privacy.html', **kwargs)
+    
+  def security(self, **kwargs):
+    return self.render_response('frontend/static/security.html', **kwargs)
+  
+  def fees(self, **kwargs):
+    return self.render_response('frontend/static/fees.html', **kwargs)
+  
+  def order_book(self, **kwargs):
+    data = self.get_active_orders()
+    return self.render_response('frontend/static/order_book.html', _tables=data, home=True)
+    
+  
+  def api(self, **kwargs):
+    return self.render_response('frontend/static/api.html', **kwargs)
+  
+  def what_is_bitcoin(self, **kwargs):
+    return self.render_response('frontend/static/what_is_bitcoin.html', **kwargs)
+  
+  def how_to_buy(self, **kwargs):
+    return self.render_response('frontend/static/how_to_buy.html', **kwargs)
+  
+  def how_to_sell(self, **kwargs):
+    return self.render_response('frontend/static/how_to_sell.html', **kwargs)
+  
+  def faq(self, **kwargs):
+    return self.render_response('frontend/static/faq.html', **kwargs)
+  
+  def forum(self, **kwargs):
+    return self.render_response('frontend/static/forum.html', **kwargs)
   
