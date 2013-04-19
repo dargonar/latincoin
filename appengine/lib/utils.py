@@ -23,6 +23,7 @@ from models import AccountBalance , Account, get_system_config
 from exchanger import get_account_balance
 
 from filters import *
+from config import config
 
 def read_blobstore_file(blob_key):  
   blob_reader = blobstore.BlobReader(blob_key)
@@ -55,31 +56,15 @@ def create_blobstore_file(data, name, mime_type='application/octet-stream'):
   return blob_key
   # ------ END HACK -------- #
 
-class need_admin_auth(object):
-  def __init__(self, code=0, url='backend-login'):
-    self.url      = url
-    self.code     = code
-
-  def __call__(self, f):
-    def validate_user(handler, *args, **kwargs):
-      if handler.is_logged and handler.is_admin:
-        return f(handler, *args, **kwargs)
-      
-      if self.code:
-        handler.abort(self.code)
-      else:
-        return handler.redirect_to(self.url)
-      
-    return validate_user
-
 class need_auth(object):
-  def __init__(self, code=0, url='account-login'):
+  def __init__(self, code=0, url='account-login', roles=None):
     self.url      = url
     self.code     = code
+    self.roles    = roles
 
   def __call__(self, f):
     def validate_user(handler, *args, **kwargs):
-      if handler.is_logged:
+      if handler.is_logged and (not self.roles or sum(map(lambda r: 1 if r in self.roles else 0, handler.roles)) ):
         return f(handler, *args, **kwargs)
       
       if self.code:
@@ -89,6 +74,10 @@ class need_auth(object):
       
     return validate_user
   
+class need_admin_auth(need_auth):
+  def __init__(self):
+    super(need_admin_auth, self).__init__(code=0, url='backend-login', roles=["admin"])
+
 def get_or_404(key, code=404, msg='not found'):
   try:
       obj = db.get(key)
@@ -142,18 +131,24 @@ class Jinja2Mixin(object):
     if hasattr(self.session, 'get_flashes'):
       flashes = self.session.get_flashes()
       env.globals['flash'] = flashes[0][0] if len(flashes) and len(flashes[0]) else None
+
+    # Globals para los dos handlers (frontend/backend)    
+    env.globals['session']       = self.session
+    env.globals['is_logged']     = self.is_logged
+    env.globals['system_config'] = get_system_config()
+
+    # Globals solo para frontend
+    if isinstance(self, FrontendHandler):
+      env.globals['user_name']       = self.user_name
+      env.globals['email_verified']  = self.email_verified
+      env.globals['ars_balance']     = self.ars_balance
+      env.globals['btc_balance']     = self.btc_balance
     
-    env.globals['session']      = self.session
-    env.globals['is_logged']    = self.is_logged
-    env.globals['is_admin']     = self.is_admin
-    env.globals['is_verified']  = self.is_verified
-    env.globals['ars_balance']  = self.ars_balance
-    env.globals['btc_balance']  = self.btc_balance
-    env.globals['user_name']    = self.user_name
-    env.globals['system_config']= get_system_config()
-    
-    # cargamos el ticker
-    #env.globals['ticker']         = self.ticker
+    # Globals solo para backend
+    elif isinstance(self, BackendHandler):
+      env.globals['user_name']       = self.admin_name
+      pass
+
     env.filters['marketarrowfy']            = do_marketarrowfy
     env.filters['label_for_order']          = do_label_for_order
     env.filters['orderamountfy']            = do_orderamountfy
@@ -176,6 +171,11 @@ class Jinja2Mixin(object):
       
 class MyBaseHandler(RequestHandler, Jinja2Mixin, FlashBuildMixin):
   def dispatch(self):
+    # HACK: si es un BackendHandler usar otra cookie_name
+    # no se como ponerlo por APP en el config
+    if isinstance(self, BackendHandler):
+      config['webapp2_extras.sessions']['cookie_name'] = config['webapp2_extras.sessions']['cookie_name_backend']
+
     # Get a session store for this request.
     self.session_store   = sessions.get_store(request=self.request)
     self.request.charset = 'utf-8'
@@ -192,6 +192,9 @@ class MyBaseHandler(RequestHandler, Jinja2Mixin, FlashBuildMixin):
     # Returns a session using the default cookie key.
     return self.session_store.get_session()
   
+  def session_value(self, key, default=None):
+    return self.session[key] if key in self.session else default
+
   def render_json_response(self, *args, **kwargs):
     self.response.content_type = 'application/json'
     self.response.write(json.encode(*args, **kwargs))
@@ -215,6 +218,30 @@ class MyBaseHandler(RequestHandler, Jinja2Mixin, FlashBuildMixin):
   def config(self):
     return get_app().config
     
+class BackendHandler(MyBaseHandler):
+
+  def do_login(self, admin):
+
+    self.session['admin.user']    = str(admin.key())
+    self.session['admin.roles']   = map(lambda s: s.strip(), admin.rol.split(','))
+    self.session['admin.name']    = admin.name if admin.name and len(admin.name) else admin.email
+    self.session['admin.logged']  = True
+
+  def do_logout(self):
+    self.session.clear()
+
+  @property
+  def admin_name(self):
+    return self.session_value('admin.name', 'n/a')
+
+  @property
+  def is_logged(self):
+    return self.session_value('admin.logged', False)
+
+  @property
+  def roles(self):
+    return self.session_value('admin.roles', [])
+
 class FrontendHandler(MyBaseHandler):
 
   def do_login(self, user):
@@ -224,24 +251,12 @@ class FrontendHandler(MyBaseHandler):
     self.session['account.ars']     = str(balance['ARS'].key())
     self.session['account.user']    = str(user.key())
     self.session['account.logged']  = True
-    self.session['account.rol']     = user.rol
+
     self.update_user_info(user)
   
   def update_user_info(self, user):
     self.session['account.name'] = user.name if user.name and len(user.name) else user.email
-    self.session['account.verified'] = user.email_verified
-  
-  # @property
-  # def ticker(self):
-    # data = memcache.get('ticker')
-    # if data is None:
-      # last_ticker = Ticker.all() \
-              # .order('created_at') \
-              # .get()
-      
-      # data = SessionTicker(last_ticker)
-      # memcache.add('ticker', data, 60)
-    # return data 
+    self.session['account.email_verified'] = user.email_verified
  
   def do_logout(self):
     self.session.clear()
@@ -258,13 +273,9 @@ class FrontendHandler(MyBaseHandler):
   def is_logged(self):
     return self.session_value('account.logged', False)
   
-  @property 
-  def is_admin(self):
-    return self.session_value('account.rol', None)==Account.ADMIN_ROL
-    
   @property
-  def is_verified(self):
-    return self.session_value('account.verified', False)
+  def email_verified(self):
+    return self.session_value('account.email_verified', False)
 
   @property
   def user_name(self):
@@ -282,9 +293,6 @@ class FrontendHandler(MyBaseHandler):
     balance = AccountBalance.get(tmp)
     return (balance.amount - balance.amount_comp)
 
-  def session_value(self, key, default=None):
-    return self.session[key] if key in self.session else default
-
   def mine_or_404(self, key, code=404, msg='not found'):
     obj = get_or_404(key)
 
@@ -295,41 +303,6 @@ class FrontendHandler(MyBaseHandler):
       return obj
 
     abort(code, title=msg)
-  
-class SessionTicker(object):
-  def __init__(self, last_ticker=None):
-    self.ticker_data = last_ticker
-    
-  # Ticker Data
-  @property
-  def lastprice(self):
-    return '%.5f' % (self.ticker_data.last_price if self.ticker_data is not None else Decimal('0'))
-
-  @property
-  def lastprice_slope(self):
-    return self.ticker_data.last_price_slope if self.ticker_data is not None else 0
-    
-  @property
-  def high(self):
-    return '%.5f' % self.ticker_data.high if self.ticker_data is not None else Decimal('0')
-  @property
-  def high_slope(self):
-    return self.ticker_data.high_slope if self.ticker_data is not None else 0
-  
-  @property
-  def low(self):
-    return '%.5f' % self.ticker_data.low if self.ticker_data is not None else Decimal('0')
-  @property
-  def low_slope(self):
-    return self.ticker_data.low_slope if self.ticker_data is not None else 0
-  
-  @property
-  def volume(self):
-    return self.ticker_data.volume if self.ticker_data is not None else Decimal('0')
-  
-  @property
-  def volume_slope(self):
-    return self.ticker_data.volume_slope if self.ticker_data is not None else 0  
   
 def is_valid_cbu(cbu):
   # Portado de java

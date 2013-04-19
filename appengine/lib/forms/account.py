@@ -10,7 +10,7 @@ class ResetPasswordForm(Form):
     return 'ResetPasswordForm'
 
   password            = PasswordField(u'Contraseña', [
-                            validators.Length(message=u'La contraseña debe tener al menos %(min)d caracteres.', min=6),
+                            validators.Length(message=u'La contraseña debe tener al menos %(min)d caracteres.', min=8),
                             validators.Required(message=u'Debe ingresar una contraseña.'),
                             validators.EqualTo('confirm', message=u'Las contraseñas deben ser iguales.')
                         ])
