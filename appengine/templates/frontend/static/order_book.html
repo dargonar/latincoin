@@ -1,0 +1,26 @@
+  {% extends "frontend/base_inner_not_logged.html"%}  
+  
+  {% block content%}
+    <div id="content"> 
+      <h3><i class="icon-book"></i>&nbsp;Libro de órdenes </h3>
+      <div class="portlet">
+        <div class="portlet-body">
+          <div id="chart_2" class="chart"></div>
+        </div>
+      </div>
+      <br/><br/>
+      <div class="clearfix"></div>      
+      {{ _tables['orders'] }}
+      <div class="clearfix"></div>
+            
+    </div>
+  {% endblock%}
+  
+  {%block run_javascript%}
+  <script type="text/javascript">
+		jQuery(document).ready(function() {		
+			App.setPage("charts");  // set current page
+			App.init(); // init the rest of plugins and elements
+		});
+	</script>
+  {%endblock%}

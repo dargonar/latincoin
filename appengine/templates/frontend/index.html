@@ -7,7 +7,7 @@
   {%endblock%}
   
   {%block html_body%}
-    <body class="fixed-top" style="background-color: #ffffff !important;">
+    <body class="fixed-top index" style="background-color: #ffffff !important;">
       <div class="container-fluid">
         <!-- BEGIN HEADER -->
         {% set is_index = True %}
@@ -15,7 +15,7 @@
         <!-- END HEADER -->
       
         <!-- BEGIN PAGE HEADER-->
-				<div class="row-fluid" style="margin-top:72px;">
+				<div class="row-fluid navbar_margined">
 					<div class="span12">
 						<!-- BEGIN PAGE TITLE & BREADCRUMB-->			
 						<center><h3 class="page-title">
@@ -48,7 +48,7 @@
         
         
         <!-- BEGIN CONTAINER -->	
-      <div class="container  row-fluid" style="width:75%;max-width:1024px;margin:0 auto;" >
+      <div class="container  row-fluid grid1000" >
         <!-- BEGIN PAGE -->
         <div class="page-content" style="border:none !important;margin-left:0px !important;">
           
@@ -118,12 +118,10 @@
             
             <br/><br/>
             
-            {# %include "frontend/market_orders.html" % #}
             {{ _tables['orders'] }}
             <div class="clearfix"></div>
             <br/><br/>
             
-            {# %include "frontend/market_operations.html" % #}
             {{ _tables['operations'] }}
             <div class="clearfix"></div>
             
@@ -136,7 +134,7 @@
       <!-- END CONTAINER -->
       
     </div>
-    {% include "frontend/base_footer.html"%}
+    {% include "frontend/base_main_footer.html"%}
     {%include "frontend/base_javascripts.html"%}
     <script type="text/javascript">
       jQuery(document).ready(function() {			

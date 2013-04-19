@@ -4667,3 +4667,63 @@ span.white_ticker {color:#ffffff; font-weight:bold;}
   font-size: 16px;
   text-align: left;
 }
+/* Pantallas no logeado*/
+div.grid1000{
+  /*width:75%;*/
+  max-width:1000px;
+  margin:0 auto;
+}
+
+div.navbar_margined{
+  margin-top:50px;
+}
+
+.main_footer {
+  border-top: 2px solid #f79420;
+  background-color: #3d3d3d;
+  font-size: 1.2em;
+  color: #b3b3b3;
+  /*text-transform: uppercase;
+  font-weight: bold;*/
+}
+
+.main_footer_fixed{
+  position:fixed;
+  bottom:0px;
+  width:100%;
+  
+}
+
+.main_footer .copyright_logo_gray {
+  display: block;
+  width: 200px;
+  height: 70px;
+  position: relative;
+  margin-top: 10px;
+  background-size: 100% auto;
+  background-image:url('/assets/img/logo/logotipow200_grey.png') !important;
+}
+.main_footer .column{
+  float:left; min-height:220px;
+  overflow-x:hidden;
+}
+.main_footer h2{
+  font-size: 24.5px;
+}
+.main_footer ul{
+  list-style-type: none;
+  margin: 0 0 10px 0px;
+ }
+.main_footer ul li a{ 
+  color: #999999;
+  text-decoration: none;
+}
+.main_footer ul li a:hover{ 
+  color: #cccccc;
+}
+
+.portfolio-block .fees_icon{
+  padding:15px;margin:0px 15px 0px 0px;height:50px;width:50px;float:left;font-size:50px;background-color:#f79420;color:#ffffff;
+}
+
+.portfolio-block span.fee{color:#f79420;}

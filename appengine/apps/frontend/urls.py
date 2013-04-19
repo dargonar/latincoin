@@ -9,13 +9,29 @@ def get_rules():
       # Route(r'/<bety:.*>', name='soon',        handler='apps.frontend.main_controller.MainController:soon'), # mover donde corresponda      
       
       # hacks
-      Route('/init', name='a8', handler='apps.frontend.account_controller.AccountController:init_all'),
-      Route('/test1', name='a9', handler='apps.frontend.account_controller.AccountController:test_1'),
+      Route('/init',          name='a8',          handler='apps.frontend.account_controller.AccountController:init_all'),
+      Route('/test1',         name='a9',          handler='apps.frontend.account_controller.AccountController:test_1'),
 
-      Route('/', name='home',         handler='apps.frontend.main_controller.MainController:home'),
-      Route('/soon', name='soon',        handler='apps.frontend.main_controller.MainController:soon'), # mover donde corresponda
-      Route('/terms', name='terms',        handler='apps.frontend.main_controller.MainController:terms'), # mover donde corresponda
-      Route('/contact', name='contact',      handler='apps.frontend.main_controller.MainController:contact'), # mover donde corresponda
+      Route('/',              name='home',        handler='apps.frontend.main_controller.MainController:home'),
+      Route('/soon',          name='soon',        handler='apps.frontend.main_controller.MainController:soon'), # mover donde corresponda
+      Route('/terms',         name='terms',       handler='apps.frontend.main_controller.MainController:terms'), # mover donde corresponda
+      Route('/contact',       name='contact',     handler='apps.frontend.main_controller.MainController:contact'), # mover donde corresponda
+      
+      Route('/about_us',      name='about_us',    handler='apps.frontend.main_controller.MainController:about_us'),
+      Route('/terms',         name='terms',       handler='apps.frontend.main_controller.MainController:terms'),
+      Route('/privacy',       name='privacy',     handler='apps.frontend.main_controller.MainController:privacy'),
+      Route('/security',      name='security',    handler='apps.frontend.main_controller.MainController:security'),
+      Route('/fees',          name='fees',        handler='apps.frontend.main_controller.MainController:fees'),
+      Route('/order_book',    name='order_book',  handler='apps.frontend.main_controller.MainController:order_book'),
+      Route('/api',           name='api',         handler='apps.frontend.main_controller.MainController:api'),
+      
+      PathPrefixRoute('/help', [ NamePrefixRoute('help-', [ HandlerPrefixRoute('apps.frontend.main_controller', [
+        Route('/what_is_bitcoin',   name='what_is_bitcoin',   handler='.MainController:what_is_bitcoin'),
+        Route('/how_to_buy',        name='how_to_buy',        handler='.MainController:how_to_buy'),
+        Route('/how_to_sell',       name='how_to_sell',       handler='.MainController:how_to_sell'),
+        Route('/faq',               name='faq',               handler='.MainController:faq'),
+        Route('/forum',             name='forum',             handler='.MainController:forum'),
+      ]) ]) ]),
       
       PathPrefixRoute('/deposit', [ NamePrefixRoute('deposit-', [ HandlerPrefixRoute('apps.frontend.deposit_controller', [
         Route('/btc',                            name='btc',          handler='.DepositController:btc'),
