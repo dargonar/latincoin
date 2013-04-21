@@ -7,15 +7,15 @@ from google.appengine.ext import db
 from webapp2 import cached_property
 from webapp2_extras.security import generate_password_hash, generate_random_string, check_password_hash
 
-from models import Account, AccountValidationFile
+from models import AccountValidationFile, Admin, Account
 
-from utils import FrontendHandler, need_admin_auth
+from utils import BackendHandler, need_admin_auth
 from forms.account import SignUpForm, ForgetPasswordForm, ResetPasswordForm
 
 from mail.mailer import enqueue_mail 
 from bitcoin_helper import generate_new_address, encrypt_private
 
-class BackendController(FrontendHandler):
+class BackendController(BackendHandler):
 
   # @need_admin_auth()
   # def deposits(self, **kwargs):
@@ -68,7 +68,7 @@ class BackendController(FrontendHandler):
     def _tx():
       user.put()
       # Mandamos email de aviso de validacino de archivo
-      enqueue_mail('identity_validated', {'user_key': str(user.key()) })
+      enqueue_mail('identity_validated', {'user_key': str(user.key()) }, tx=True)
     
     _tx()
     
@@ -110,11 +110,10 @@ class BackendController(FrontendHandler):
   def dashboard(self, **kwargs):
     kwargs['html']='dashboard'
     return self.render_response('backend/dashboard.html', **kwargs)
-    
+
+  @need_admin_auth()    
   def home(self, **kwargs):
-    if self.is_logged and self.is_admin:
-      return self.redirect_to('backend-dashboard')
-    return self.redirect_to('backend-login')
+    return self.redirect_to('backend-dashboard')
     
   def login(self, **kwargs):
 
@@ -125,23 +124,23 @@ class BackendController(FrontendHandler):
     password = self.request.POST['password']
 
     # Traemos el usuario y nos fijamos que no este inhabilitado
-    user = Account.all().filter('email =', email).get()
-    if user and user.user_need_captcha():
+    admin = Admin.all().filter('email =', email).get()
+    if admin and admin.need_captcha():
       return self.redirect_to('backend-login')
 
     # Usuario y password validos?
-    if user and user.is_active() and user.has_password(password) and user.is_admin():
+    if admin and admin.has_password(password):
       
-      user.login(self.request.remote_addr)
-      user.put()
+      admin.login(self.request.remote_addr)
+      admin.put()
 
-      self.do_login(user)
+      self.do_login(admin)
       return self.redirect_to('backend-dashboard')
 
     # Usuario valido y password invalido?
-    if user and user.is_active():
-      user.failed_login(self.request.remote_addr)
-      user.put()
+    if admin and admin.is_active():
+      admin.failed_login(self.request.remote_addr)
+      admin.put()
 
     self.set_error(u'Usuario o contraseña inválido')
     

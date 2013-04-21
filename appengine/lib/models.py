@@ -70,6 +70,59 @@ class Block(db.Model):
   updated_at            = db.DateTimeProperty(auto_now=True)
   created_at            = db.DateTimeProperty(auto_now_add=True)
 
+class Admin(db.Model):
+  name                  = db.StringProperty()
+  email                 = db.StringProperty()
+  password              = db.StringProperty(indexed=False)
+  rol                   = db.StringProperty()
+
+  sign_in_count         = db.IntegerProperty(default=0)
+  current_sign_in_at    = db.DateTimeProperty()
+  last_sign_in_at       = db.DateTimeProperty()
+  current_sign_in_ip    = db.StringProperty()
+  last_sign_in_ip       = db.StringProperty()
+  
+  last_failed_at        = db.DateTimeProperty()
+  last_failed_ip        = db.StringProperty()
+  failed_attempts       = db.IntegerProperty(default=0)
+
+  last_changepass_at    = db.DateTimeProperty()
+  last_changepass_ip    = db.StringProperty()
+  last_bad_changepass_at= db.DateTimeProperty()
+  last_bad_changepass_ip= db.StringProperty()
+
+  def has_password(self, password):
+    return check_password_hash(password, self.password, config['my']['secret_key'])
+
+  def need_captcha(self):
+    return self.failed_attempts > 5
+
+  def fail_change_pass(self, remote_addr):
+    self.last_bad_changepass_at = datetime.now()
+    self.last_bad_changepass_ip = remote_addr
+
+  def change_password(self, new_password, remote_addr):
+    self.password             = generate_password_hash(new_password, method='sha256', pepper=config['my']['secret_key'])
+    self.failed_attempts      = 0    
+    self.last_changepass_at   = datetime.now()
+    self.last_changepass_ip   = remote_addr
+    to_save = [self]
+    return to_save
+    
+  def login(self, remote_addr):
+    self.sign_in_count        = self.sign_in_count + 1
+    self.last_sign_in_at      = self.current_sign_in_at
+    self.current_sign_in_at   = datetime.now()
+    self.last_sign_in_ip      = self.current_sign_in_ip
+    self.current_sign_in_ip   = remote_addr
+    self.failed_attempts      = 0
+
+  def failed_login(self, remote_addr):
+    self.failed_attempts = self.failed_attempts + 1
+    self.last_failed_at  = datetime.now()
+    self.last_failed_ip  = remote_addr
+
+
 class Account(db.Model):
   name                  = db.StringProperty() 
   last_name             = db.StringProperty() 
@@ -122,14 +175,6 @@ class Account(db.Model):
   last_bad_changepass_at= db.DateTimeProperty()
   last_bad_changepass_ip= db.StringProperty()
   
-  USER_ROL      = 'USER'
-  ADMIN_ROL     = 'ADMIN'
-
-  rol                   = db.StringProperty(choices=[USER_ROL, ADMIN_ROL], required=True, default=USER_ROL)
-  
-  def is_admin(self):
-    return self.rol == Account.ADMIN_ROL
-    
   def fail_change_pass(self, remote_addr):
     self.last_bad_changepass_at = datetime.now()
     self.last_bad_changepass_ip = remote_addr
@@ -177,7 +222,7 @@ class Account(db.Model):
   def is_exchanger(self):
     return self.key().name() == 'xchg'
     
-  def user_need_captcha(self):
+  def need_captcha(self):
     return self.failed_attempts > 5
 
   def can_confirm(self):

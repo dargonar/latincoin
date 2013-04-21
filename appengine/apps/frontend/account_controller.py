@@ -110,7 +110,7 @@ class AccountController(FrontendHandler):
 
     # Traemos el usuario y nos fijamos que no este inhabilitado
     user = Account.all().filter('email =', email).get()
-    if user and user.user_need_captcha():
+    if user and user.need_captcha():
       return self.redirect_to('account-login')
 
     # Usuario y password validos?

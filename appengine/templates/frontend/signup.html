@@ -52,4 +52,59 @@
       </div>
     </form>
     <!-- END REGISTRATION FORM -->
-    {%endblock%}
+  {%endblock%}
+
+  {%block javascript_run%}
+  <script>
+ 
+    function CheckPassword(password)
+    {
+      var score = 1;
+
+      if (password.length < 1)
+        return strength[0];
+
+      if (password.length < 4)
+        return strength[1];
+
+      if (password.length >= 8)
+        score++;
+      if (password.length >= 10)
+        score++;
+      if (password.match(/\d+/))
+        score++;
+      if (password.match(/[a-z]/) &&
+        password.match(/[A-Z]/))
+        score++;
+      if (password.match(/.[!,@,#,$,%,^,&,*,?,_,~,-,£,(,)]/))
+        score++;
+
+      return score;
+    }
+
+    var strength = new Array();
+      strength[0] = "Vacio";
+      strength[1] = "Muy débil";
+      strength[2] = "Débil";
+      strength[3] = "Medio";
+      strength[4] = "Fuerte";
+      strength[5] = "Muy fuerte";
+
+    $(document).ready( function() {
+      $("#password").change( function() {
+  
+        var score = CheckPassword($(this).val());
+        if(score > 0 && score < 4) {
+          var html = '<span class="input-warning tooltips" data-original-title="please write a valid email"><i class="icon-warning-sign"></i></span>'
+          $(this).          
+        }
+
+
+        
+
+      });
+    });
+
+  </script>
+
+  {%endblock%}

@@ -9,7 +9,8 @@ config['webapp2'] = {
 }
 
 config['webapp2_extras.sessions'] = {
-  'cookie_name' : 'latincoin',
+  'cookie_name'         : 'latincoin',
+  'cookie_name_backend' : 'latincoin_backend',
 }
 
 config['webapp2_extras.jinja2'] = {

@@ -2,10 +2,10 @@
 
 def add_secure_config(config):
 
-  # Clave para cookies (asi no hijackean sessiones)
+  # Clave para cookies de frontend/backend (asi no hijackean sessiones)
   config['webapp2_extras.sessions']['secret_key']  = '@ 4 OSCAR VICTOR PAPA VICTOR ECHO # [ @ ~ kilo alpha / delta'
   
-  # Clave para guardar los password de usuarios
+  # Clave para encriptar los password de usuarios/admin
   config['my']['secret_key']     = 'x-ray X-RAY ] % # ~ * QUEBEC kilo . bravo $ [ whiskey # ! whiskey " @ / 1 $ = + 8'
   
   # Clave para encriptar las privadas de bitcoin
