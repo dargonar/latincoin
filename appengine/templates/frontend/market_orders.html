@@ -3,26 +3,26 @@
 						<!-- BEGIN CONDENSED TABLE PORTLET-->
 						<div class="portlet box green">
 							<div class="portlet-title">
-								<h4><i class="icon-book"></i>Ordenes de venta - Asks</h4>
+								<h4><i class="icon-book"></i>Ordenes de compra - Bids</h4>
 							</div>
 							<div class="portlet-body">
-								<table class="table">
-								<!--table class="table table-condensed table-hover" -->
+								<!--table class="table table-condensed table-hover"-->
+                <table class="table">
 									<thead>
 										<tr>
-											<th>#</th>
-											<th>Precio/BTC</th>
-											<th>Cantidad(BTC)</th>
-											<th>Pesos</th>
+											<th>Precio</th>
+											<th>Cantidad</th>
+											<th>Valor</th>
+                      <th>#</th>
 										</tr>
 									</thead>
 									<tbody>
-										{% for ask in asks.run(limit=10) %}
-                    <tr class="tooltips {{ loop.cycle('odd', 'even') }}" data-original-title="Hace {{ask.created_at|short_time_distance_in_words}}">
-											<td>{{ ask.key().id()|string }}</td>
-											<td>${{'%0.2f'|format(ask.ppc|float)}}</td>
-											<td>{{'%0.5f'|format(ask.amount|float)}}</td>
-											<td class="hidden-480">${{'%0.2f'|format((ask.ppc*ask.amount)|float)}}</td>
+										{% for bid in bids.run(limit=max_orders) %}
+                    <tr class="tooltips {{ loop.cycle('odd', 'even') }}" data-original-title="Hace {{bid.created_at|short_time_distance_in_words}}">
+											<td class="right">${{'%0.2f'|format(bid.ppc|float)}}</td>
+											<td class="right">{{'%0.5f'|format(bid.amount|float)}}</td>
+											<td class="right">${{'%0.2f'|format((bid.ppc*bid.amount)|float)}}</td>
+                      <td>{{ bid.key().id()|string }}</td>
 										</tr>
 										{% endfor%}
 									</tbody>
@@ -32,30 +32,30 @@
 						<!-- END CONDENSED TABLE PORTLET-->
 					</div>
           
-					<div class="span6">
+          <div class="span6">
 						<!-- BEGIN CONDENSED TABLE PORTLET-->
 						<div class="portlet box blue">
 							<div class="portlet-title">
-								<h4><i class="icon-book"></i>Ordenes de compra - Bids</h4>
+								<h4><i class="icon-book"></i>Ordenes de venta - Asks</h4>
 							</div>
 							<div class="portlet-body">
-								<!--table class="table table-condensed table-hover"-->
-                <table class="table">
+								<table class="table">
+								<!--table class="table table-condensed table-hover" -->
 									<thead>
 										<tr>
-											<th>#</th>
-											<th>Precio/BTC</th>
-											<th>Cantidad(BTC)</th>
-											<th>Pesos</th>
+											<th>Precio</th>
+											<th>Cantidad</th>
+											<th>Valor</th>
+                      <th>#</th>
 										</tr>
 									</thead>
 									<tbody>
-										{% for bid in bids.run(limit=10) %}
-                    <tr class="tooltips {{ loop.cycle('odd', 'even') }}" data-original-title="Hace {{bid.created_at|short_time_distance_in_words}}">
-											<td>{{ bid.key().id()|string }}</td>
-											<td>${{'%0.2f'|format(bid.ppc|float)}}</td>
-											<td>{{'%0.5f'|format(bid.amount|float)}}</td>
-											<td class="hidden-480">${{'%0.2f'|format((bid.ppc*bid.amount)|float)}}</td>
+										{% for ask in asks.run(limit=max_orders) %}
+                    <tr class="tooltips {{ loop.cycle('odd', 'even') }}" data-original-title="Hace {{ask.created_at|short_time_distance_in_words}}">
+											<td class="right">${{'%0.2f'|format(ask.ppc|float)}}</td>
+											<td class="right">{{'%0.5f'|format(ask.amount|float)}}</td>
+											<td class="right">${{'%0.2f'|format((ask.ppc*ask.amount)|float)}}</td>
+                      <td>{{ ask.key().id()|string }}</td>
 										</tr>
 										{% endfor%}
 									</tbody>
@@ -64,6 +64,8 @@
 						</div>
 						<!-- END CONDENSED TABLE PORTLET-->
 					</div>
+          
+					
 				</div>
 				
         

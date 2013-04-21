@@ -1,7 +1,7 @@
         <div class="row-fluid">
 					<div class="span12">
 						<!-- BEGIN CONDENSED TABLE PORTLET-->
-						<div class="portlet box blue">
+						<div class="portlet box white">
 							<div class="portlet-title">
 								<h4><i class="icon-money"></i>Ultimas operaciones</h4>
 							</div>
@@ -19,7 +19,7 @@
  									</tr>
 									</thead>
 									<tbody>
-										{% for oper in opers.run(limit=10) %}
+										{% for oper in opers.run(limit=max_opers) %}
                     <tr class="{{ loop.cycle('odd', 'even') }}">
 											<td>{{oper.key().id()|string}}</td>
                       <td>{{oper.created_at.strftime("%Y-%m-%d %H:%M:%S")}}</td>

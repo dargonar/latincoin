@@ -4727,3 +4727,16 @@ div.navbar_margined{
 }
 
 .portfolio-block span.fee{color:#f79420;}
+
+table.table td.right {text-align:right !important;}
+
+.portlet.box.white .portlet-title {
+  border-top: 1px solid #eee;
+  background-color: #ffffff;
+} 
+.portlet.box.white .portlet-title h4{color: #000000;}
+
+.portlet.box.white {  
+   border: 1px solid #eee;
+   border-top: 0;
+}

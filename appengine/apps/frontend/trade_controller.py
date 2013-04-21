@@ -128,17 +128,21 @@ class TradeController(FrontendHandler):
 
       if order.order_type == TradeOrder.LIMIT_ORDER:
         temp = order.original_amount-order.amount
-        row.append('%.2f&nbsp;de&nbsp;%.2f' % (temp,order.original_amount))
+        if order.status==TradeOrder.ORDER_ACTIVE:
+          row.append('%.2f<br/><small>(restan&nbsp;%.2f)</small>' % (order.original_amount, order.original_amount-temp))
+        else:
+          row.append('%.2f' % order.original_amount)
       else:
         temp = order.amount
         row.append('%.2f' % temp)
 
       row.append('%.2f' % order.ppc)
-      row.append('%.2f' % (order.ppc*temp) )
+      #row.append('%.2f' % (order.ppc*temp) )
+      row.append('%.2f' % (order.ppc*order.amount) )
       
       row.append(self.label_for_order(order))
       if order.status==TradeOrder.ORDER_ACTIVE:
-        row.append('<a href="' + self.url_for('trade-cancel', key=str(order.key())) + '">Cancelar</a>')
+        row.append('<a href="' + self.url_for('trade-cancel', key=str(order.key())) + '" class="btn mini red"><i class="icon-remove"></i>&nbsp;Cancelar</a>')
       else:
         row.append('')
 

@@ -23,6 +23,7 @@ def get_rules():
       Route('/security',      name='security',    handler='apps.frontend.main_controller.MainController:security'),
       Route('/fees',          name='fees',        handler='apps.frontend.main_controller.MainController:fees'),
       Route('/order_book',    name='order_book',  handler='apps.frontend.main_controller.MainController:order_book'),
+      Route('/order_book_data',    name='order_book_data',  handler='apps.frontend.main_controller.MainController:order_book_data'),
       Route('/api',           name='api',         handler='apps.frontend.main_controller.MainController:api'),
       
       PathPrefixRoute('/help', [ NamePrefixRoute('help-', [ HandlerPrefixRoute('apps.frontend.main_controller', [

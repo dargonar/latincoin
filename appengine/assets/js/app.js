@@ -1076,7 +1076,7 @@ var App = function () {
         });
     }
 
-    var handleCharts = function () {
+    var handleOrderBookCharts = function () {
 
         if (!jQuery.plot) {
             return;
@@ -1102,135 +1102,17 @@ var App = function () {
             return res;
         }
 
-        //Basic Chart
-        function chart1() {
-            var d1 = [];
-            for (var i = 0; i < Math.PI * 2; i += 0.25)
-            d1.push([i, Math.sin(i)]);
-
-            var d2 = [];
-            for (var i = 0; i < Math.PI * 2; i += 0.25)
-            d2.push([i, Math.cos(i)]);
-
-            var d3 = [];
-            for (var i = 0; i < Math.PI * 2; i += 0.1)
-            d3.push([i, Math.tan(i)]);
-
-            $.plot($("#chart_1"), [{
-                label: "sin(x)",
-                data: d1
-            }, {
-                label: "cos(x)",
-                data: d2
-            }, {
-                label: "tan(x)",
-                data: d3
-            }], {
-                series: {
-                    lines: {
-                        show: true
-                    },
-                    points: {
-                        show: true
-                    }
-                },
-                xaxis: {
-                    ticks: [0, [Math.PI / 2, "\u03c0/2"],
-                        [Math.PI, "\u03c0"],
-                        [Math.PI * 3 / 2, "3\u03c0/2"],
-                        [Math.PI * 2, "2\u03c0"]
-                    ]
-                },
-                yaxis: {
-                    ticks: 10,
-                    min: -2,
-                    max: 2
-                },
-                grid: {
-                    backgroundColor: {
-                        colors: ["#fff", "#eee"]
-                    }
-                }
-            });
-
-        }
-
-        //Interactive Chart
-        function chart2() {
-            function randValue() {
-                return 0; //(Math.floor(Math.random() * (1 + 40 - 20))) + 20;
-            }
-            var pageviews = [
-                [1, 550],
-                [2, 500],
-                [3, 450 + randValue()],
-                [4, 460 + randValue()],
-                [5, 400 + randValue()],
-                [6, 300 + randValue()],
-                [7, 250 + randValue()],
-                [8, 200 + randValue()],
-                [9, 190 + randValue()],
-                [10, 150 + randValue()],
-                [11, 120 + randValue()],
-                [12, 110 + randValue()],
-                [13, 100 + randValue()],
-                [14, 50 + randValue()],
-                [15, 25 + randValue()],
-                // [16, 50 + randValue()],
-                // [17, 65 + randValue()],
-                // [18, 70 + randValue()],
-                // [19, 85 + randValue()],
-                // [20, 80 + randValue()],
-                // [21, 75 + randValue()],
-                // [22, 80 + randValue()],
-                // [23, 75 + randValue()],
-                // [24, 70 + randValue()],
-                // [25, 65 + randValue()],
-                // [26, 75 + randValue()],
-                // [27, 80 + randValue()],
-                // [28, 85 + randValue()],
-                // [29, 90 + randValue()],
-                // [30, 95 + randValue()]
-            ];
-            var visitors = [
-                // [1, randValue() - 5],
-                // [2, randValue() - 5],
-                // [3, randValue() - 5],
-                // [4, 6 + randValue()],
-                // [5, 5 + randValue()],
-                // [6, 20 + randValue()],
-                // [7, 25 + randValue()],
-                // [8, 36 + randValue()],
-                // [9, 26 + randValue()],
-                // [10, 38 + randValue()],
-                // [11, 39 + randValue()],
-                // [12, 50 + randValue()],
-                // [13, 51 + randValue()],
-                // [14, 12 + randValue()],
-                // [15, 13 + randValue()],
-                [16, 14 + randValue()],
-                [17, 115 + randValue()],
-                [18, 115 + randValue()],
-                [19, 116 + randValue()],
-                [20, 117 + randValue()],
-                [21, 118 + randValue()],
-                [22, 119 + randValue()],
-                [23, 120 + randValue()],
-                [24, 121 + randValue()],
-                [25, 140 + randValue()],
-                [26, 240 + randValue()],
-                [27, 250 + randValue()],
-                [28, 260 + randValue()],
-                [29, 270 + randValue()],
-                [30, 310 + randValue()]
-            ];
-
-            var plot = $.plot($("#chart_2"), [{
-                data: pageviews,
+        function do_order_book_graph() {
+            
+            var plot = $.plot($("#order_book_graph"), 
+            [{
+                data: __bids,
                 label: "Bids"
+                    
             }, {
-                data: visitors,
+                data: __asks,
                 label: "Asks"
+                
             }], {
                 series: {
                     lines: {
@@ -1240,9 +1122,9 @@ var App = function () {
                         fill: true,
                         fillColor: {
                             colors: [{
-                                opacity: 0.05
+                                opacity: 0.09
                             }, {
-                                opacity: 0.01
+                                opacity: 0.09
                             }]
                         }
                     },
@@ -1260,13 +1142,11 @@ var App = function () {
                 colors: ['#94c13e','#4e8cd9'],
                 //colors: ["#d12610", "#37b7f3", "#52e136"],
                 xaxis: {
-                    ticks: [[0, 1200], [1 ,  1100], [2 ,  1000], [3 ,  900], [4 ,  800], [5 ,  700], [6 ,  600], [7 ,  500], [8 ,  400], [9 ,  350], [10 ,  300], [11 ,  250], [12 ,  200], [13 ,  150], [14 ,  1], [15 ,  1], [16 ,  100], [17 ,  150], [18 ,  200], [19 ,  250], [20 ,  300], [21 ,  350], [22 ,  400], [23 ,  500], [24 , 600], [25 ,  700], [26 ,  800], [27 ,  900], [28 ,  1000], [29 ,  1100], [30 ,  1200]],
-                    tickDecimals: 0
-                },
-                yaxis: {
                     ticks: 11,
-                    tickDecimals: 0
-                }
+                    tickDecimals: 4
+                },
+                yaxis://[{}, { position: "left", ticks: 11,tickDecimals: 0 }] 
+                      {ticks: 11,tickDecimals: 0}
             });
 
 
@@ -1286,7 +1166,7 @@ var App = function () {
             }
 
             var previousPoint = null;
-            $("#chart_2").bind("plothover", function (event, pos, item) {
+            $("#order_book_graph").bind("plothover", function (event, pos, item) {
                 $("#x").text(pos.x.toFixed(2));
                 $("#y").text(pos.y.toFixed(2));
 
@@ -1298,7 +1178,7 @@ var App = function () {
                         var x = item.datapoint[0].toFixed(2),
                             y = item.datapoint[1].toFixed(2);
 
-                        showTooltip(item.pageX, item.pageY, item.series.label + " of " + x + " = " + y);
+                        showTooltip(item.pageX, item.pageY,   item.series.label+ ": " + item.datapoint[1] + " a $" + item.datapoint[0] );
                     }
                 } else {
                     $("#tooltip").remove();
@@ -1307,189 +1187,8 @@ var App = function () {
             });
         }
 
-        //Tracking Curves
-        function chart3() {
-            //tracking curves:
-
-            var sin = [],
-                cos = [];
-            for (var i = 0; i < 14; i += 0.1) {
-                sin.push([i, Math.sin(i)]);
-                cos.push([i, Math.cos(i)]);
-            }
-
-            plot = $.plot($("#chart_3"), [{
-                data: sin,
-                label: "sin(x) = -0.00"
-            }, {
-                data: cos,
-                label: "cos(x) = -0.00"
-            }], {
-                series: {
-                    lines: {
-                        show: true
-                    }
-                },
-                crosshair: {
-                    mode: "x"
-                },
-                grid: {
-                    hoverable: true,
-                    autoHighlight: false
-                },
-                yaxis: {
-                    min: -1.2,
-                    max: 1.2
-                }
-            });
-
-            var legends = $("#chart_3 .legendLabel");
-            legends.each(function () {
-                // fix the widths so they don't jump around
-                $(this).css('width', $(this).width());
-            });
-
-            var updateLegendTimeout = null;
-            var latestPosition = null;
-
-            function updateLegend() {
-                updateLegendTimeout = null;
-
-                var pos = latestPosition;
-
-                var axes = plot.getAxes();
-                if (pos.x < axes.xaxis.min || pos.x > axes.xaxis.max || pos.y < axes.yaxis.min || pos.y > axes.yaxis.max) return;
-
-                var i, j, dataset = plot.getData();
-                for (i = 0; i < dataset.length; ++i) {
-                    var series = dataset[i];
-
-                    // find the nearest points, x-wise
-                    for (j = 0; j < series.data.length; ++j)
-                    if (series.data[j][0] > pos.x) break;
-
-                    // now interpolate
-                    var y, p1 = series.data[j - 1],
-                        p2 = series.data[j];
-                    if (p1 == null) y = p2[1];
-                    else if (p2 == null) y = p1[1];
-                    else y = p1[1] + (p2[1] - p1[1]) * (pos.x - p1[0]) / (p2[0] - p1[0]);
-
-                    legends.eq(i).text(series.label.replace(/=.*/, "= " + y.toFixed(2)));
-                }
-            }
-
-            $("#chart_3").bind("plothover", function (event, pos, item) {
-                latestPosition = pos;
-                if (!updateLegendTimeout) updateLegendTimeout = setTimeout(updateLegend, 50);
-            });
-        }
-
-        //Dynamic Chart
-        function chart4() {
-            //server load
-            var options = {
-                series: {
-                    shadowSize: 1
-                },
-                lines: {
-                    show: true,
-                    lineWidth: 0.5,
-                    fill: true,
-                    fillColor: {
-                        colors: [{
-                            opacity: 0.1
-                        }, {
-                            opacity: 1
-                        }]
-                    }
-                },
-                yaxis: {
-                    min: 0,
-                    max: 100,
-                    tickFormatter: function (v) {
-                        return v + "%";
-                    }
-                },
-                xaxis: {
-                    show: false
-                },
-                colors: ["#6ef146"],
-                grid: {
-                    tickColor: "#a8a3a3",
-                    borderWidth: 0
-                }
-            };
-
-            var updateInterval = 30;
-            var plot = $.plot($("#chart_4"), [getRandomData()], options);
-
-            function update() {
-                plot.setData([getRandomData()]);
-                plot.draw();
-                setTimeout(update, updateInterval);
-            }
-            update();
-        }
-
-        //bars with controls
-        function chart5() {
-            var d1 = [];
-            for (var i = 0; i <= 10; i += 1)
-            d1.push([i, parseInt(Math.random() * 30)]);
-
-            var d2 = [];
-            for (var i = 0; i <= 10; i += 1)
-            d2.push([i, parseInt(Math.random() * 30)]);
-
-            var d3 = [];
-            for (var i = 0; i <= 10; i += 1)
-            d3.push([i, parseInt(Math.random() * 30)]);
-
-            var stack = 0,
-                bars = true,
-                lines = false,
-                steps = false;
-
-            function plotWithOptions() {
-                $.plot($("#chart_5"), [d1, d2, d3], {
-                    series: {
-                        stack: stack,
-                        lines: {
-                            show: lines,
-                            fill: true,
-                            steps: steps
-                        },
-                        bars: {
-                            show: bars,
-                            barWidth: 0.6
-                        }
-                    }
-                });
-            }
-
-            $(".stackControls input").click(function (e) {
-                e.preventDefault();
-                stack = $(this).val() == "With stacking" ? true : null;
-                plotWithOptions();
-            });
-            $(".graphControls input").click(function (e) {
-                e.preventDefault();
-                bars = $(this).val().indexOf("Bars") != -1;
-                lines = $(this).val().indexOf("Lines") != -1;
-                steps = $(this).val().indexOf("steps") != -1;
-                plotWithOptions();
-            });
-
-            plotWithOptions();
-        }
-
-        //graph
-        // chart1();
-        chart2();
-        // chart3();
-        // chart4();
-        // chart5();
+        do_order_book_graph();
+        
     }
 
     var handleChartGraphs = function () {
@@ -2028,7 +1727,7 @@ var App = function () {
 
         // begin first table
         $('.jquery-table').dataTable({
-            "sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
+            "sDom": "<'row-fluid'<'span6'f>r>t<'row-fluid'<'span4'l><'span4'i><'span4'p>>", //"sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
             "sPaginationType": "bootstrap",
             "oLanguage": {
                 "sLengthMenu": "_MENU_ filas por pág.",
@@ -2063,7 +1762,7 @@ var App = function () {
             "fnServerData" : genericFnServerData,
             "bProcessing": true,
             "sAjaxSource": table_ajax_source[mode+'_in'],
-            "sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
+            "sDom": "<'row-fluid'<'span6'f>r>t<'row-fluid'<'span4'l><'span4'i><'span4'p>>", //"sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
             "sPaginationType": "bootstrap",
             "oLanguage": {
                 "sEmptyTable": "No hay depositos",
@@ -2098,7 +1797,7 @@ var App = function () {
             "fnServerData" : genericFnServerData,
             "bProcessing": true,
             "sAjaxSource": table_ajax_source[mode+'_'+type],
-            "sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
+            "sDom": "<'row-fluid'<'span6'f>r>t<'row-fluid'<'span4'l><'span4'i><'span4'p>>", //"sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
             "sPaginationType": "bootstrap",
             "oLanguage": {
                 "sEmptyTable": "Sin ordenes activas",
@@ -2110,10 +1809,12 @@ var App = function () {
                     "sNext": "Sig."
                 }
             },
-            "aoColumnDefs": [{
-                'bSortable': false,
-                'aTargets': [0]
-            }]
+            "aoColumnDefs": [{'bSortable': false,'aTargets': [0,7]}
+                            ,{'sWidth': '12.5%', 'aTargets': [1,2,3,4,5,6] }
+                            ,{'sWidth': '10%', 'aTargets': [7] }
+                            ,{'sWidth': '15%', 'aTargets': [0] }
+                            ,{'sClass': 'right', 'aTargets': [3,4,5] }
+                            ]
         });
 
         jQuery('.dataTables_filter').parent(".span6 ").remove(); // delete table search input
@@ -2127,11 +1828,10 @@ var App = function () {
         
         // begin first table
         oCurrentTable[id] = $('#'+id).dataTable({
-            "fnServerData" : genericFnServerData,
             "bProcessing": true,
             "sAjaxSource": source,
             "fnServerData" : genericFnServerData,
-            "sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
+            "sDom": "<'row-fluid'<'span6'f>r>t<'row-fluid'<'span4'l><'span4'i><'span4'p>>", //"sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
             "sPaginationType": "bootstrap",
             "oLanguage": {
                 "sEmptyTable": "Sin retiros",
@@ -2143,10 +1843,8 @@ var App = function () {
                     "sNext": "Sig."
                 }
             },
-            "aoColumnDefs": [{
-                'bSortable': false,
-                'aTargets': [0]
-            }]
+            "aoColumnDefs": [{'bSortable': false,'aTargets': [0,5]},
+                            {'sWidth': '10%', 'aTargets': [5] }]
         });
 
         jQuery('.dataTables_filter').parent(".span6 ").remove(); // delete table search input
@@ -2191,7 +1889,9 @@ var App = function () {
             "fnServerData" : genericFnServerData,
             "bProcessing": true,
             "sAjaxSource": table_ajax_btc_addresses_source,
-            "sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
+            "sDom": "<'row-fluid'<'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
+            //"sDom": "<'row-fluid'<'span6'f>r>t<'row-fluid'<'span4'l><'span4'i><'span4'p>>", //"sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
+            //"sDom": '<"top"i>rt<"bottom"flp><"clear">'
             "sPaginationType": "bootstrap",
             "oLanguage": {
                 "sEmptyTable": "No ha ingresado ninguna direccion",
@@ -2381,7 +2081,7 @@ var App = function () {
             "fnServerData" : genericFnServerData,
             "bProcessing": true,
             "sAjaxSource": table_ajax_bank_accounts_source,
-            "sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
+            "sDom": "<'row-fluid'<'span6'f>r>t<'row-fluid'<'span4'l><'span4'i><'span4'p>>", //"sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
             "sPaginationType": "bootstrap",
             "oLanguage": {
                 "sEmptyTable": "No ha ingresado ninguna cuenta",
@@ -3134,8 +2834,9 @@ var App = function () {
                 handleAllJQVMAP(); // handles vector maps for interactive map page
             }
 
-            if (App.isPage("charts")) {
-                handleCharts(); // handles plot charts
+            if (App.isPage("order_book")) {
+                handleOrderBookCharts();
+                //handleCharts(); // handles plot charts
                 //handleChartGraphs();
             }
 

@@ -98,8 +98,9 @@ class ProfileController(FrontendHandler, UploadHandler):
       kwargs['form'] = ProfileForm(obj=account)
       return self.render_response('frontend/profile.html', **kwargs)
     
-    if self.form.validate():
+    if self.form.validate() == False:
       kwargs['form'] = self.form
+      kwargs['flash'] = self.build_error(u'Verifique los datos ingresados.')
       return self.render_response('frontend/profile.html', **kwargs)
 
     # Si cambio el email, lo marcamos como no verificado
