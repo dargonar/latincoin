@@ -27,6 +27,13 @@ def get_system_config():
 
   return sconf
 
+class ExchangerCheckpoint(db.Model):
+  date                    = db.DateTimeProperty()
+  btc_balance             = DecimalProperty(default=decimal.Decimal('0'))
+  curr_balance            = DecimalProperty(default=decimal.Decimal('0'))
+  
+
+
 class SystemConfig(db.Model):
   remote_rpc              = db.StringProperty(choices=['ec2', 'blockchain'], default='ec2')
   confirmations           = db.StringProperty(default='6')
