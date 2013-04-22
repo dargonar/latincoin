@@ -55,6 +55,12 @@ class TradeController(FrontendHandler):
     # Si fue una orden de mercado, mandamos el mail correspondiente
     # Lo hacemos aca por que no se si un encolamiento puede frenar una transaccion
     # Es mas importante que se realize el trade que mandar el mail, por eso lo hacemos afuera
+    
+    # NOTA: las funciones add_market_* add_limit_* sabemos que pudieron escribir bien en la "DB".
+    # Y tambien sabemos que se van a escribir bien los indices, lo que no sabemos es cuando
+    # por eso al mandar al toque el taskqueue.add puede ser que no encuentre la recien creada operacion
+    # o el match_orders no encuentre la orden 
+
     order_key = str(trade[0].key())
     if form.market():
       enqueue_mail('completed_order', {'user_key':self.user, 'order_key':order_key})

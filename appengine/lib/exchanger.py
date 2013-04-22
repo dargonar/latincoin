@@ -56,12 +56,12 @@ def get_account_balance(account):
 
   return balance
 
-def add_currency_balance(user, amount, bank_account = None, currency='ARS'):
-  
-  assert(isinstance(user, basestring) and len(user) > 0 ), u'Key de user inválida'
-  assert(isinstance(amount, basestring) and len(amount) > 0 ), u'Amount inválido'
-  assert(isinstance(currency, basestring) and len(currency) > 0 ), u'Currency inválida'
-  
+def add_currency_balance(user, amount, bank_account=None, currency='ARS'):
+
+  assert(isinstance(user, basestring) and len(user) > 0 ), u'Key de usuario inválida'  
+  assert(isinstance(amount, Decimal) and amount > Decimal('0')), u'Cantidad inválida'
+  assert(isinstance(currency, basestring) and currency in ['ARS','BTC']), u'Moneda inválida'
+
   @db.transactional(xg=False)
   def _tx():
     
@@ -175,7 +175,7 @@ def _add_withdraw_order(user, currency, amount, bank_account=None, btc_address=N
     withdraw_op = AccountOperation(parent         = user_key, 
                                    operation_type = AccountOperation.MONEY_OUT, 
                                    account        = user_key,
-                                   amount         = -amount,
+                                   amount         = amount,
                                    currency       = currency,
                                    state          = AccountOperation.STATE_PENDING, 
                                    bank_account   = bank_account,
@@ -254,15 +254,18 @@ def apply_operation(operation_key):
     if op.status == Operation.OPERATION_DONE:
       return op
 
-    assert(op.seller.commission_rate > Decimal('0')), u'Comisión inválida'
-    assert(op.buyer.commission_rate > Decimal('0')), u'Comisión inválida'
+    seller_rate = op.seller.commission_rate
+    buyer_rate  = op.buyer.commission_rate
+
+    assert(seller_rate > Decimal('0')), u'Comisión inválida'
+    assert(buyer_rate  > Decimal('0')), u'Comisión inválida'
 
     # Traemos la cuenta del xchanger
     xchg = Account.get_by_key_name('xchg')
 
     # Calculamos los fees del xchanger
-    xchg_curr_fee = op.traded_currency*op.seller.commission_rate
-    xchg_btc_fee  = op.traded_btc*op.buyer.commission_rate
+    xchg_curr_fee = op.traded_currency*seller_rate
+    xchg_btc_fee  = op.traded_btc*buyer_rate
 
     sellers_curr = (op.traded_currency - xchg_curr_fee)
     buyers_btc   = (op.traded_btc - xchg_btc_fee)
@@ -278,7 +281,7 @@ def apply_operation(operation_key):
 
     # Actualizamos los balances del comprador
     buyer_balance['BTC'].amount      += buyers_btc
-    
+
     # DIFICIL DE VER: el balance comprometido del comprador disminuye
     # en funcion de lo que se transo x lo que el estaba dispuesto a pagar, no 
     # por el ppc del vendedor.
@@ -295,13 +298,19 @@ def apply_operation(operation_key):
                                   operation_type = AccountOperation.BTC_SELL, 
                                   account        = op.seller,
                                   amount         = sellers_curr, 
+                                  ppc            = op.ppc,
+                                  commission_rate= seller_rate,
+                                  trade_operation= op,
                                   currency       = 'ARS',
                                   state          = AccountOperation.STATE_DONE)
 
     seller_op2 = AccountOperation(parent         = op.seller, 
                                   operation_type = AccountOperation.BTC_SELL, 
                                   account        = op.seller,
-                                  amount         = -op.traded_btc,
+                                  amount         = op.traded_btc,
+                                  ppc            = op.ppc,
+                                  #commission_rate= None,
+                                  trade_operation= op,
                                   currency       = 'BTC',
                                   state          = AccountOperation.STATE_DONE)
 
@@ -310,13 +319,19 @@ def apply_operation(operation_key):
                                   operation_type = AccountOperation.BTC_BUY, 
                                   account        = op.buyer,
                                   amount         = buyers_btc, 
+                                  ppc            = op.ppc,
+                                  commission_rate= buyer_rate,
+                                  trade_operation= op,
                                   currency       = 'BTC',
                                   state          = AccountOperation.STATE_DONE)
 
     buyer_op2 = AccountOperation( parent         = op.buyer, 
                                   operation_type = AccountOperation.BTC_BUY, 
                                   account        = op.buyer,
-                                  amount         = -op.traded_currency,
+                                  amount         = op.traded_currency,
+                                  ppc            = op.ppc,
+                                  #commission_rate= None,
+                                  trade_operation= op,
                                   currency       = 'ARS',
                                   state          = AccountOperation.STATE_DONE)
     
@@ -325,6 +340,9 @@ def apply_operation(operation_key):
                                   operation_type = AccountOperation.XCHG_FEE, 
                                   account        = xchg,
                                   amount         = xchg_btc_fee, 
+                                  #ppc            = None,
+                                  #commission_rate= None,
+                                  trade_operation= op,
                                   currency       = 'BTC',
                                   state          = AccountOperation.STATE_DONE)
 
@@ -332,6 +350,9 @@ def apply_operation(operation_key):
                                   operation_type = AccountOperation.XCHG_FEE, 
                                   account        = xchg,
                                   amount         = xchg_curr_fee,
+                                  #ppc            = None,
+                                  #commission_rate= None,
+                                  trade_operation= op,
                                   currency       = 'ARS',
                                   state          = AccountOperation.STATE_DONE)
 

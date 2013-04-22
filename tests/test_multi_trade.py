@@ -27,7 +27,11 @@ class TestOrders(unittest.TestCase, TestUtilMixin):
   def setUp(self):
     
     # Creamos el contexto webapp2
-    app = webapp2.WSGIApplication(routes=get_rules(config), config=config)
+    app = webapp2.WSGIApplication(routes=get_rules(config), config=config, debug=True)
+
+    req = webapp2.Request.blank('/bet_casela')
+    req.app = app
+    webapp2._local.request = req
     
     # First, create an instance of the Testbed class.
     self.testbed = testbed.Testbed()
@@ -40,6 +44,7 @@ class TestOrders(unittest.TestCase, TestUtilMixin):
     
     # Initialize the datastore stub with this policy.
     self.testbed.init_datastore_v3_stub(consistency_policy=self.policy)
+    self.testbed.init_taskqueue_stub()
 
     self.aux_init_all()
 
@@ -91,8 +96,8 @@ class TestOrders(unittest.TestCase, TestUtilMixin):
 
       r = None
 
-      # 90% chances de meter orden
-      if uniform(1,100) > 10:
+      # 60% chances de meter orden
+      if uniform(1,100) > 40:
 
         # 50% chances de meter bid o ask
         if uniform(1,100) > 50:
@@ -100,13 +105,13 @@ class TestOrders(unittest.TestCase, TestUtilMixin):
         else:
           r = self.aux_add_random_ask(user, 1, 10, 150, 250)
 
-      # 10%
+      # 40%
       else:
 
-        # 90% chances de retirar
-        if uniform(1,100) > 10:
+        # 50% chances de retirar
+        if uniform(1,100) > 50:
 
-          # 50% chances de retirar BTC / ARS
+          # 50% chances de retirar todo y 50% de retirar la mitad del balance BTC/ARS
           cuanto = Decimal('1') if uniform(1,100) > 50 else Decimal('0.5')
           currency = 'ARS' if uniform(1,100) > 50 else 'BTC'
           
@@ -118,6 +123,22 @@ class TestOrders(unittest.TestCase, TestUtilMixin):
               add_withdraw_btc_order(user, bal[currency].available()*cuanto, '13WnH6hAbmeuHAWSnbsAcMcaWWkBsjZY27')
             else:
               add_withdraw_currency_order(user, bal[currency].available()*cuanto, str(account.bank_accounts[0].key()))
+        
+        # 50% chances de depositar
+        else:
+
+          # 50% chances btc/ars
+          currency = 'ARS' if uniform(1,100) > 50 else 'BTC'
+          if currency == 'ARS':
+            cuanto = Decimal(uniform(100 , 50000))
+            add_currency_balance(user, cuanto)
+          else:
+            cuanto = Decimal(uniform(1 , 50))
+            ftx = self.aux_fake_forward_tx(cuanto, account)
+            add_btc_balance(str(ftx.key()))
+          
+          print 'mando a depositar: %.5f %s' % (cuanto, currency)
+
             
       # 70% chances de correr el match_orders
       if uniform(1,100) > 30:
@@ -186,12 +207,12 @@ class TestOrders(unittest.TestCase, TestUtilMixin):
       self.assertTrue(zero_btc(t.amount))
 
     # Todas las trades ordenes canceladas
-    for t in TradeOrder.all().filter('status =', TradeOrder.ORDER_CANCELED):
-      print t
+    # for t in TradeOrder.all().filter('status =', TradeOrder.ORDER_CANCELED):
+    #   print t
 
-    # Pedidos de retiro
-    for t in AccountOperation.all().filter('operation_type = ', AccountOperation.MONEY_OUT):
-      print t
+    # # Pedidos de retiro
+    # for t in AccountOperation.all().filter('operation_type = ', AccountOperation.MONEY_OUT):
+    #   print t
 
 
 

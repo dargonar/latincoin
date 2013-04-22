@@ -15,6 +15,7 @@ class DecimalProperty(db.Property):
     	model_instance))
 
   def make_value_from_datastore(self, value):
+    if value is None or (isinstance(value, basestring) and value=='None'): return None
     return decimal.Decimal(value)
 
   def validate(self, value):
@@ -24,6 +25,7 @@ class DecimalProperty(db.Property):
     if value is None or isinstance(value, decimal.Decimal):
       return value
     elif isinstance(value, basestring):
+      if value == 'None': return None
       return decimal.Decimal(value)
     
     raise db.BadValueError("Property %s must be a Decimal or string" % self.name)
