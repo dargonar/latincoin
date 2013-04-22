@@ -4732,6 +4732,13 @@ div.navbar_margined{
 .portfolio-block span.fee{color:#f79420;}
 
 table.table td.right {text-align:right !important;}
+th.centered_text ,table.table td.centered_text{text-align:center !important;}
+
+table.table tbody tr.odd td { background-color: #f9f9f9;}
+table.table tbody tr.even td { background-color: white;}
+table.table tbody tr:hover td, table.table tbody tr:hover th {
+  background-color: #f5f5f5;
+}
 
 .portlet.box.white .portlet-title {
   /*border-top: 1px solid #eee;
@@ -4766,8 +4773,6 @@ table.table td.right {text-align:right !important;}
 }
 
 #fees .portfolio-info.limit{min-width:146px; text-align:right;}
-th.centered_text {text-align:center !important;}
-/*a.btn.blue.blue_extended {background-color:#b4cef8;}*/
 
 .invalid_user {
   color:#FFFFFF !important;

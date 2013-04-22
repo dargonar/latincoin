@@ -1,94 +1,88 @@
   {% extends "frontend/base_inner_not_logged.html"%}  
   {% block content%}
     <div id="content"> 
-      <h2>¿Cómo vender bitcoins?</h2>
-      
-            <!-- BEGIN PAGE CONTENT-->
-            <div class="row-fluid">
-               <div class="span12">
-                  <div class="portlet box blue_extended" id="form_wizard_1">
-                     <div class="portlet-title">
-                        <h4>
-                           <i class="icon-reorder"></i><span class="step-title">Paso 1 de 4</span>
-                        </h4>
-                        <div class="tools hidden-phone">
-                           <a href="javascript:;" class="collapse"></a>
-                           <a href="#portlet-config" data-toggle="modal" class="config"></a>
-                           <a href="javascript:;" class="reload"></a>
-                           <a href="javascript:;" class="remove"></a>
-                        </div>
-                     </div>
-                     <div class="portlet-body form">
-                        <form action="#" class="form-horizontal">
-                           <div class="form-wizard">
-                              <div class="navbar steps">
-                                 <div class="navbar-inner">
-                                    <ul class="row-fluid">
-                                       <li class="span3">
-                                          <a href="#tab1" data-toggle="tab" class="step active">
-                                          <span class="number">1</span>
-                                          <span class="desc"><i class="icon-ok"></i> Configura <br/>tu cuenta</span>   
-                                          </a>
-                                       </li>
-                                       <li class="span3">
-                                          <a href="#tab2" data-toggle="tab" class="step">
-                                          <span class="number">2</span>
-                                          <span class="desc"><i class="icon-ok"></i> Valida <br/>tu identidad</span>   
-                                          </a>
-                                       </li>
-                                       <li class="span3">
-                                          <a href="#tab3" data-toggle="tab" class="step">
-                                          <span class="number">3</span>
-                                          <span class="desc"><i class="icon-ok"></i> Acredita bitcoins <br/>en tu cuenta</span>   
-                                          </a>
-                                       </li>
-                                       <li class="span3">
-                                          <a href="#tab4" data-toggle="tab" class="step">
-                                          <span class="number">4</span>
-                                          <span class="desc"><i class="icon-ok"></i> ¡A vender<br/>bitcoins!</span>   
-                                          </a> 
-                                       </li>
-                                    </ul>
-                                 </div>
-                              </div>
-                              <div id="bar" class="progress progress-success progress-striped">
-                                 <div class="bar"></div>
-                              </div>
-                              <div class="tab-content">
-                                 <div class="tab-pane active" id="tab1">
-                                    <h3 class="block">Configura tu cuenta </h3>
-                                    
-                                 </div>
-                                 <div class="tab-pane" id="tab2">
-                                    <h3 class="block">Valida tu identidad</h3>
-                                    
-                                 </div>
-                                 <div class="tab-pane" id="tab3">
-                                    <h3 class="block">Acredita pesos en tu cuenta</h3>
-                                 </div>
-                                 <div class="tab-pane" id="tab4">
-                                    <h3 class="block">¡A comprar bictoins!</h3>
-                                 </div>
-                              </div>
-                              <div class="form-actions clearfix">
-                                 <a href="javascript:;" class="btn button-previous">
-                                 <i class="m-icon-swapleft"></i> Paso anterior 
-                                 </a>
-                                 <a href="javascript:;" class="btn blue button-next">
-                                 Paso siguiente <i class="m-icon-swapright m-icon-white"></i>
-                                 </a>
-                                 <a href="{{url_for('account-signup')}}" class="btn green button-submit">
-                                 Comprar <i class="m-icon-swapright m-icon-white"></i>
-                                 </a>
-                              </div>
-                           </div>
-                        </form>
-                     </div>
+      <h2 class="page-title">{{'¿Cómo vender bitcoins?'}}</h2>
+      <!-- BEGIN PAGE CONTENT-->
+      <div class="row-fluid">
+         <div class="span12">
+            <div class="portlet box blue_extended" id="form_wizard_1">
+               <div class="portlet-title">
+                  <h4>
+                     <i class="icon-reorder"></i><span class="step-title">{{'Paso 1 de 4'}}</span>
+                  </h4>
+                  <div class="tools hidden-phone">
+                     <a href="javascript:;" class="collapse"></a>
+                     <a href="#portlet-config" data-toggle="modal" class="config"></a>
+                     <a href="javascript:;" class="reload"></a>
+                     <a href="javascript:;" class="remove"></a>
                   </div>
                </div>
+               <div class="portlet-body form">
+                  <form action="#" class="form-horizontal">
+                     <div class="form-wizard">
+                        <div class="navbar steps">
+                           <div class="navbar-inner">
+                              <ul class="row-fluid">
+                                 <li class="span3">
+                                    <a href="#tab1" data-toggle="tab" class="step active">
+                                    <span class="number">1</span>
+                                    <span class="desc"><i class="icon-ok"></i> {{'Configura <br/>tu cuenta'}}</span>   
+                                    </a>
+                                 </li>
+                                 <li class="span3">
+                                    <a href="#tab2" data-toggle="tab" class="step">
+                                    <span class="number">2</span>
+                                    <span class="desc"><i class="icon-ok"></i> {{'Valida <br/>tu identidad'}}</span>   
+                                    </a>
+                                 </li>
+                                 <li class="span3">
+                                    <a href="#tab3" data-toggle="tab" class="step">
+                                    <span class="number">3</span>
+                                    <span class="desc"><i class="icon-ok"></i> {{'Acredita bitcoins<br/>en tu cuenta'}}</span>   
+                                    </a>
+                                 </li>
+                                 <li class="span3">
+                                    <a href="#tab4" data-toggle="tab" class="step">
+                                    <span class="number">4</span>
+                                    <span class="desc"><i class="icon-ok"></i> {{'¡A vender<br/>bitcoins!'}}</span>   
+                                    </a> 
+                                 </li>
+                              </ul>
+                           </div>
+                        </div>
+                        <div id="bar" class="progress progress-success progress-striped">
+                           <div class="bar"></div>
+                        </div>
+                        <div class="tab-content">
+                           <div class="tab-pane active" id="tab1">
+                              <h3 class="block">{{'Configura tu cuenta'}}</h3>
+                              {% include 'frontend/static/how_to_buy_1.html' %}
+                           </div>
+                           <div class="tab-pane" id="tab2">
+                              <h3 class="block">{{'Valida tu identidad'}}</h3>
+                              {% include 'frontend/static/how_to_buy_2.html' %}
+                           </div>
+                           <div class="tab-pane" id="tab3">
+                              <h3 class="block">{{'Acredita bitcoins en tu cuenta'}}</h3>
+                              {% include 'frontend/static/how_to_sell_3.html' %}
+                           </div>
+                           <div class="tab-pane" id="tab4">
+                              <h3 class="block">{{'¡A comprar bictoins!'}}</h3>
+                              {% include 'frontend/static/how_to_sell_4.html' %}
+                           </div>
+                        </div>
+                        <div class="form-actions clearfix">
+                           <a href="javascript:;" class="btn button-previous"><i class="m-icon-swapleft"></i> {{'Paso anterior '}}</a>
+                           <a href="javascript:;" class="btn blue button-next">{{'Paso siguiente'}} <i class="m-icon-swapright m-icon-white"></i></a>
+                           <a href="{{url_for('account-signup')}}" class="btn green button-submit">{{'Vender'}} <i class="m-icon-swapright m-icon-white"></i></a>
+                        </div>
+                     </div>
+                  </form>
+               </div>
             </div>
-            <!-- END PAGE CONTENT-->         
-      
+         </div>
+      </div>
+      <!-- END PAGE CONTENT-->         
     </div>
   {% endblock%}
   
