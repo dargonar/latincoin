@@ -124,7 +124,7 @@ class WithdrawController(FrontendHandler):
       row.append('%s' % ( oper.bank_account if oper.bank_account else oper.address))
       
       if oper.state == AccountOperation.STATE_PENDING:
-        row.append('<a href="' + self.url_for('withdraw-cancel', key=str(oper.key()) ) + '">Cancelar</a>')
+        row.append('<a href="' + self.url_for('withdraw-cancel', key=str(oper.key()) ) + '" class="btn mini red"><i class="icon-remove"></i>&nbsp;Cancelar</a>')
       else:
         row.append(self.label_for_oper(oper))
         

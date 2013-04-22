@@ -1,26 +1,58 @@
-  {% extends "frontend/base_inner_not_logged.html"%}  
+  {% if is_logged %}
+    {% extends "frontend/base_home.html"%}
+  {% else %}
+    {% extends "frontend/base_inner_not_logged.html"%}  
+  {% endif %}
   
   {% block content%}
-    <div id="content"> 
-      <h3><i class="icon-book"></i>&nbsp;Libro de órdenes </h3>
-      <div class="portlet">
-        <div class="portlet-body">
-          <div id="chart_2" class="chart"></div>
+    <div class="container-fluid">
+      <div class="row-fluid">
+        <div class="span12">
+          <h3><i class="icon-book"></i>&nbsp;{{'Libro de órdenes'}}</h3>
+          <div class="portlet">
+            <div class="portlet-body">
+              <div id="order_book_graph" class="chart"></div>
+            </div>
+          </div>
         </div>
       </div>
-      <br/><br/>
-      <div class="clearfix"></div>      
-      {{ _tables['orders'] }}
-      <div class="clearfix"></div>
-            
+      <div class="row-fluid">
+        <div class="span12">
+          <div class="clearfix"></div>      
+          {{ _orders_tables }}
+          <div class="clearfix"></div>
+        </div>
+      </div>
     </div>
   {% endblock%}
   
-  {%block run_javascript%}
+  {%block javascript_run%}
+  <script type="text/javascript" src="https://www.google.com/jsapi"></script>
   <script type="text/javascript">
+    
+    var __bids = {{chart_data['bids']}};
+    var __asks = {{chart_data['asks']}};
 		jQuery(document).ready(function() {		
-			App.setPage("charts");  // set current page
+			App.setPage("order_book");  // set current page
 			App.init(); // init the rest of plugins and elements
 		});
+    
+    /*
+    google.load("visualization", "1", {packages:["corechart"]});
+    google.setOnLoadCallback(drawChart);
+    function drawChart() {
+      var data = google.visualization.arrayToDataTable({# {chart_data} #});
+
+      var options = {
+        colors:   ['#94c13e','#4e8cd9']
+        , title:    'Order Book'
+        , hAxis:    {title: 'price',  titleTextStyle: {color: 'grey'}} //, direction:-1
+        , isStacked: true
+      };
+
+      var chart = new google.visualization.SteppedAreaChart(document.getElementById('order_book_graph'));
+      chart.draw(data, options);
+    }
+    */
 	</script>
   {%endblock%}

@@ -41,7 +41,6 @@ class ProfileForm(Form):
   def validate_email(self, field):
     # Chequeo que el correo sea válido.
     account = Account.all().filter('email =', field.data).get()
-    
     if account:
       if str(account.key()) == self.user_key:
         return

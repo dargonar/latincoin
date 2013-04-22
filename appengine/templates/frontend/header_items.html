@@ -1,33 +1,38 @@
 				<!-- display:none si no esta  logeado -->					
 				{% if is_logged %}
-          {% if home %}
           <ul class="nav pull-left">
             <li class="dropdown user" style="left:0px;">
-              <div class="dropdown-toggle" style="margin-top: 3px;height: 26px;">
-                <a href="{{url_for('trade-new')}}" class="dropdown-toggle">
-                  <span class="username" style="color:#FFFFFF;font-weight:bold;">Volver a comprar y vender bitcoins</span>
-                  <i class="icon-share-alt" style="color:#FFFFFF !important;font-weight:bold;"></i> <!-- icon-shopping-cart -->
+              <div class="dropdown-toggle" style="height: 26px;">
+              {% if home %}
+                <a href="{{url_for('trade-new')}}" class="btn blue mini">
+                  <span class="username" style="color:#FFFFFF;font-weight:bold;">{{'Volver a comprar y vender bitcoins'}}</span>
+                  <i class="icon-share-alt" style="color:#FFFFFF !important;"></i> <!-- icon-shopping-cart -->
                 </a>
+                {% else %}
+                  <a href="{{url_for('order_book')}}" class="btn green mini">
+                    <span class="username" style="color:#FFFFFF;"><i style="color:#FFFFFF !important;" class="icon-book"></i>&nbsp;{{'Libro de órdenes'}}</span>
+                  </a>
+                {% endif %}
               </div>
             </li>
           </ul>
-          {% endif %}
+          
         {% endif %}
         
         <ul class="nav pull-right">
           <li class="dropdown user" style="height:42px;">
 						<div class="dropdown-toggle" style="margin-top: 3px;height: 26px;">
-              <span class="username">Ultimo precio: <span class="white_ticker">${# {ticker.lastprice} #}</span> <i class="maket_arrow {# { ticker.lastprice_slope|marketarrowfy } #}"></i></span>
+              <span class="username">{{'Ultimo precio'}}: <span class="white_ticker">${# {ticker.lastprice} #}</span> <i class="maket_arrow {# { ticker.lastprice_slope|marketarrowfy } #}"></i></span>
               &nbsp;&nbsp;
-              <span class="username">HIGH: <span class="white_ticker"><span class="white_ticker">${# {ticker.high} #}</span> <i class="maket_arrow {# { ticker.high_slope|marketarrowfy } #}"></i></span>
+              <span class="username">{{'HIGH'}}: <span class="white_ticker"><span class="white_ticker">${# {ticker.high} #}</span> <i class="maket_arrow {# { ticker.high_slope|marketarrowfy } #}"></i></span>
               &nbsp;&nbsp;
-              <span class="username">LOW: <span class="white_ticker">${# {ticker.low} #}</span> <i class="maket_arrow {# { ticker.low_slope|marketarrowfy } #}"></i></span>
+              <span class="username">{{'LOW'}}: <span class="white_ticker">${# {ticker.low} #}</span> <i class="maket_arrow {# { ticker.low_slope|marketarrowfy } #}"></i></span>
               &nbsp;&nbsp;
-              <span class="username">Volumen: <span class="white_ticker">{# {ticker.volume} #}</span> <i class="maket_arrow {# { ticker.volume_slope|marketarrowfy } #}"></i></span>
+              <span class="username">{{'Volumen'}}: <span class="white_ticker">{# {ticker.volume} #}</span> <i class="maket_arrow {# { ticker.volume_slope|marketarrowfy } #}"></i></span>
               
               {% if is_logged %}
               &nbsp;&nbsp;
-              <span class="username">Balance:<span class="white_ticker"></span>
+              <span class="username">{{'Balance'}}:<span class="white_ticker"></span>
               &nbsp;<span class="white_ticker">{{btc_balance|format_btc}}</span>&nbsp;BTC&nbsp;-
               &nbsp;<span class="white_ticker">{{ars_balance}}</span>&nbsp;ARS</span>
               {% endif %}

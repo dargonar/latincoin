@@ -22,6 +22,8 @@ def get_rules():
       
       Route('/a/backend',                   name='backend',         handler='apps.backend.backend_controller.BackendController:home'),
       
+      Route('/a/backend/generate_demo_data',  name='demo-data',     handler='apps.backend.demo_controller.GenerateTradeData:generate'),
+      
       PathPrefixRoute('/a/backend', [ NamePrefixRoute('backend-', [ HandlerPrefixRoute('apps.backend.backend_controller', [
         Route('/login',                     name='login',             handler='.BackendController:login'),
         Route('/logout',                    name='logout',            handler='.BackendController:logout'),
