@@ -27,7 +27,7 @@
                         </div -->
                         <div class="portlet-body">
                           <div class="well">
-                            <h4>Instrucciones</h4>
+                            <h4>{{'Instrucciones'}}</h4>
                             <!-- p>{{'Ingrese la cantidad que desea depositar y reciba todas las instrucciones en su dirección de correo electrónico.'}}</p -->
                             <p>{{'Para poder comprar bitcoins debe acreditar fondos en su cuenta.'}}</strong>.</p>
                             <p>{{'Acredite fondos en su cuenta realizando una transferencia bancaria al CBU que figura en pantalla, o bien deposite por ventanilla en la cuenta del banco indicada.'}}</p>
@@ -35,7 +35,7 @@
                             <p>{{'Utilize el siguiente asunto: "Depósito <b style="color:#FF0000;">%s</b>" y recuerde <b>adjuntar comprobante</b> de depósito o transferencia en formato pdf o imagen.'|format(account.key().id()|string)}}</p>
                             
                             <p>{{'El <b>valor mínimo</b> de depósito es de <b>$%.2f</b> pesos argentinos.'|format(system_config.min_curr_deposit|float)}}</p>
-                            <p>{{'La acreditación de los valores tiene una tasa de impuestos y costos de <strong>%%%.2f</strong>.'|format(system_config.cur_deposit_fee|float)}}</p>
+                            <p>{{'La acreditación de los valores tiene una tasa de impuestos y costos de <strong>%%%.2f</strong>.'|format(system_config.cur_deposit_tax|float)}}</p>
                             <p>{{'Ante cualquier duda por favor contáctese con <a href="mailto:soporte@latincoin.com">soporte@latincoin.com</a>.'}}</p>
                           </div>
                         </div>

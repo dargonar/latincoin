@@ -1,7 +1,7 @@
   {% extends "frontend/base_inner_not_logged.html"%}  
   {% block content%}
     <div id="content"> 
-      <h2>¿Cómo comprar bitcoins?</h2>
+      <h2 class="page-title">¿Cómo comprar bitcoins?</h2>
       
             <!-- BEGIN PAGE CONTENT-->
             <div class="row-fluid">
@@ -60,14 +60,16 @@
                                     {% include 'frontend/static/how_to_buy_1.html' %}
                                  </div>
                                  <div class="tab-pane" id="tab2">
-                                    <h3 class="block">Valida tu identidad</h3>
+                                    <h3 class="block">{{'Valida tu identidad'}}</h3>
                                     {% include 'frontend/static/how_to_buy_2.html' %}
                                  </div>
                                  <div class="tab-pane" id="tab3">
-                                    <h3 class="block">Acredita pesos en tu cuenta</h3>
+                                    <h3 class="block">{{'Acredita pesos en tu cuenta'}}</h3>
+                                    {% include 'frontend/static/how_to_buy_3.html' %}
                                  </div>
                                  <div class="tab-pane" id="tab4">
-                                    <h3 class="block">¡A comprar bictoins!</h3>
+                                    <h3 class="block">{{'¡A comprar bictoins!'}}</h3>
+                                    {% include 'frontend/static/how_to_buy_4.html' %}
                                  </div>
                               </div>
                               <div class="form-actions clearfix">

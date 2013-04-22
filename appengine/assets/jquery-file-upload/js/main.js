@@ -117,7 +117,7 @@ $(function () {
       return $('#files_to_upload').append(
         '<tr class="template-upload fade in">'+
         '    <td class="name"><span>'+file.name+'</span></td>'+
-        '    <td class="size"><span>'+(file.size/1024/1024).toFixed(2)+' KB</span></td>'+
+        '    <td class="size"><span>'+(file.size/1024/1024).toFixed(2)+' KB</span>'+(file.size/1024/1024)+'</td>'+
         '    <td>'+
         '      <div class="progress progress-success progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="bar" style="width:0%;"></div></div>'+
         '    </td>'+

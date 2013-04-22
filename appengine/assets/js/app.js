@@ -2734,7 +2734,7 @@ var App = function () {
             'nextSelector': '.button-next',
             'previousSelector': '.button-previous',
             onTabClick: function (tab, navigation, index) {
-                alert('on tab click disabled');
+                //alert('on tab click disabled');
                 return false;
             },
             onNext: function (tab, navigation, index) {
@@ -2921,10 +2921,10 @@ var App = function () {
 
         // wrapper function to scroll to an element
         scrollTo: function (el, offeset) {
-            // pos = el ? el.offset().top : 0;
-            // jQuery('html,body').animate({
-                // scrollTop: pos + (offeset ? offeset : 0)
-            // }, 'slow');
+             pos = el ? $(el).offset().top : 0;
+             jQuery('html,body').animate({
+                 scrollTop: pos + (offeset ? offeset : 0)
+             }, 'slow');
         },
 
         // wrapper function to  block element(indicate loading)

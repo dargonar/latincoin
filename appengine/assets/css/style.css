@@ -4639,6 +4639,9 @@ Dropzone css changes(new in v1.1.1)
          border-radius: 0px !important;
 }
 
+/* ******************************************************** */
+/* Modifs al template orignial. *************************** */
+
 /* HACKO */
 .form-horizontal .control-group-item{float:left; padding-left:20px;}
 .form-horizontal .control-group-item.input-container {width:300px; }
@@ -4765,3 +4768,12 @@ table.table td.right {text-align:right !important;}
 #fees .portfolio-info.limit{min-width:146px; text-align:right;}
 th.centered_text {text-align:center !important;}
 /*a.btn.blue.blue_extended {background-color:#b4cef8;}*/
+
+.invalid_user {
+  color:#FFFFFF !important;
+  text-decoration:none;
+}
+.invalid_user .icon-warning-sign, .invalid_user  .badge{
+  color:#FFFFFF !important;
+  background-color: #e02222;
+}

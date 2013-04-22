@@ -139,10 +139,11 @@ class Jinja2Mixin(object):
 
     # Globals solo para frontend
     if isinstance(self, FrontendHandler):
-      env.globals['user_name']       = self.user_name
-      env.globals['email_verified']  = self.email_verified
-      env.globals['ars_balance']     = self.ars_balance
-      env.globals['btc_balance']     = self.btc_balance
+      env.globals['identity_is_validated']= self.identity_is_validated
+      env.globals['user_name']            = self.user_name
+      env.globals['email_verified']       = self.email_verified
+      env.globals['ars_balance']          = self.ars_balance
+      env.globals['btc_balance']          = self.btc_balance
     
     # Globals solo para backend
     elif isinstance(self, BackendHandler):
@@ -258,7 +259,8 @@ class FrontendHandler(MyBaseHandler):
   def update_user_info(self, user):
     self.session['account.name'] = user.name if user.name and len(user.name) else user.email
     self.session['account.email_verified'] = user.email_verified
- 
+    self.session['account.identity_is_validated'] = user.identity_is_validated
+    
   def do_logout(self):
     self.session.clear()
 
@@ -274,6 +276,10 @@ class FrontendHandler(MyBaseHandler):
   def is_logged(self):
     return self.session_value('account.logged', False)
   
+  @property
+  def identity_is_validated(self):
+    return self.session_value('account.identity_is_validated', False)
+    
   @property
   def email_verified(self):
     return self.session_value('account.email_verified', False)
