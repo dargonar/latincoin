@@ -3,8 +3,8 @@
           <ul class="nav pull-left">
             <li class="dropdown user" style="left:0px;">
               <div class="dropdown-toggle" style="height: 26px;">
-              {% if home %}
-                <a href="{{url_for('trade-new')}}" class="btn blue mini">
+              {% if is_index and is_index == True%}
+                <a href="{{url_for('trade-new')}}" class="btn green mini">
                   <span class="username" style="color:#FFFFFF;font-weight:bold;">{{'Volver a comprar y vender bitcoins'}}</span>
                   <i class="icon-share-alt" style="color:#FFFFFF !important;"></i> <!-- icon-shopping-cart -->
                 </a>

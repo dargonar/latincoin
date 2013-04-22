@@ -158,6 +158,7 @@ class Jinja2Mixin(object):
     env.filters['operation_type']           = do_operation_type
     env.filters['format_btc']               = do_format_btc
     env.filters['label_for_user_identity']  = do_label_for_user_identity
+    env.filters['format_number']            = do_format_number
     
   def render_response(self, _template, **context):
     # Renders a template and writes the result to the response.

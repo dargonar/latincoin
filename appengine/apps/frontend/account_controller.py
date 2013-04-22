@@ -295,11 +295,7 @@ class AccountController(FrontendHandler):
           trade_enable      = 'Y', 
           import_delay      = '0',
           import_enable     = 'Y',
-          forward_enable    = 'Y',
-          min_btc_withdraw  = Decimal('0.01'),
-          min_curr_deposit  = Decimal('0'),
-          min_curr_withdraw = Decimal('50'),
-    )
+          forward_enable    = 'Y')
 
     s.put()
 
@@ -320,7 +316,6 @@ class AccountController(FrontendHandler):
 
     now = datetime.fromtimestamp(bar_time)
 
-    from models import PriceBar
     dummy_bar = PriceBar.get_or_insert('dummy_bar',
                         open     = 0,
                         high     = 0,
@@ -337,4 +332,11 @@ class AccountController(FrontendHandler):
     from mail import init_mails
     init_mails()
     
+    from models import Admin
+    tuti_admin = Admin.get_or_insert('dago_admin'
+                                , name       = 'dago'
+                                , email      = 'ptutino@gmail.com'
+                                , password   = generate_password_hash('123456', method='sha256', pepper=config['my']['secret_key'])
+                                , rol        = 'admin')
+    tuti_admin.put()
     self.response.write('lito')

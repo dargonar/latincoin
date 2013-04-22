@@ -4731,12 +4731,37 @@ div.navbar_margined{
 table.table td.right {text-align:right !important;}
 
 .portlet.box.white .portlet-title {
-  border-top: 1px solid #eee;
-  background-color: #ffffff;
+  /*border-top: 1px solid #eee;
+  background-color: #ffffff;*/
+  background-color: transparent;
+  color: #666666 !important;
+  border:none;
 } 
 .portlet.box.white .portlet-title h4{color: #000000;}
 
-.portlet.box.white {  
+.portlet.box.white div.portlet-body{  
    border: 1px solid #eee;
-   border-top: 0;
+   /*border-top: 0;*/
 }
+
+.portlet.box.green_extended .portlet-title {
+  background-color: transparent;
+  color: #666666 !important;
+  border:none;
+} 
+.portlet.box.green_extended  div.portlet-body{  
+   border: 1px solid #77e588;
+}
+
+.portlet.box.blue_extended .portlet-title {
+  background-color: transparent;
+  color: #666666 !important;
+  border:none;
+} 
+.portlet.box.blue_extended  div.portlet-body{  
+   border: 1px solid #b4cef8;
+}
+
+#fees .portfolio-info.limit{min-width:146px; text-align:right;}
+th.centered_text {text-align:center !important;}
+/*a.btn.blue.blue_extended {background-color:#b4cef8;}*/

@@ -1,6 +1,6 @@
   {% extends "frontend/base_inner_not_logged.html"%}  
   {% block content%}
-    <div id="content"> 
+    <div id="fees"> 
       <h3>Costos <small>y números</small></h3>
       
       <div class="row-fluid portfolio-block">
@@ -16,11 +16,11 @@
         <div class="span7">
           <div class="portfolio-info">
             Impuestos y costos
-            <span>1.<small>00</small>%</span>
+            <span>{{system_config.cur_deposit_tax|format_number(2)}}%</span>
           </div>
-          <div class="portfolio-info">
+          <div class="portfolio-info limit">
             Monto míninmo
-            <span>$&nbsp;250.<small>00</small></span>
+            <span>$&nbsp;{{system_config.min_curr_deposit|format_number(2)}}</span>
           </div>
         </div>
       </div>
@@ -38,15 +38,15 @@
         <div class="span7">
           <div class="portfolio-info">
             Impuestos y costos
-            <span>1.<small>00</small>%</span>
+            <span>{{system_config.cur_withdraw_tax|format_number(2)}}%</span>
           </div>
-          <div class="portfolio-info">
+          <div class="portfolio-info limit">
             Monto míninmo
-            <span>$&nbsp;250.<small>00</small></span>
+            <span>$&nbsp;{{system_config.min_curr_withdraw|format_number(2)}}</span>
           </div>
           <div class="portfolio-info">
             Comisión
-            <span class="fee">0.<small>60</small>%</span>
+            <span class="fee">{{system_config.cur_withdraw_fee|format_number(1)}}%</span>
           </div>
         </div>
       </div>
@@ -65,11 +65,11 @@
         <div class="span7">
           <div class="portfolio-info">
             Impuestos y costos
-            <span>0.<small>00</small>%</span>
+            <span>{{system_config.btc_deposit_tax|format_number(2)}}%</span>
           </div>
-          <div class="portfolio-info">
+          <div class="portfolio-info limit">
             Monto míninmo
-            <span>BTC&nbsp;0.<small>01</small></span>
+            <span>BTC&nbsp;{{system_config.min_btc_deposit|format_number(2)}}</span>
           </div>
         </div>
       </div>
@@ -87,15 +87,15 @@
         <div class="span7">
           <div class="portfolio-info">
             Impuestos y costos
-            <span>0.<small>00</small>%</span>
+            <span>{{system_config.btc_withdraw_tax|format_number(2)}}%</span>
           </div>
-          <div class="portfolio-info">
+          <div class="portfolio-info limit">
             Monto míninmo
-            <span>BTC&nbsp;0.<small>01</small></span>
+            <span>BTC&nbsp;{{system_config.min_btc_withdraw|format_number(2)}}</span>
           </div>
           <div class="portfolio-info">
             Comisión
-            <span class="fee">0.<small>60</small>%</span>
+            <span class="fee">{{system_config.btc_withdraw_fee|format_number(1)}}%</span>
           </div>
         </div>
       </div>
@@ -113,15 +113,15 @@
         <div class="span7">
           <div class="portfolio-info">
             Impuestos y costos
-            <span>0.<small>00</small>%</span>
+            <span>{{system_config.btc_sell_tax|format_number(2)}}%</span>
           </div>
-          <div class="portfolio-info">
+          <div class="portfolio-info limit">
             Monto míninmo
-            <span>BTC&nbsp;0.<small>0001</small></span>
+            <span>BTC&nbsp;{{system_config.min_ask_amount|format_number(4)}}</span>
           </div>
           <div class="portfolio-info">
             Comisión
-            <span class="fee">0.<small>60</small>%</span>
+            <span class="fee">{{system_config.btc_sell_fee|format_number(1)}}%</span>
           </div>
         </div>
       </div>
@@ -140,15 +140,15 @@
         <div class="span7">
           <div class="portfolio-info">
             Impuestos y costos
-            <span>0.<small>00</small>%</span>
+            <span>{{system_config.btc_buy_tax|format_number(2)}}%</span>
           </div>
-          <div class="portfolio-info">
+          <div class="portfolio-info limit">
             Monto míninmo
-            <span>BTC&nbsp;0.<small>0001</small></span>
+            <span>BTC&nbsp;{{system_config.min_bid_amount|format_number(4)}}</span>
           </div>
           <div class="portfolio-info">
             Comisión
-            <span class="fee">0.<small>60</small>%</span>
+            <span class="fee">{{system_config.btc_buy_fee|format_number(1)}}%</span>
           </div>
         </div>
       </div>

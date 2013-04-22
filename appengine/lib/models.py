@@ -35,22 +35,35 @@ class SystemConfig(db.Model):
   import_enable           = db.StringProperty(default='Y')
   forward_enable          = db.StringProperty(default='Y')
   
-  min_btc_withdraw        = DecimalProperty(default=decimal.Decimal('0'))
+  min_btc_withdraw        = DecimalProperty(default=decimal.Decimal('0.01'))
   max_btc_withdraw        = DecimalProperty(default=decimal.Decimal('21e8'))
 
-  min_curr_withdraw       = DecimalProperty(default=decimal.Decimal('0'))
+  min_btc_deposit        = DecimalProperty(default=decimal.Decimal('0.01'))
+  max_btc_deposit        = DecimalProperty(default=decimal.Decimal('1e8'))
+  
+  min_curr_withdraw       = DecimalProperty(default=decimal.Decimal('250.0'))
   max_curr_withdraw       = DecimalProperty(default=decimal.Decimal('1e8'))
 
-  min_curr_deposit        = DecimalProperty(default=decimal.Decimal('0'))
+  min_curr_deposit        = DecimalProperty(default=decimal.Decimal('250.0'))
   max_curr_deposit        = DecimalProperty(default=decimal.Decimal('1e8'))
   
   max_ask_amount          = DecimalProperty(default=decimal.Decimal('21e8'))
-  min_ask_amount          = DecimalProperty(default=decimal.Decimal('0'))
+  min_ask_amount          = DecimalProperty(default=decimal.Decimal('0.0001'))
 
   max_bid_amount          = DecimalProperty(default=decimal.Decimal('21e8'))
-  min_bid_amount          = DecimalProperty(default=decimal.Decimal('0'))
+  min_bid_amount          = DecimalProperty(default=decimal.Decimal('0.0001'))
   
-  cur_deposit_fee         = DecimalProperty(default=decimal.Decimal('1'))
+  cur_deposit_tax         = DecimalProperty(default=decimal.Decimal('1.0'))
+  cur_withdraw_tax        = DecimalProperty(default=decimal.Decimal('1.0'))
+  btc_deposit_tax         = DecimalProperty(default=decimal.Decimal('0.0'))
+  btc_withdraw_tax        = DecimalProperty(default=decimal.Decimal('0.0'))
+  btc_sell_tax            = DecimalProperty(default=decimal.Decimal('0.0'))
+  btc_buy_tax             = DecimalProperty(default=decimal.Decimal('0.0'))
+  
+  cur_withdraw_fee        = DecimalProperty(default=decimal.Decimal('1.0'))
+  btc_withdraw_fee        = DecimalProperty(default=decimal.Decimal('0.6'))
+  btc_sell_fee            = DecimalProperty(default=decimal.Decimal('0.6'))
+  btc_buy_fee             = DecimalProperty(default=decimal.Decimal('0.6'))
   
   def can_trade(self):
     return self.trade_enable == 'Y'

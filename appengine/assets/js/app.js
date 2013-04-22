@@ -1103,7 +1103,7 @@ var App = function () {
         }
 
         function do_order_book_graph() {
-            
+            // https://github.com/flot/flot/blob/master/API.md
             var plot = $.plot($("#order_book_graph"), 
             [{
                 data: __bids,
@@ -2741,7 +2741,7 @@ var App = function () {
                 var total = navigation.find('li').length;
                 var current = index + 1;
                 // set wizard title
-                $('.step-title', $('#form_wizard_1')).text('Step ' + (index + 1) + ' of ' + total);
+                $('.step-title', $('#form_wizard_1')).text('Paso ' + (index + 1) + ' de ' + total);
                 // set done steps
                 jQuery('li', $('#form_wizard_1')).removeClass("done");
                 var li_list = navigation.find('li');
@@ -2768,7 +2768,7 @@ var App = function () {
                 var total = navigation.find('li').length;
                 var current = index + 1;
                 // set wizard title
-                $('.step-title', $('#form_wizard_1')).text('Step ' + (index + 1) + ' of ' + total);
+                $('.step-title', $('#form_wizard_1')).text('Paso ' + (index + 1) + ' de ' + total);
                 // set done steps
                 jQuery('li', $('#form_wizard_1')).removeClass("done");
                 var li_list = navigation.find('li');
@@ -2921,10 +2921,10 @@ var App = function () {
 
         // wrapper function to scroll to an element
         scrollTo: function (el, offeset) {
-            pos = el ? el.offset().top : 0;
-            jQuery('html,body').animate({
-                scrollTop: pos + (offeset ? offeset : 0)
-            }, 'slow');
+            // pos = el ? el.offset().top : 0;
+            // jQuery('html,body').animate({
+                // scrollTop: pos + (offeset ? offeset : 0)
+            // }, 'slow');
         },
 
         // wrapper function to  block element(indicate loading)
