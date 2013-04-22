@@ -10,23 +10,23 @@
 								<!--table class="table table-condensed table-hover" -->
 									<thead>
 										<tr>
-											<th>#</th>
-                      <th>Fecha</th>
-											<th>Tipo</th>
-											<th>Precio/BTC</th>
-											<th>Cantidad(BTC)</th>
-											<th>Total(Pesos)</th>
+											<th class="centered_text">Tipo</th>
+											<th class="centered_text">Precio</th>
+											<th class="centered_text">Cantidad</th>
+											<th class="centered_text">Valor</th>
+                      <th class="centered_text">Fecha</th>
+                      <th>#</th>
  									</tr>
 									</thead>
 									<tbody>
 										{% for oper in opers.run(limit=max_opers) %}
                     <tr class="{{ loop.cycle('odd', 'even') }}">
-											<td>{{oper.key().id()|string}}</td>
+											<td class="centered_text">{{oper|operation_type}}</td>
+                      <td class="right">${{'%0.2f'|format(oper.ppc|float)}}</td>
+											<td class="right">{{'%0.5f'|format(oper.traded_btc|float)}}</td>
+											<td class="right">${{'%0.2f'|format((oper.ppc*oper.traded_btc)|float)}}</td>
                       <td>{{oper.created_at.strftime("%Y-%m-%d %H:%M:%S")}}</td>
-											<td>{{oper|operation_type}}</td>
-                      <td>${{'%0.2f'|format(oper.ppc|float)}}</td>
-											<td>{{'%0.5f'|format(oper.traded_btc|float)}}</td>
-											<td class="hidden-480">${{'%0.2f'|format((oper.ppc*oper.traded_btc)|float)}}</td>
+											<td>{{oper.key().id()|string}}</td>
 										</tr>
 										{% endfor %}
 									</tbody>

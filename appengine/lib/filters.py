@@ -12,6 +12,10 @@ from re import *
 _slugify_strip_re = compile(r'[^\w\s-]')
 _slugify_hyphenate_re = compile(r'[-\s]+')
 
+def do_format_number(value, decimals):
+  sval = ('%.8f' % Decimal(value)).split('.')
+  return '%s.<small>%s</small>' % (sval[0],sval[1][:decimals])
+
 def do_format_btc(value):
   sval = '%.8f' % Decimal(value)
   return '%s<small>%s</small>' % (sval[0:sval.index('.')+3],sval[sval.index('.')+3:])

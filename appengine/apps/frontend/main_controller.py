@@ -32,7 +32,7 @@ class MainController(FrontendHandler):
     
   def home(self, **kwargs):
     data = self.get_active_orders_html()
-    return self.render_response('frontend/index.html', _tables=data, home=True)
+    return self.render_response('frontend/index.html', _tables=data)
   
   
   def get_operations(self):
@@ -98,22 +98,24 @@ class MainController(FrontendHandler):
     return self.render_response('frontend/static/forum.html', **kwargs)
   
   def order_book(self, **kwargs):
-    from webapp2_extras import json
+    #from webapp2_extras import json
     orders_data = self.get_active_orders(max_orders=100)
-    chart_data = self.get_order_book_data()
+    chart_data = self.get_order_book_data(bids=orders_data['bids'], asks=orders_data['asks'])
     return self.render_response('frontend/static/order_book.html', _orders_tables=orders_data['html_orders'], chart_data=chart_data, home=True)
   
   def order_book_data(self, **kwargs):
     return self.render_json_response(self.get_order_book_data())
   
-  def get_order_book_data(self):  
+  def get_order_book_data(self, bids=None, asks=None):  
     data = memcache.get('order_book_chart_data_array')
     if data is None:
       orders_data = self.get_active_orders(max_orders=100)
-      bids = orders_data['bids']
-      asks = orders_data['asks']
-      # Ouput objective: https://google-developers.appspot.com/chart/interactive/docs/gallery/areachart#Example
-      # Bids processing
+      if bids is None:
+        bids = orders_data['bids']
+      if asks is None:
+        asks = orders_data['asks']
+      
+      # Bids processing: tengo un punto por cada precio de btc(ejeX). Sumo los btc para ppc iguales.
       _bids={}
       for bid in bids.run(limit=100):
         ppc = str('%.5f' % bid.ppc)
@@ -125,10 +127,9 @@ class MainController(FrontendHandler):
       bid_chart_data = []
       for key in sorted(_bids.iterkeys()): #, reverse=True
         value = _bids[key]
-        #bid_chart_data.append( [round(float(key),5), round(value,5), None] ) # google data
         bid_chart_data.append( [round(float(key),5), round(value,5)] )
         
-      # Asks processing
+      # Asks processing: tengo un punto por cada precio de btc(ejeX). Sumo los btc para ppc iguales.
       _asks={}
       for ask in asks.run(limit=100):
         ppc = str('%.5f' % ask.ppc)
@@ -140,13 +141,10 @@ class MainController(FrontendHandler):
       ask_chart_data = []
       for key in sorted(_asks.iterkeys()):
         value = _asks[key]
-        #ask_chart_data.append( [round(float(key),5), None, round(value,5)] ) # google data
         ask_chart_data.append( [round(float(key),5), round(value,5)] )
         
-      #data=[['Price', 'Bids', 'Asks']]+bid_chart_data+ask_chart_data # google data
       data={'bids':bid_chart_data, 'asks':ask_chart_data}
-      
       # Descomentar
-      #memcache.add('order_book_chart_data_array', data, 60)
+      memcache.add('order_book_chart_data_array', data, 60)
     return data    
       

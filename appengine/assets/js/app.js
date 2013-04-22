@@ -1103,7 +1103,7 @@ var App = function () {
         }
 
         function do_order_book_graph() {
-            
+            // https://github.com/flot/flot/blob/master/API.md
             var plot = $.plot($("#order_book_graph"), 
             [{
                 data: __bids,
@@ -2734,14 +2734,14 @@ var App = function () {
             'nextSelector': '.button-next',
             'previousSelector': '.button-previous',
             onTabClick: function (tab, navigation, index) {
-                alert('on tab click disabled');
+                //alert('on tab click disabled');
                 return false;
             },
             onNext: function (tab, navigation, index) {
                 var total = navigation.find('li').length;
                 var current = index + 1;
                 // set wizard title
-                $('.step-title', $('#form_wizard_1')).text('Step ' + (index + 1) + ' of ' + total);
+                $('.step-title', $('#form_wizard_1')).text('Paso ' + (index + 1) + ' de ' + total);
                 // set done steps
                 jQuery('li', $('#form_wizard_1')).removeClass("done");
                 var li_list = navigation.find('li');
@@ -2768,7 +2768,7 @@ var App = function () {
                 var total = navigation.find('li').length;
                 var current = index + 1;
                 // set wizard title
-                $('.step-title', $('#form_wizard_1')).text('Step ' + (index + 1) + ' of ' + total);
+                $('.step-title', $('#form_wizard_1')).text('Paso ' + (index + 1) + ' de ' + total);
                 // set done steps
                 jQuery('li', $('#form_wizard_1')).removeClass("done");
                 var li_list = navigation.find('li');
@@ -2804,7 +2804,7 @@ var App = function () {
 
         $('#form_wizard_1').find('.button-previous').hide();
         $('#form_wizard_1 .button-submit').click(function () {
-            alert('Finished! Hope you like it :)');
+            //alert('Finished! Hope you like it :)');
         }).hide();
     }
 
@@ -2921,10 +2921,10 @@ var App = function () {
 
         // wrapper function to scroll to an element
         scrollTo: function (el, offeset) {
-            pos = el ? el.offset().top : 0;
-            jQuery('html,body').animate({
-                scrollTop: pos + (offeset ? offeset : 0)
-            }, 'slow');
+             pos = el ? $(el).offset().top : 0;
+             jQuery('html,body').animate({
+                 scrollTop: pos + (offeset ? offeset : 0)
+             }, 'slow');
         },
 
         // wrapper function to  block element(indicate loading)

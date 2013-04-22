@@ -4639,6 +4639,9 @@ Dropzone css changes(new in v1.1.1)
          border-radius: 0px !important;
 }
 
+/* ******************************************************** */
+/* Modifs al template orignial. *************************** */
+
 /* HACKO */
 .form-horizontal .control-group-item{float:left; padding-left:20px;}
 .form-horizontal .control-group-item.input-container {width:300px; }
@@ -4729,14 +4732,53 @@ div.navbar_margined{
 .portfolio-block span.fee{color:#f79420;}
 
 table.table td.right {text-align:right !important;}
+th.centered_text ,table.table td.centered_text{text-align:center !important;}
+
+table.table tbody tr.odd td { background-color: #f9f9f9;}
+table.table tbody tr.even td { background-color: white;}
+table.table tbody tr:hover td, table.table tbody tr:hover th {
+  background-color: #f5f5f5;
+}
 
 .portlet.box.white .portlet-title {
-  border-top: 1px solid #eee;
-  background-color: #ffffff;
+  /*border-top: 1px solid #eee;
+  background-color: #ffffff;*/
+  background-color: transparent;
+  color: #666666 !important;
+  border:none;
 } 
 .portlet.box.white .portlet-title h4{color: #000000;}
 
-.portlet.box.white {  
+.portlet.box.white div.portlet-body{  
    border: 1px solid #eee;
-   border-top: 0;
+   /*border-top: 0;*/
+}
+
+.portlet.box.green_extended .portlet-title {
+  background-color: transparent;
+  color: #666666 !important;
+  border:none;
+} 
+.portlet.box.green_extended  div.portlet-body{  
+   border: 1px solid #77e588;
+}
+
+.portlet.box.blue_extended .portlet-title {
+  background-color: transparent;
+  color: #666666 !important;
+  border:none;
+} 
+.portlet.box.blue_extended  div.portlet-body{  
+   border: 1px solid #b4cef8;
+}
+
+#fees .portfolio-info.limit{min-width:146px; text-align:right;}
+
+.invalid_user {
+  color:#FFFFFF !important;
+  text-decoration:none;
+}
+.invalid_user .icon-warning-sign, .invalid_user  .badge{
+  color:#FFFFFF !important;
+  background-color: #e02222;
 }

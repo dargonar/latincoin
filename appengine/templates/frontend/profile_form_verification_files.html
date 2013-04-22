@@ -6,32 +6,33 @@
         {% for file in files %}
           <tr class="template-download fade in">
             <td class="preview">
-              <a href="{{file.serving_url}}=s80" title="tuti_250.png" data-gallery="gallery" download="tuti_250.png"><img src="{{file.serving_url}}=s80"></a>
+              <!-- a href="{{file.serving_url}}=s80" title="tuti_250.png" data-gallery="gallery" download="tuti_250.png"><img src="{{file.serving_url}}=s80"></a -->
+              <img src="/assets/img/file.png">
             </td>
             <td class="name">
-              <a href="#" title="{{file.filename}}" data-gallery="gallery" download="{{file.filename}}">{{file.filename}}</a>
+              {{file.filename}}
             </td>
             <td class="size"><span>{{('%0.2f'|format((file.filesize|float)/1024))}} KB</span></td>
             <td colspan="2">
               {% if file.is_valid %}
-                <span class="label label-success">Válido</span>
+                <span class="label label-success">{{'Válido'}}</span>
               {% else %}
                 {% if file.not_valid_reason == ''%}
-                  <span class="label label-warning">Pendiente</span>
+                  <span class="label label-warning">{{'Pendiente'}}</span>
                 {% else %}
-                  <span class="label label-important">No válido</span> {{file.not_valid_reason}}
+                  <span class="label label-important">{{'No válido'}}</span> {{file.not_valid_reason}}
                 {% endif %}
               {% endif %}
             </td>
-            <td>
-              <a href="{{url_for('profile-delete_file', key=file.key()|string)}}" class="btn btn-danger delete"><i class="icon-trash icon-white"></i> Borrar archivo</a>
-            </td>
+            <!-- td>
+              <a href="{#{url_for('profile-delete_file', key=file.key()|string)}#}" class="btn btn-danger delete"><i class="icon-trash icon-white"></i> {{'Borrar archivo'}}</a>
+            </td -->
           </tr>
         {% endfor %}
       </tbody>
     </table>
   </div>
 {%else%}
-  <span id="verification_files" class="alert alert-error">No ha subido archivos aún y su identidad no ha sido verificada.</span>
+  <span id="verification_files" class="alert alert-error">{{'No ha subido archivos aún y su identidad no ha sido verificada.'}}</span>
   <div class="clearfix"></div>
 {%endif%}  
