@@ -17,6 +17,17 @@ indexes:
   - name: operation_type
   - name: created_at
 
+- kind: AccountOperation
+  properties:
+  - name: account
+  - name: operation_type
+  - name: created_at
+
+- kind: AccountOperation
+  properties:
+  - name: operation_type
+  - name: operation_type
+
 - kind: AccountValidationFile
   properties:
   - name: account

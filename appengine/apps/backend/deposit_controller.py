@@ -8,24 +8,27 @@ from webapp2 import cached_property
 
 import exchanger
 from models import BankAccount, AccountOperation, Account
-from utils import FrontendHandler, get_or_404, need_admin_auth
+from utils import BackendHandler, get_or_404, need_admin_auth
 from forms.deposit import DepositCurrencyForm
 
-class DepositController(FrontendHandler):
+class DepositController(BackendHandler):
   user_key = ''
   
   @need_admin_auth()
   def list(self, **kwargs):
-    pass
+    return self.redirect_to('backend-user-list')
     
   @need_admin_auth()
   def currency(self, **kwargs):
     
-    kwargs['html']        = 'deposit'
-    
-    self.user_key         = kwargs['user'] 
-    kwargs['user_key']    = kwargs['user'] 
-    kwargs['account']     = Account.get(self.user_key)
+    if 'user' not in kwargs:
+      return self.redirect_to('backend-user-list')
+      
+    kwargs['html']        = 'deposits'
+    logging.error(' ----------%s', kwargs['user'])
+    self.user_key         = kwargs['user'].strip() 
+    kwargs['user_key']    = self.user_key
+    kwargs['account']     = Account.get(db.Key(self.user_key))
     
     form                  = self.deposit_currency_form
     kwargs['form']        = form
@@ -36,6 +39,7 @@ class DepositController(FrontendHandler):
 
     # Proceso el form
     if not form.validate():
+      
       return self.render_response('backend/deposit.html', **kwargs)
     
     # vemos si puso cuenta, no es requerida
@@ -58,7 +62,7 @@ class DepositController(FrontendHandler):
 
     self.set_ok(u'El depósito fue realizado con éxito. (#%d)' % (ret[0].key().id()) )
 
-    return self.redirect(self.url_for('backend-deposit-currency', user=self.user))
+    return self.redirect(self.url_for('backend-deposit-currency', user=self.user_key))
   
   @cached_property
   def deposit_currency_form(self):

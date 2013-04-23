@@ -25,7 +25,7 @@
               {% endif %}
                 
               <h4>Buscar usuarios por email:</h4>
-               <form action="{{url_for('backend-users')}}" method="POST">
+               <form action="{{url_for('backend-user-list')}}" method="POST">
                   <div class="input-append">  
                      <input class="m-wrap" size="10" type="text" placeholder="email de usuario" name="email" /><button type="submit" class="btn red">{{'Buscar'}}</button>
                   </div>
@@ -35,6 +35,7 @@
 					
           <div class="clearfix"></div>
           
+          {% if users %}
           <div class="row-fluid">
             <div class="span12">
               <div class="portlet box blue">
@@ -60,16 +61,8 @@
                         <td>{{'%s, %s'|format(user.last_name, user.name)}}</td>
                         <td>{{user.email}}</td>
                         <td>{{user.rol}} - {{user|label_for_user_identity}}</td>
-                        <td class="hidden-480"> 
-                          <a href="{{url_for('backend-list_user_files', user=user.key()|string)}}" class="btn mini"><i class="icon-file"></i>&nbsp;Ver archivos</a>
-                          <br/>
-                          {% if user.identity_is_validated==False %}
-                          <a href="{{url_for('backend-validate_user', user=user.key()|string, valid='1')}}" class="green btn mini"><i class="icon-ok"></i>&nbsp;Validar Identidad</a>
-                          {% else %}
-                          <a href="{{url_for('backend-validate_user', user=user.key()|string, valid='0')}}" class="red btn mini"><i class="icon-remove"></i>&nbsp;Invalidar Identidad</a>
-                          {% endif %}
-                          <br />
-                          <a href="{{url_for('backend-deposit-currency', user=user.key()|string)}}" class="btn mini"><i class="icon-money"></i>&nbsp;Nuevo depósito ARS</a>
+                        <td> 
+                          <a href="{{url_for('backend-user-edit', user=user.key()|string)}}" class="green btn"><i class="icon-ok"></i>&nbsp;Seleccionar</a>
                         </td>
                       </tr>
                       {% endfor%}
@@ -79,12 +72,7 @@
 						</div>
             </div>
           </div>
-					<div class="clearfix"></div>
-          <div class="row-fluid">
-            <div class="span12">
-            actions?
-            </div>
-          </div>
+					{% endif%}
 				</div>
 			</div>
 			<!-- END PAGE CONTAINER-->		

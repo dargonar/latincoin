@@ -99,9 +99,10 @@ class MainController(FrontendHandler):
   
   def order_book(self, **kwargs):
     #from webapp2_extras import json
+    kwargs['html']='order_book'
     orders_data = self.get_active_orders(max_orders=100)
     chart_data = self.get_order_book_data(bids=orders_data['bids'], asks=orders_data['asks'])
-    return self.render_response('frontend/static/order_book.html', _orders_tables=orders_data['html_orders'], chart_data=chart_data, home=True)
+    return self.render_response('frontend/static/order_book.html', _orders_tables=orders_data['html_orders'], chart_data=chart_data, home=True, **kwargs)
   
   def order_book_data(self, **kwargs):
     return self.render_json_response(self.get_order_book_data())

@@ -1,0 +1,48 @@
+  {% extends "backend/base_home.html"%}
+  
+  {%block content%}
+  <div class="container-fluid">
+    <!-- BEGIN PAGE HEADER-->
+    <div class="row-fluid">
+      <div class="span12">
+        <!-- BEGIN PAGE TITLE & BREADCRUMB-->			
+        <h3 class="page-title">
+          {{'Manejo de <b>%s</b>'|format(account.email) if account else 'Dashboard'}}
+        </h3>
+      </div>
+    </div>
+    {% if account %}
+    <div class="row-fluid">
+      <div class="span12">
+        <div class="portlet box">
+          <div class="portlet-body">
+            <p>				
+              <a href="{{url_for('backend-user-list_files', user=account.key()|string)}}" class="btn"><i class="icon-file"></i>&nbsp;Ver archivos</a>
+              &nbsp;
+              {% if account.identity_is_validated==False %}
+                <a href="{{url_for('backend-user-validate', user=account.key()|string, valid='1')}}" class="green btn"><i class="icon-ok"></i>&nbsp;Validar Identidad</a>
+              {% else %}
+                <a href="{{url_for('backend-user-validate', user=account.key()|string, valid='0')}}" class="red btn"><i class="icon-remove"></i>&nbsp;Invalidar Identidad</a>
+              {% endif %}
+              &nbsp;
+              <a href="{{url_for('backend-deposit-currency', user=account.key()|string)}}" class="btn green"><i class="icon-money"></i>&nbsp;Nuevo depósito ARS</a>
+              &nbsp;
+              <a href="{{url_for('backend-withdraw-list_for_user', user=account.key()|string)}}" class="btn "><i class="icon-money"></i>&nbsp;Listar retiros</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="clearfix"></div>
+    {% endif %}
+    {% if flash %}
+    <div class="alert alert-{{ 'error' if flash.type=='error' else 'success' }}">
+      <button class="close" data-dismiss="{{ 'error' if flash.type=='error' else 'success' }}" onclick="$(this).parent().remove();"></button>
+      {{flash.message}}
+    </div>
+    {% endif %}
+    
+    {%block dashboard_content%}
+    {%endblock %}
+  </div>
+  {%endblock %}

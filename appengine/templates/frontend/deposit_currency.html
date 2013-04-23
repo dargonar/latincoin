@@ -5,12 +5,19 @@
                       <!-- BEGIN GENERAL PORTLET-->
                       <div class="portlet">
                         <div class="portlet-title">
-                          <h4><i class="icon-plus-sign"></i> Transfiera o deposite sus pesos en esta cuenta bancaria.</h4>
+                          <h4><i class="icon-plus-sign"></i> {{'Transfiera o deposite sus pesos en esta cuenta bancaria.'}}</h4>
                         </div>
                         <div class="portlet-body">
                           <div class="row-fluid">
-                            <div class="span6">
-                              {{ account_information }}
+                            <div class="span10">
+                              {% if not identity_is_validated %}
+                                <div class="alert alert-error">
+                                  <button class="close" data-dismiss="error" onclick="$(this).parent().remove();"></button>
+                                  {{'Debes <a href="%s">validar tu identidad</a> y <a href="%s">configurar un CBU</a> registrado a tu nombre antes de poder acreditar fondos en tu cuenta LatinCoin'|format(url_for('profile-identity_validation'),url_for('profile-bank_account'))}}. 
+                                </div>
+                              {% else %}  
+                                {{ account_information }}
+                              {% endif %}  
                             </div>
                           </div>
                         </div>
