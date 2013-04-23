@@ -14,6 +14,19 @@ indexes:
   properties:
   - name: account
   - name: currency
+  - name: created_at
+
+- kind: AccountOperation
+  properties:
+  - name: account
+  - name: currency
+  - name: created_at
+    direction: desc
+
+- kind: AccountOperation
+  properties:
+  - name: account
+  - name: currency
   - name: operation_type
   - name: created_at
 

@@ -198,15 +198,6 @@ class AccountController(FrontendHandler):
   def signup_form(self):
     return SignUpForm(self.request.POST)
 
-  @need_auth()
-  def history(self, **kwargs):
-    return self.render_response('frontend/account_history.html', **kwargs)
-  
-  @need_auth()
-  def list_history(self, **kwargs):
-    pass
-
-
   def test_1(self):
     from bitcoin_helper import encrypt_private, decrypt_private, generate_new_address
     from electrum.bitcoin import *

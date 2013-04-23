@@ -49,15 +49,18 @@ def get_rules():
       ]) ]) ]),
 
       PathPrefixRoute('/account', [ NamePrefixRoute('account-', [ HandlerPrefixRoute('apps.frontend.account_controller', [
-        Route('/signup',          name='signup',          handler='.AccountController:signup'),
-        Route('/login',           name='login',           handler='.AccountController:login'),
-        Route('/logout',          name='logout',          handler='.AccountController:logout'),
-        Route('/confirm/<token>', name='confirm',         handler='.AccountController:confirm'),
-        Route('/forget',          name='forget',          handler='.AccountController:forget'),
-        Route('/reset/<token>',   name='reset',           handler='.AccountController:reset'),
-        Route('/validate/<token>',name='validate',        handler='.AccountController:validate'),
-        Route('/history',         name='history',         handler='.AccountController:history'),
-        Route('/history/list',    name='history-list',    handler='.AccountController:history_list'),
+        Route('/signup',                                 name='signup',          handler='.AccountController:signup'),
+        Route('/login',                                  name='login',           handler='.AccountController:login'),
+        Route('/logout',                                 name='logout',          handler='.AccountController:logout'),
+        Route('/confirm/<token>',                        name='confirm',         handler='.AccountController:confirm'),
+        Route('/forget',                                 name='forget',          handler='.AccountController:forget'),
+        Route('/reset/<token>',                          name='reset',           handler='.AccountController:reset'),
+        Route('/validate/<token>',                       name='validate',        handler='.AccountController:validate'),
+      ]) ]) ]),
+
+      PathPrefixRoute('/history', [ NamePrefixRoute('history-', [ HandlerPrefixRoute('apps.frontend.history_controller', [
+        Route('/operations/<currency:(btc|currency)>',      name='account-ops',         handler='.HistoryController:account_ops'),
+        Route('/operations/list/<currency:(btc|currency)>', name='account-ops-list',    handler='.HistoryController:account_ops_list'),
       ]) ]) ]),
       
       PathPrefixRoute('/trade', [ NamePrefixRoute('trade-', [ HandlerPrefixRoute('apps.frontend.trade_controller', [

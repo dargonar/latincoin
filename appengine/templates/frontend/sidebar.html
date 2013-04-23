@@ -5,25 +5,6 @@
             <center><img src="/assets/img/logo/logotipow200.png" alt="LatinCoin" /></center>
           </a>
         </li>
-        <!--li>
-					<div class="sidebar-toggler hidden-phone"></div>
-				</li-->
-				<!--li>
-					<form class="sidebar-search">
-						<div class="input-box">
-							<a href="javascript:;" class="remove"></a>
-							<input type="text" placeholder="Search..." />				
-							<input type="button" class="submit" value=" " />
-						</div>
-					</form>
-				</li-->
-				<li class="has-sub {{ 'active' if html=='order_book' else '' }} ">
-					<a {{ 'class="darky" style="border-top: 1px solid #595959 !important;color:#fff !important;"'  if html!='order_book' else '' }} href="{{ url_for('order_book') }}">
-            <i class="icon-book"></i> 
-            <span class="title">{{'Libro de órdenes'}}</span>
-            <span class="{{ 'selected' if html=='order_book' else '' }}"></span>
-					</a>
-				</li>
         <li class="has-sub {{ 'active' if html=='trade' else '' }} ">
 					<a href="{{ url_for('trade-new') }}">
             <i class="icon-money"></i> 
@@ -33,7 +14,7 @@
 				</li>
 
 				<li class="has-sub {{ 'active' if html=='history' else '' }} ">
-					<a href="{{url_for('account-history')}}">
+					<a href="{{url_for('history-account-ops', currency='btc')}}">
 					<i class="icon-table"></i> 
 					<span class="title">{{'Historial'}}</span>
 					<span class="{{ 'selected' if html=='history' else '' }}"></span>
@@ -69,6 +50,13 @@
 					<i class="icon-user"></i> 
 					<span class="title">{{'Perfil'}}</span>
           <span class="{{ 'selected' if html=='profile' else '' }}"></span>
+					</a>
+				</li>
+								<li class="has-sub {{ 'active' if html=='order_book' else '' }} ">
+					<a {{ 'class="darky" style="border-top: 1px solid #595959 !important;color:#fff !important;"'  if html!='order_book' else '' }} href="{{ url_for('order_book') }}">
+            <i class="icon-book"></i> 
+            <span class="title">{{'Libro de órdenes'}}</span>
+            <span class="{{ 'selected' if html=='order_book' else '' }}"></span>
 					</a>
 				</li>
 			</ul>
