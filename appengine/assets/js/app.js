@@ -12,11 +12,11 @@ function genericFnServerData(sSource, aoData, fnCallback ) {
 
     $.ajax({
         'dataType': 'json',
-        'type': 'GET',
+        'type': 'POST',
         'url': sSource,
         'cache': false,
         'data': aoData,
-        'success': [fnCallback,function(){ console.debug('calling genericFnStopLoading'); genericFnStopLoading(myid); }]
+        'success': [fnCallback,function(){ /*console.debug('calling genericFnStopLoading');*/ genericFnStopLoading(myid); }]
     });
 }
 
@@ -1796,6 +1796,7 @@ var App = function () {
         oCurrentTable[tid] = $('#'+tid).dataTable({
             "fnServerData" : genericFnServerData,
             "bProcessing": true,
+            "bServerSide": false,            
             "sAjaxSource": table_ajax_source[mode+'_'+type],
             "sDom": "<'row-fluid'<'span6'f>r>t<'row-fluid'<'span4'l><'span4'i><'span4'p>>", //"sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
             "sPaginationType": "bootstrap",

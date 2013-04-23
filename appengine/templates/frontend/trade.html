@@ -159,8 +159,8 @@
   {%block javascript_run%}
   <script>
 
-    var table_ajax_source = {'active_bid': '{{url_for('trade-orders', mode='active', type='bid')}}',
-                             'active_ask': '{{url_for('trade-orders', mode='active', type='ask')}}' };
+    var table_ajax_source = {'active_bid': '{{url_for('trade-orders-list', mode='active', type='bid')}}',
+                             'active_ask': '{{url_for('trade-orders-list', mode='active', type='ask')}}' };
 
     function update_total(mo) {
       

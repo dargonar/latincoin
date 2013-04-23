@@ -24,13 +24,24 @@
             <span class="{{ 'selected' if html=='trade' else '' }}"></span>
 					</a>
 				</li>
+
 				<li class="has-sub {{ 'active' if html=='history' else '' }} ">
-					<a href="{{ url_for('trade-history') }}">
+					<a href="{{url_for('account-history')}}">
 					<i class="icon-table"></i> 
-					<span class="title">{{'Mis Ordenes'}}</span>
+					<span class="title">{{'Historial'}}</span>
 					<span class="{{ 'selected' if html=='history' else '' }}"></span>
 					</a>
 				</li>
+
+				<!--
+				<li class="has-sub {{ 'active' if html=='orders' else '' }} ">
+					<a href="{{ url_for('trade-orders') }}">
+					<i class="icon-table"></i> 
+					<span class="title">{{'Mis Ordenes'}}</span>
+					<span class="{{ 'selected' if html=='orders' else '' }}"></span>
+					</a>
+				</li>
+				-->
 
 				<li class="has-sub {{ 'active' if html=='deposito' else '' }} ">
 					<a href="{{ url_for('deposit-btc') }}">

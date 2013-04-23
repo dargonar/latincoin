@@ -56,12 +56,14 @@ def get_rules():
         Route('/forget',          name='forget',          handler='.AccountController:forget'),
         Route('/reset/<token>',   name='reset',           handler='.AccountController:reset'),
         Route('/validate/<token>',name='validate',        handler='.AccountController:validate'),
+        Route('/history',         name='history',         handler='.AccountController:history'),
+        Route('/history/list',    name='history-list',    handler='.AccountController:history_list'),
       ]) ]) ]),
       
       PathPrefixRoute('/trade', [ NamePrefixRoute('trade-', [ HandlerPrefixRoute('apps.frontend.trade_controller', [
         Route('/new',             name='new',          handler='.TradeController:new'),
-        Route('/orders/<mode:(active|inactive)>/<type:(bid|ask|any)>',  name='orders',  handler='.TradeController:list_orders'),
-        Route('/history',         name='history',      handler='.TradeController:history'),
+        Route('/orders',          name='orders',      handler='.TradeController:orders'),
+        Route('/orders/list/<mode:(active|inactive)>/<type:(bid|ask|any)>',  name='orders-list',  handler='.TradeController:orders_list'),
         Route('/cancel/<key>',    name='cancel',       handler='.TradeController:cancel_order'),
       ]) ]) ]),
 

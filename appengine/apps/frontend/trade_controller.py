@@ -97,7 +97,7 @@ class TradeController(FrontendHandler):
     bid_ask = 'bid' if order.is_bid() else 'ask'
     
     # HACKU: separar esto en dos forms para hacer todo mas sencillo
-    if 'history' in self.request.referer:
+    if 'orders' in self.request.referer:
       return self.redirect(self.request.referer)
 
     # Notificamos por mail, mismo rationale que add_trade_order (ver mas arriba)
@@ -106,7 +106,7 @@ class TradeController(FrontendHandler):
     return self.redirect(self.url_for('trade-new') + ('?active_tab=%s' % bid_ask))
 
   @need_auth()
-  def list_orders(self, **kwargs):
+  def orders_list(self, **kwargs):
 
     type  = kwargs['type']
     mode  = kwargs['mode']
@@ -169,6 +169,6 @@ class TradeController(FrontendHandler):
       return tmp % ('label-inverse', percent, 'Cancelada')
 
   @need_auth()
-  def history(self, **kwargs):
-    kwargs['html'] = 'history'
+  def orders(self, **kwargs):
+    kwargs['html'] = 'orders'
     return self.render_response('frontend/operations.html', **kwargs)
