@@ -22,26 +22,34 @@ def get_rules():
       
       Route('/a/backend',                   name='backend',         handler='apps.backend.backend_controller.BackendController:home'),
       
-      Route('/a/backend/generate_demo_data',  name='demo-data',     handler='apps.backend.demo_controller.GenerateTradeData:generate'),
+      #Route('/a/backend/generate_demo_data',  name='demo-data',     handler='apps.backend.demo_controller.GenerateTradeData:generate'),
       
       PathPrefixRoute('/a/backend', [ NamePrefixRoute('backend-', [ HandlerPrefixRoute('apps.backend.backend_controller', [
         Route('/login',                     name='login',             handler='.BackendController:login'),
         Route('/logout',                    name='logout',            handler='.BackendController:logout'),
         Route('/dashboard',                 name='dashboard',         handler='.BackendController:dashboard'),
-        
-        Route('/users',                                     name='users',               handler='.BackendController:users'),
-        Route('/validate_user/<user>/<valid:(1|0)>',        name='validate_user',       handler='.BackendController:validate_user'),
-        Route('/list_user_files/<user>',                    name='list_user_files',     handler='.BackendController:list_user_files'),
-        Route('/validate_user_file/<file>/<valid:(1|0)>',   name='validate_user_file',  handler='.BackendController:validate_user_file'),
-        Route('/validate_user_file/<file>/<valid:(1|0)>/<invalid_reason>',   name='validate_user_file2',  handler='.BackendController:validate_user_file'),
-        
-        Route('/withdrawals',               name='withdrawals',       handler='.BackendController:withdrawals'),
+      ]) ]) ]),
+      
+      PathPrefixRoute('/a/backend/user', [ NamePrefixRoute('backend-user-', [ HandlerPrefixRoute('apps.backend.user_controller', [
+        Route('/list',                                                name='list',            handler='.UserController:list'),
+        Route('/edit/<user>',                                         name='edit',            handler='.UserController:edit'),
+        Route('/validate/<user>/<valid:(1|0)>',                       name='validate',        handler='.UserController:validate'),
+        Route('/file/list/<user>',                                    name='list_files',      handler='.UserController:list_files'),
+        Route('/file/validate/<file>/<valid:(1|0)>',                  name='validate_file',   handler='.UserController:validate_file'),
+        Route('/file/validate/<file>/<valid:(1|0)>/<invalid_reason>', name='validate_file2',  handler='.UserController:validate_file'),
         
       ]) ]) ]),
       
-      PathPrefixRoute('/a/backend', [ NamePrefixRoute('backend-deposit-', [ HandlerPrefixRoute('apps.backend.deposit_controller', [
-        Route('/deposit/currency/<user>', name='currency',handler='.DepositController:currency'),
-        Route('/deposit/currency/list',   name='list',handler='.DepositController:list'),
+      PathPrefixRoute('/a/backend/deposit', [ NamePrefixRoute('backend-deposit-', [ HandlerPrefixRoute('apps.backend.deposit_controller', [
+        Route('/currency/<user>',             name='currency',    handler='.DepositController:currency'),
+        Route('/list/currency',               name='list',        handler='.DepositController:list'),
+      ]) ]) ]),
+      
+      PathPrefixRoute('/a/backend/withdraw', [ NamePrefixRoute('backend-withdraw-', [ HandlerPrefixRoute('apps.backend.withdraw_controller', [
+        Route('/list',                          name='list',          handler='.WithdrawController:list'),
+        Route('/list/<user>',                   name='list_for_user', handler='.WithdrawController:list_for_user'),
+        Route('/edit/<key>/<state>',            name='edit',          handler='.WithdrawController:edit'),
+        Route('/edit/<key>/<state>/<user_key>', name='edit_for_user', handler='.WithdrawController:edit'),
       ]) ]) ]),
       
     ]

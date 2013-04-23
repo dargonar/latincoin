@@ -17,7 +17,14 @@
 						</div>
 					</form>
 				</li-->
-				<li class="has-sub {{ 'active' if html=='trade' else '' }} ">
+				<li class="has-sub {{ 'active' if html=='order_book' else '' }} ">
+					<a {{ 'class="darky" style="border-top: 1px solid #595959 !important;color:#fff !important;"'  if html!='order_book' else '' }} href="{{ url_for('order_book') }}">
+            <i class="icon-book"></i> 
+            <span class="title">{{'Libro de órdenes'}}</span>
+            <span class="{{ 'selected' if html=='order_book' else '' }}"></span>
+					</a>
+				</li>
+        <li class="has-sub {{ 'active' if html=='trade' else '' }} ">
 					<a href="{{ url_for('trade-new') }}">
             <i class="icon-money"></i> 
             <span class="title">{{'Comprar / Vender'}}</span>

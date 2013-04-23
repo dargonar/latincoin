@@ -1,6 +1,7 @@
   {% extends "backend/user_dashboard.html"%}
   
   {%block dashboard_content%}
+  
   <!-- BEGIN PAGE CONTAINER-->
   <div class="container-fluid">
     <!-- BEGIN PAGE HEADER-->
@@ -8,7 +9,7 @@
       <div class="span12">
         <!-- BEGIN PAGE TITLE & BREADCRUMB-->			
         <h3 class="page-title">
-          {{'Nuevo depósito en pesos'}}
+          {{'Pedidos de retiros'}}
         </h3>
       </div>
     </div>
@@ -23,7 +24,7 @@
         </div>
         {% endif %}
             
-        {% include 'backend/deposit_currency_form.html' %}		
+        {% include 'backend/withdraw_list.html' %}		
       </div>
     </div>
     <!-- END PAGE CONTENT-->
@@ -33,6 +34,3 @@
   
   {%block javascript_run%}
   {%endblock%}
-  
-  
-  

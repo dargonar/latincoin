@@ -4782,3 +4782,11 @@ table.table tbody tr:hover td, table.table tbody tr:hover th {
   color:#FFFFFF !important;
   background-color: #e02222;
 }
+
+a.darky{
+  background-color:#4b4b4b !important;
+}
+
+li:hover>a.darky {  
+  background: #313131 !important;
+}

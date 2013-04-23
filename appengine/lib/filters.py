@@ -6,12 +6,24 @@ from datetime import datetime, timedelta
 
 from google.appengine.ext import db
 
-from models import Operation, TradeOrder, Account
+from models import Operation, TradeOrder, Account, AccountOperation
 from re import *
 
 _slugify_strip_re = compile(r'[^\w\s-]')
 _slugify_hyphenate_re = compile(r'[-\s]+')
 
+def do_label_for_acc_oper(acc_oper):
+  tmp = '<span class="label %s">%s</span>'
+  
+  if acc_oper.is_done():
+    return tmp % ('label-success', 'Completada')
+  elif acc_oper.is_pending():
+    return tmp % ('label-warning', 'Pendiente')
+  elif acc_oper.is_canceled():
+    return tmp % ('label-important', 'Cancelada')
+  elif acc_oper.is_accepted():
+    return tmp % ('label-info', 'Aceptada')
+    
 def do_format_number(value, decimals):
   sval = ('%.8f' % Decimal(value)).split('.')
   return '%s.<small>%s</small>' % (sval[0],sval[1][:decimals])
@@ -46,7 +58,6 @@ def do_label_for_oper(oper):
     return tmp % ('label-success', 'Completada')
   elif order.status == Operation.OPERATION_PENDING:
     return tmp % ('label-info', 'Pendiente')
-
     
 def do_orderamountfy(order):
   if order.order_type == TradeOrder.LIMIT_ORDER:

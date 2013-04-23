@@ -152,6 +152,7 @@ class Jinja2Mixin(object):
 
     env.filters['marketarrowfy']            = do_marketarrowfy
     env.filters['label_for_order']          = do_label_for_order
+    env.filters['label_for_acc_oper']       = do_label_for_acc_oper
     env.filters['orderamountfy']            = do_orderamountfy
     env.filters['time_distance_in_words']   = do_time_distance_in_words
     env.filters['short_time_distance_in_words']  = do_short_time_distance_in_words

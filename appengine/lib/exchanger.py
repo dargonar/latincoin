@@ -152,6 +152,58 @@ def cancel_withdraw_order(order_key):
 
   return _tx()
 
+def accept_withdraw_order(order_key):
+  
+  # TODO: assert input
+  assert(isinstance(order_key, basestring) and len(order_key) > 0 ), u'Key de orden inválida'
+
+  @db.transactional(xg=True)
+  def _tx():
+
+    # Tiene que ser una operacion pendiente y de retiro
+    ao = AccountOperation.get(db.Key(order_key))
+    if not ao.is_pending() or not ao.is_money_out():
+      return [False, u'No se puede aceptar la orden']
+  
+    # Cambiamos el estado a cancelada
+    ao.set_accepted()
+
+    db.put(ao)
+
+    # Notificamos por mail
+    user_key = str(AccountOperation.account.get_value_for_datastore(ao))
+    enqueue_mail('accept_withdraw_request', {'user_key':user_key, 'ao_key':str(ao.key())}, tx=True)
+
+    return [ao, u'ok']
+
+  return _tx()
+
+def done_withdraw_order(order_key):
+  
+  # TODO: assert input
+  assert(isinstance(order_key, basestring) and len(order_key) > 0 ), u'Key de orden inválida'
+
+  @db.transactional(xg=True)
+  def _tx():
+
+    # Tiene que ser una operacion pendiente y de retiro
+    ao = AccountOperation.get(db.Key(order_key))
+    if not ao.is_accepted() or not ao.is_money_out():
+      return [False, u'No se puede finalizar la orden']
+  
+    # Cambiamos el estado a cancelada
+    ao.set_done()
+
+    db.put(ao)
+
+    # Notificamos por mail
+    user_key = str(AccountOperation.account.get_value_for_datastore(ao))
+    enqueue_mail('done_withdraw_request', {'user_key':user_key, 'ao_key':str(ao.key())}, tx=True)
+
+    return [ao, u'ok']
+
+  return _tx()
+  
 
 def _add_withdraw_order(user, currency, amount, bank_account=None, btc_address=None):
 

@@ -9,9 +9,9 @@
                   <i class="icon-share-alt" style="color:#FFFFFF !important;"></i> <!-- icon-shopping-cart -->
                 </a>
                 {% else %}
-                  <a href="{{url_for('order_book')}}" class="btn green mini">
-                    <span class="username" style="color:#FFFFFF;"><i style="color:#FFFFFF !important;" class="icon-book"></i>&nbsp;{{'Libro de órdenes'}}</span>
-                  </a>
+                  <!--a href="{{url_for('order_book')}}" class="btn green mini">
+                    <span class="username" style="color:#FFFFFF;"><i style="color:#FFFFFF !important;" class="icon-book"></i>&nbsp;{# {'Libro de órdenes'} #}</span>
+                  </a-->
                   
                   {% if not identity_is_validated %}
                   <a href="{{url_for('profile-identity_validation')}}" class="btn red mini">

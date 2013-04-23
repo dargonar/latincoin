@@ -6,7 +6,7 @@
       </div>
       <ul>
 				<li class="start {{ 'active' if html=='users' else '' }} ">
-					<a href="{{ url_for('backend-users') }}">
+					<a href="{{ url_for('backend-user-list') }}">
             <i class="icon-group"></i> 
             <span class="title">{{'Usuarios'}}</span>
             <span class="{{ 'selected' if html=='users' else '' }}"></span>
@@ -20,7 +20,7 @@
 					</a>
 				</li>
 				<li class="{{ 'active' if html=='withdrawals' else '' }} ">
-					<a href="{{ url_for('backend-withdrawals') }}">
+					<a href="{{ url_for('backend-withdraw-list') }}">
             <i class="icon-signout"></i> 
             <span class="title">{{'Retiros'}}</span>
             <span class="{{ 'selected' if html=='withdrawals' else '' }}"></span>
