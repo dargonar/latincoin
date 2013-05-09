@@ -49,19 +49,24 @@ def get_rules():
       ]) ]) ]),
 
       PathPrefixRoute('/account', [ NamePrefixRoute('account-', [ HandlerPrefixRoute('apps.frontend.account_controller', [
-        Route('/signup',          name='signup',          handler='.AccountController:signup'),
-        Route('/login',           name='login',           handler='.AccountController:login'),
-        Route('/logout',          name='logout',          handler='.AccountController:logout'),
-        Route('/confirm/<token>', name='confirm',         handler='.AccountController:confirm'),
-        Route('/forget',          name='forget',          handler='.AccountController:forget'),
-        Route('/reset/<token>',   name='reset',           handler='.AccountController:reset'),
-        Route('/validate/<token>',name='validate',        handler='.AccountController:validate'),
+        Route('/signup',                                 name='signup',          handler='.AccountController:signup'),
+        Route('/login',                                  name='login',           handler='.AccountController:login'),
+        Route('/logout',                                 name='logout',          handler='.AccountController:logout'),
+        Route('/confirm/<token>',                        name='confirm',         handler='.AccountController:confirm'),
+        Route('/forget',                                 name='forget',          handler='.AccountController:forget'),
+        Route('/reset/<token>',                          name='reset',           handler='.AccountController:reset'),
+        Route('/validate/<token>',                       name='validate',        handler='.AccountController:validate'),
+      ]) ]) ]),
+
+      PathPrefixRoute('/history', [ NamePrefixRoute('history-', [ HandlerPrefixRoute('apps.frontend.history_controller', [
+        Route('/operations/<currency:(btc|currency)>',      name='account-ops',         handler='.HistoryController:account_ops'),
+        Route('/operations/list/<currency:(btc|currency)>', name='account-ops-list',    handler='.HistoryController:account_ops_list'),
       ]) ]) ]),
       
       PathPrefixRoute('/trade', [ NamePrefixRoute('trade-', [ HandlerPrefixRoute('apps.frontend.trade_controller', [
         Route('/new',             name='new',          handler='.TradeController:new'),
-        Route('/orders/<mode:(active|inactive)>/<type:(bid|ask|any)>',  name='orders',  handler='.TradeController:list_orders'),
-        Route('/history',         name='history',      handler='.TradeController:history'),
+        Route('/orders',          name='orders',      handler='.TradeController:orders'),
+        Route('/orders/list/<mode:(active|inactive)>/<type:(bid|ask|any)>',  name='orders-list',  handler='.TradeController:orders_list'),
         Route('/cancel/<key>',    name='cancel',       handler='.TradeController:cancel_order'),
       ]) ]) ]),
 

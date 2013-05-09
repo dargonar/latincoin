@@ -9,7 +9,7 @@ from webapp2_extras.security import generate_password_hash, generate_random_stri
 
 from models import Account, AccountBalance, BitcoinAddress
 
-from utils import FrontendHandler
+from utils import FrontendHandler, need_auth
 from forms.account import SignUpForm, ForgetPasswordForm, ResetPasswordForm
 
 from mail.mailer import enqueue_mail 
@@ -198,7 +198,6 @@ class AccountController(FrontendHandler):
   def signup_form(self):
     return SignUpForm(self.request.POST)
 
-
   def test_1(self):
     from bitcoin_helper import encrypt_private, decrypt_private, generate_new_address
     from electrum.bitcoin import *
@@ -214,58 +213,6 @@ class AccountController(FrontendHandler):
     tmp = address_from_private_key(asec)
     self.response.write(tmp + '</br>' )
     self.response.write( str(tmp==addy['public']) + '</br>')
-
-
-  # # DELETE
-  # def test_1(self):
-  #   from electrum.bitcoin import *
-  #   from decimal import Decimal
-
-  #   seed = random_seed(128)
-  #   #seed = 'd61a1a11fa622ec57b6047c1e203b5ceda522819ee59ffd2b2e9d4b32bf5556f'
-
-  #   self.response.write(seed + '</br>')
-  #   ss = int('0x%s' % seed,16)
-  #   self.response.write( str(ss) + '</br>')
-  #   pkey = EC_KEY(ss)
-
-  #   private_key = GetPrivKey(pkey)
-  #   public_key = GetPubKey(pkey.pubkey)
-  #   address = public_key_to_bc_address(public_key)
-
-  #   sec = PrivKeyToSecret(private_key)
-  #   asec =  SecretToASecret(sec)
-
-  #   self.response.write(address+ '</br>')
-  #   self.response.write( str(is_valid(address)) + '</br>')
-
-  #   addy = address_from_private_key(asec)
-  #   self.response.write(str(address == addy) + '</br>')
-
-  #   ##----
-  #   src_add = '1CC63cRz5qQMEYB4SiQRugnhs5VHzEMuM2'
-  #   dst_add = '14UbWFC3aafN2CF1Pt4wutop3EfJR8XQRh'
-
-  #   tx_hash = '5f5d7bdeab9ba19f1ce209d498e188b3b1f270da82b0b712f1a15c6ff3c2a235'
-
-  #   hash_160 = bc_address_to_hash_160(src_add)[1]
-
-  #   script = '76a9'                                      # op_dup, op_hash_160
-  #   script += '14'                                       # push 0x14 bytes
-  #   script += hash_160.encode('hex')
-  #   script += '88ac'
-
-  #   inputs  = [{'tx_hash':tx_hash, 'index':0,'raw_output_script':script, 'address': 0}]
-  #   outputs = [(dst_add, int(Decimal('0.1')*Decimal(1e8)))]
-
-  #   tx = Transaction.from_io(inputs, outputs)
-
-  #   tx.sign(['L4J68a3t7EUKNfaKzyDBhUSeywFpUR6WMdsAGEzMdhgDKRkKws5q'])
-
-  #   self.response.write( str(tx.as_dict()) + '</br>')
-
-
-
 
   def init_all(self):
     from config import config

@@ -12,11 +12,11 @@ function genericFnServerData(sSource, aoData, fnCallback ) {
 
     $.ajax({
         'dataType': 'json',
-        'type': 'GET',
+        'type': 'POST',
         'url': sSource,
         'cache': false,
         'data': aoData,
-        'success': [fnCallback,function(){ console.debug('calling genericFnStopLoading'); genericFnStopLoading(myid); }]
+        'success': [fnCallback,function(){ /*console.debug('calling genericFnStopLoading');*/ genericFnStopLoading(myid); }]
     });
 }
 
@@ -1783,6 +1783,40 @@ var App = function () {
         jQuery('.dataTables_filter').parent(".span6 ").remove(); // delete table search input
     }
 
+    var handleAccountHistoryTables = function (curr) {
+        
+        if (!jQuery().dataTable) {
+            return;
+        }
+
+        var tid = 'table_history_' + curr;
+
+        // begin first table
+        oCurrentTable[tid] = $('#'+tid).dataTable({
+            "fnServerData" : genericFnServerData,
+            "bProcessing": true,
+            "sAjaxSource": table_ajax_source[tid],
+            "sDom": "<'row-fluid'<'span6'f>r>t<'row-fluid'<'span4'l><'span4'i><'span4'p>>", //"sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
+            "sPaginationType": "bootstrap",
+            "oLanguage": {
+                "sEmptyTable": "No hay operaciones",
+                "sInfoEmpty": " ",
+                "sLengthMenu": "_MENU_ operaciones por pág.",
+                "sInfo": "Mostrando _START_ a _END_ de _TOTAL_ operaciones",
+                "oPaginate": {
+                    "sPrevious": "Ant.",
+                    "sNext": "Sig."
+                }
+            },
+            "aoColumnDefs": [{
+                'bSortable': true,
+                'aTargets': [1]
+            }]
+        });
+
+        jQuery('.dataTables_filter').parent(".span6 ").remove(); // delete table search input
+    }
+
 
     var handleOrderTables = function (mode, type) {
         
@@ -1796,6 +1830,7 @@ var App = function () {
         oCurrentTable[tid] = $('#'+tid).dataTable({
             "fnServerData" : genericFnServerData,
             "bProcessing": true,
+            "bServerSide": false,            
             "sAjaxSource": table_ajax_source[mode+'_'+type],
             "sDom": "<'row-fluid'<'span6'f>r>t<'row-fluid'<'span4'l><'span4'i><'span4'p>>", //"sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
             "sPaginationType": "bootstrap",
@@ -2867,6 +2902,14 @@ var App = function () {
             if (App.isPage("trade_history")) {
                 handleOrderTables('active','any'); // handles data tables
                 handleOrderTables('inactive','any'); // handles data tables
+            }
+
+            if (App.isPage("account_history_btc")) {
+                handleAccountHistoryTables('btc');
+            }
+
+            if (App.isPage("account_history_currency")) {
+                handleAccountHistoryTables('currency');
             }
             
             if (App.isPage("deposit_btc")) {

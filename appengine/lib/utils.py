@@ -148,7 +148,6 @@ class Jinja2Mixin(object):
     # Globals solo para backend
     elif isinstance(self, BackendHandler):
       env.globals['user_name']       = self.admin_name
-      pass
 
     env.filters['marketarrowfy']            = do_marketarrowfy
     env.filters['label_for_order']          = do_label_for_order

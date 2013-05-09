@@ -27,6 +27,13 @@ def get_system_config():
 
   return sconf
 
+class ExchangerCheckpoint(db.Model):
+  date                    = db.DateTimeProperty()
+  btc_balance             = DecimalProperty(default=decimal.Decimal('0'))
+  curr_balance            = DecimalProperty(default=decimal.Decimal('0'))
+  
+
+
 class SystemConfig(db.Model):
   remote_rpc              = db.StringProperty(choices=['ec2', 'blockchain'], default='ec2')
   confirmations           = db.StringProperty(default='6')
@@ -316,71 +323,6 @@ class AccountBalance(db.Model):
   amount                = DecimalProperty(default=decimal.Decimal('0'))
   amount_comp           = DecimalProperty(default=decimal.Decimal('0'))
 
-class AccountOperation(db.Model):
-  XCHG_FEE     = 'XF'
-
-  MONEY_IN     = 'MI'
-  MONEY_OUT    = 'MO'
-
-  BTC_BUY      = 'BB'
-  BTC_SELL     = 'BS'
-
-  STATE_PENDING  = 'P'
-  STATE_ACCEPTED = 'A'
-  STATE_CANCELED = 'C'
-  STATE_DONE     = 'D'
-  
-  def is_money_out(self):
-    return self.operation_type == self.MONEY_OUT
-
-  def is_money_in(self):
-    return self.operation_type == self.MONEY_IN
-
-  def is_done(self):
-    return self.state == self.STATE_DONE
-
-  def is_accepted(self):
-    return self.state == self.STATE_ACCEPTED
-
-  def is_pending(self):
-    return self.state == self.STATE_PENDING
-
-  def is_canceled(self):
-    return self.state == self.STATE_CANCELED
-
-  def is_btc(self):
-    return self.currency == 'BTC'
-
-  def set_cancel(self):
-    self.state = self.STATE_CANCELED
-
-  def set_accepted(self):
-    self.state = self.STATE_ACCEPTED
-
-  def set_done(self):
-    self.state = self.STATE_DONE
-
-  def format(self):
-    return '%s %.8f' % (self.currency, self.amount)
-
-  def __repr__(self):
-    return 'ao: %s %s %s %.5f' % (self.operation_type, self.account.key(), self.currency, self.amount)
-
-  operation_type        = db.StringProperty(choices=[BTC_BUY,BTC_SELL,MONEY_IN,MONEY_OUT,XCHG_FEE], required=True)
-  account               = db.ReferenceProperty(Account, collection_name='accounts', required=True)
-  address               = db.StringProperty()
-  amount                = DecimalProperty(required=True)
-  currency              = db.StringProperty(required=True)
-  bt_tx_id              = db.StringProperty()
-  bt_tx_from            = db.StringProperty()
-  bt_tx_confirmations   = db.IntegerProperty()
-  payee                 = db.ReferenceProperty(Account, collection_name='payees')
-  comment               = db.StringProperty()
-  state                 = db.StringProperty(choices=[STATE_PENDING,STATE_ACCEPTED,STATE_CANCELED,STATE_DONE], required=True)
-  bank_account          = db.ReferenceProperty(BankAccount)
-  created_at            = db.DateTimeProperty(auto_now_add=True)
-  updated_at            = db.DateTimeProperty(auto_now=True)
-
 class TradeOrder(db.Model):
   
   def __repr__(self):
@@ -432,13 +374,102 @@ class Operation(db.Model):
   ppc                   = DecimalProperty(required=True)
   currency              = db.StringProperty(required=True)
   seller                = db.ReferenceProperty(Account, collection_name='sellers')
+  seller_rate           = DecimalProperty(required=True)
   buyer                 = db.ReferenceProperty(Account, collection_name='buyers')
+  buyer_rate            = DecimalProperty(required=True)
   status                = db.StringProperty(required=True, choices=[OPERATION_PENDING, OPERATION_DONE])
   created_at            = db.DateTimeProperty(auto_now_add=True)
   updated_at            = db.DateTimeProperty(auto_now=True)
   type                  = db.StringProperty(required=True, choices=[OPERATION_BUY, OPERATION_SELL]) # , 'BUY', 'SELL', 'NA'
   traders_notified      = db.BooleanProperty(default=False)
 
+class AccountOperation(db.Model):
+  XCHG_FEE     = 'XF'
+
+  MONEY_IN     = 'MI'
+  MONEY_OUT    = 'MO'
+
+  BTC_BUY      = 'BB'
+  BTC_SELL     = 'BS'
+
+  STATE_PENDING  = 'P'
+  STATE_ACCEPTED = 'A'
+  STATE_CANCELED = 'C'
+  STATE_DONE     = 'D'
+
+  def is_buy(self):
+    return self.operation_type == self.BTC_BUY
+
+  def is_sell(self):
+    return self.operation_type == self.BTC_SELL
+  
+  def is_money_out(self):
+    return self.operation_type == self.MONEY_OUT
+
+  def is_money_in(self):
+    return self.operation_type == self.MONEY_IN
+
+  def is_done(self):
+    return self.state == self.STATE_DONE
+
+  def is_accepted(self):
+    return self.state == self.STATE_ACCEPTED
+
+  def is_pending(self):
+    return self.state == self.STATE_PENDING
+
+  def is_canceled(self):
+    return self.state == self.STATE_CANCELED
+
+  def is_btc(self):
+    return self.currency == 'BTC'
+
+  def is_curr(self):
+    return not self.is_btc()
+
+  def set_cancel(self):
+    self.state = self.STATE_CANCELED
+
+  def set_accepted(self):
+    self.state = self.STATE_ACCEPTED
+
+  def set_done(self):
+    self.state = self.STATE_DONE
+
+  def amount_with_sign(self):
+    
+    if self.is_buy() and self.is_curr():
+      return -self.amount
+    
+    if self.is_sell() and self.is_btc():
+      return -self.amount
+    
+    if self.is_money_out():
+      return -self.amount
+
+    return self.amount
+
+  def format(self):
+    return '%s %.8f' % (self.currency, self.amount)
+
+  def __repr__(self):
+    return 'ao: %s %s %s %.5f' % (self.operation_type, self.account.key(), self.currency, self.amount)
+
+  operation_type        = db.StringProperty(choices=[BTC_BUY,BTC_SELL,MONEY_IN,MONEY_OUT,XCHG_FEE], required=True)
+  account               = db.ReferenceProperty(Account, collection_name='accounts', required=True)
+  address               = db.StringProperty()
+  amount                = DecimalProperty(required=True)
+  ppc                   = DecimalProperty()
+  commission_rate       = DecimalProperty()
+  trade_operation       = db.ReferenceProperty(Operation)
+  currency              = db.StringProperty(required=True)
+  bt_tx_id              = db.StringProperty()
+  comment               = db.StringProperty()
+  state                 = db.StringProperty(choices=[STATE_PENDING,STATE_ACCEPTED,STATE_CANCELED,STATE_DONE], required=True)
+  bank_account          = db.ReferenceProperty(BankAccount)
+  date                  = db.DateTimeProperty()
+  created_at            = db.DateTimeProperty(auto_now_add=True)
+  updated_at            = db.DateTimeProperty(auto_now=True)
   
 class BitcoinAddress(db.Model):
   user                  = db.ReferenceProperty(Account, collection_name='bitcoin_addresses', required=True)

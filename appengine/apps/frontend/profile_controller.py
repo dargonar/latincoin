@@ -36,7 +36,7 @@ class ProfileController(FrontendHandler, UploadHandler):
   def otp_verify(self, **kwargs):
 
     try:
-      client_time  = int(self.request.POST['client_time'])
+      #client_time  = int(self.request.POST['client_time'])
       code         = int(self.request.POST['code'])
       secret       = self.request.POST['secret'] 
     except:
@@ -46,7 +46,7 @@ class ProfileController(FrontendHandler, UploadHandler):
     logging.error('code:%s, secret:%s' % (code,secret))
     totp = pyotp.TOTP(secret)
 
-    if totp.verify(code, for_time=client_time):
+    if totp.verify(code):
       self.set_ok('Código valido.')
     else:
       self.set_error('Código inválido #2.')

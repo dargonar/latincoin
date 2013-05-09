@@ -52,8 +52,8 @@
   
   {%block javascript_run%}
   <script>
-    var table_ajax_source = {'active_any': '{{url_for('trade-orders', mode='active', type='any')}}',
-                             'inactive_any': '{{url_for('trade-orders', mode='inactive', type='any')}}' };
+    var table_ajax_source = {'active_any': '{{url_for('trade-orders-list', mode='active', type='any')}}',
+                             'inactive_any': '{{url_for('trade-orders-list', mode='inactive', type='any')}}' };
 
 		jQuery(document).ready(function() {			
 			// initiate layout and plugins

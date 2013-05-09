@@ -4,7 +4,7 @@ from random import uniform
 
 from google.appengine.ext import db
 
-from models import Account, TradeOrder, AccountBalance, Dummy, Operation, AccountOperation, BankAccount
+from models import Account, TradeOrder, AccountBalance, Dummy, Operation, AccountOperation, BankAccount, ForwardTx
 from exchanger import get_account_balance, add_limit_trade
 
 class TestUtilMixin:
@@ -44,7 +44,7 @@ class TestUtilMixin:
 
     # Toda la plata que salio
     for ao in AccountOperation.all().filter('operation_type = ', AccountOperation.MONEY_OUT):
-      total_in[ao.currency] += ao.amount
+      total_in[ao.currency] += -ao.amount
 
     print 
     
@@ -134,6 +134,15 @@ class TestUtilMixin:
       
     return user
 
+  def aux_fake_forward_tx(self, amount, user):
+    ftx = ForwardTx(tx="fake",
+                    user=user,
+                    value=amount,
+                    index='0',
+                    forwarded='Y')
+    ftx.put()
+    return ftx
+
   def aux_deposit_ars(self, user, ars):
     user_deposit_ars = AccountOperation(parent   = user, 
                                         operation_type = AccountOperation.MONEY_IN, 
@@ -206,9 +215,13 @@ class TestUtilMixin:
       if o.state == AccountOperation.STATE_CANCELED:
         continue
 
+      #print o
+
+      amount = o.amount_with_sign()
+
       if o.currency == 'ARS':
-        ars += o.amount
+        ars += amount
       elif o.currency == 'BTC':
-        btc += o.amount  
+        btc += amount  
 
     return {'ARS':ars, 'BTC':btc}

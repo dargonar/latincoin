@@ -1,0 +1,84 @@
+  {% extends "frontend/base_home.html"%}
+  
+  {%block content%}
+    <!-- BEGIN PAGE CONTAINER-->
+	<div class="container-fluid">
+		<!-- BEGIN PAGE HEADER-->
+		<div class="row-fluid">
+			<div class="span12">
+				<!-- BEGIN PAGE TITLE & BREADCRUMB-->			
+				<h3 class="page-title">
+					Historial <small> historial de movimientos en cuenta.</small>
+				</h3>
+				<ul class="breadcrumb">
+					<li>
+						<i class="icon-home"></i>
+						<a href="trade.html">Inicio</a> 
+						<i class="icon-angle-right"></i>
+					</li>
+					<li><a href="#">Historial</a></li>
+				</ul>
+				<!-- END PAGE TITLE & BREADCRUMB-->
+			</div>
+		</div>
+		<!-- END PAGE HEADER-->
+
+
+				<!-- BEGIN PAGE CONTENT-->
+				<div class="row-fluid profile">
+					<div class="span12">
+						<!--BEGIN TABS-->
+						<div class="tabbable tabbable-custom">
+							<ul class="nav nav-tabs">
+                <li class="{{'active' if tab == 'history_btc' else ''}}">
+                  <a href="{{ url_for('history-account-ops', currency='btc') }}">Historial BTC</a>
+                </li>
+                <li class="{{'active' if tab == 'history_currency' else ''}}">
+                  <a href="{{ url_for('history-account-ops', currency='currency') }}">Historial ARS</a>
+                </li>
+							</ul>
+							<div class="tab-content">
+                
+								<div class="tab-pane row-fluid {{'active' if tab == 'history_btc' else ''}}" id="tab_1_3">
+                  {% if tab == 'history_btc' %}
+                  	{% set table_id           = 'table_history_btc' %}
+                  	{% set history_table_desc = 'Historial de movimientos en BTC' %}
+                    {%include "frontend/history_account_operations_list.html"%}
+                  {%endif%}
+                </div>
+								
+								<!--end tab-pane-->
+								
+								<div class="tab-pane row-fluid {{'active' if tab == 'history_currency' else ''}}" id="tab_1_4">
+                  {% if tab == 'history_currency' %}
+                  	{% set table_id           = 'table_history_currency' %}
+                  	{% set history_table_desc = 'Historial de movimientos en ARS' %}
+                    {%include "frontend/history_account_operations_list.html"%}
+                  {%endif%}
+								</div>
+								
+								<!--end tab-pane-->
+								
+							</div>
+						</div>
+						<!--END TABS-->
+					</div>
+				</div>
+				<!-- END PAGE CONTENT-->
+
+
+	</div>
+  {%endblock%}
+  
+  {%block javascript_run%}
+  <script>
+		
+	    var table_ajax_source = {'table_history_{{currency}}': '{{url_for('history-account-ops-list', currency=currency)}}'};
+
+		jQuery(document).ready(function() {			
+			// initiate layout and plugins
+			App.setPage('account_history_{{currency}}');
+			App.init();
+		});
+	</script>
+  {%endblock%}

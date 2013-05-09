@@ -55,6 +55,12 @@ class TradeController(FrontendHandler):
     # Si fue una orden de mercado, mandamos el mail correspondiente
     # Lo hacemos aca por que no se si un encolamiento puede frenar una transaccion
     # Es mas importante que se realize el trade que mandar el mail, por eso lo hacemos afuera
+    
+    # NOTA: las funciones add_market_* add_limit_* sabemos que pudieron escribir bien en la "DB".
+    # Y tambien sabemos que se van a escribir bien los indices, lo que no sabemos es cuando
+    # por eso al mandar al toque el taskqueue.add puede ser que no encuentre la recien creada operacion
+    # o el match_orders no encuentre la orden 
+
     order_key = str(trade[0].key())
     if form.market():
       enqueue_mail('completed_order', {'user_key':self.user, 'order_key':order_key})
@@ -91,7 +97,7 @@ class TradeController(FrontendHandler):
     bid_ask = 'bid' if order.is_bid() else 'ask'
     
     # HACKU: separar esto en dos forms para hacer todo mas sencillo
-    if 'history' in self.request.referer:
+    if 'orders' in self.request.referer:
       return self.redirect(self.request.referer)
 
     # Notificamos por mail, mismo rationale que add_trade_order (ver mas arriba)
@@ -100,7 +106,7 @@ class TradeController(FrontendHandler):
     return self.redirect(self.url_for('trade-new') + ('?active_tab=%s' % bid_ask))
 
   @need_auth()
-  def list_orders(self, **kwargs):
+  def orders_list(self, **kwargs):
 
     type  = kwargs['type']
     mode  = kwargs['mode']
@@ -163,6 +169,6 @@ class TradeController(FrontendHandler):
       return tmp % ('label-inverse', percent, 'Cancelada')
 
   @need_auth()
-  def history(self, **kwargs):
-    kwargs['html'] = 'history'
+  def orders(self, **kwargs):
+    kwargs['html'] = 'orders'
     return self.render_response('frontend/operations.html', **kwargs)
