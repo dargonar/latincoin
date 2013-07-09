@@ -350,6 +350,12 @@ class TradeOrder(db.Model):
   created_at            = db.DateTimeProperty(auto_now_add=True)
   updated_at            = db.DateTimeProperty(auto_now=True)
 
+  def is_limit(self):
+    return self.order_type == self.LIMIT_ORDER
+    
+  def is_market(self):
+    return not self.is_limit()
+
   def is_bid(self):
     return self.bid_ask == self.BID_ORDER
 
@@ -382,6 +388,18 @@ class Operation(db.Model):
   updated_at            = db.DateTimeProperty(auto_now=True)
   type                  = db.StringProperty(required=True, choices=[OPERATION_BUY, OPERATION_SELL]) # , 'BUY', 'SELL', 'NA'
   traders_notified      = db.BooleanProperty(default=False)
+
+  def is_done(self):
+    return self.status == self.OPERATION_DONE
+
+  def is_pending(self):
+    return self.status == self.OPERATION_PENDING
+
+  def is_buy(self):
+    return self.type == self.OPERATION_BUY
+
+  def is_sell(self):
+    return self.type == self.OPERATION_SELL
 
 class AccountOperation(db.Model):
   XCHG_FEE     = 'XF'
@@ -506,17 +524,17 @@ class ForwardTx(db.Model):
 class PriceBar(db.Model):
   
   def __repr__(self):
-    return 'pb: %s o:%08d h:%08d l:%08d c:%08d v:%08d' % ( datetime.fromtimestamp(self.bar_time*self.bar_interval), self.open, self.high, self.low, self.close, self.volume) 
+    return 'pb: %s o:%.4f h:%.4f l:%.4f c:%.4f v:%.4f' % ( datetime.fromtimestamp(self.bar_time*self.bar_interval), self.open, self.high, self.low, self.close, self.volume) 
  
   M1    = 60
   H1    = 3600
   H24   = 86400
 
-  open                  = db.IntegerProperty(default=0)
-  high                  = db.IntegerProperty(default=0)
-  low                   = db.IntegerProperty(default=0)
-  close                 = db.IntegerProperty(default=0)
-  volume                = db.IntegerProperty(default=0)
+  open                  = DecimalProperty(default=decimal.Decimal('0'))
+  high                  = DecimalProperty(default=decimal.Decimal('0'))
+  low                   = DecimalProperty(default=decimal.Decimal('0'))
+  close                 = DecimalProperty(default=decimal.Decimal('0'))
+  volume                = DecimalProperty(default=decimal.Decimal('0'))
   
   bar_time              = db.IntegerProperty(required=True)
   bar_interval          = db.IntegerProperty(required=True, choices=[M1,H1,H24])

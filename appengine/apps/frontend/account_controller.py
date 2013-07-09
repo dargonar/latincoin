@@ -216,37 +216,37 @@ class AccountController(FrontendHandler):
 
   def init_all(self):
     from config import config
-    from webapp2_extras.security import generate_random_string, check_password_hash
+    # from webapp2_extras.security import generate_random_string, check_password_hash
     
-    from models import Dummy
-    parent=Dummy.get_or_insert('trade_orders')
-    parent=Dummy.get_or_insert('operations')
+    # from models import Dummy
+    # parent=Dummy.get_or_insert('trade_orders')
+    # parent=Dummy.get_or_insert('operations')
 
-    xchg = Account.get_or_insert('xchg')
-    xchg.email                 = self.signup_form.email.data
-    xchg.password              = generate_password_hash('beto', method='sha256', pepper=config['my']['secret_key'])
-    xchg.confirmation_token    = generate_random_string(length=40)
-    xchg.confirmation_sent_at  = datetime.now()
-    xchg.put()
+    # xchg = Account.get_or_insert('xchg')
+    # xchg.email                 = self.signup_form.email.data
+    # xchg.password              = generate_password_hash('beto', method='sha256', pepper=config['my']['secret_key'])
+    # xchg.confirmation_token    = generate_random_string(length=40)
+    # xchg.confirmation_sent_at  = datetime.now()
+    # xchg.put()
 
-    b_ars = AccountBalance.get_or_insert('xchg-ars',account=xchg, currency='ARS', parent=xchg)
-    b_ars.put()
+    # b_ars = AccountBalance.get_or_insert('xchg-ars',account=xchg, currency='ARS', parent=xchg)
+    # b_ars.put()
 
-    b_btc = AccountBalance.get_or_insert('xchg-btc',account=xchg, currency='BTC', parent=xchg)
-    b_btc.put()
+    # b_btc = AccountBalance.get_or_insert('xchg-btc',account=xchg, currency='BTC', parent=xchg)
+    # b_btc.put()
 
-    from models import SystemConfig
-    s = SystemConfig.get_or_insert('system-config',
-          remote_rpc        = 'blockchain', 
-          confirmations     = '0',
-          trade_enable      = 'Y', 
-          import_delay      = '0',
-          import_enable     = 'Y',
-          forward_enable    = 'Y')
+    # from models import SystemConfig
+    # s = SystemConfig.get_or_insert('system-config',
+    #       remote_rpc        = 'blockchain', 
+    #       confirmations     = '0',
+    #       trade_enable      = 'Y', 
+    #       import_delay      = '0',
+    #       import_enable     = 'Y',
+    #       forward_enable    = 'Y')
 
-    s.put()
+    # s.put()
 
-    from bitcoinrpc.connection import get_proxy
+    #from bitcoinrpc.connection import get_proxy
     
     #last_block = 231713
     #last_block = get_proxy(s.remote_rpc).getblockcount()
@@ -255,26 +255,26 @@ class AccountController(FrontendHandler):
     #b = Block( key=db.Key.from_path('Block',last_block), processed='Y', number=last_block, hash='n/a', txs=0)
     #b.put()
 
-    from models import PriceBar
-    import time
-    nowts = time.time()
+    # from models import PriceBar
+    # import time
+    # nowts = time.time()
 
-    bar_time = int(nowts/PriceBar.H1)
+    # bar_time = int(nowts/PriceBar.H1)
 
-    now = datetime.fromtimestamp(bar_time)
+    # now = datetime.fromtimestamp(bar_time)
 
-    dummy_bar = PriceBar.get_or_insert('dummy_bar',
-                        open     = 0,
-                        high     = 0,
-                        low      = 0,
-                        close    = 0,
-                        volume   = 0, 
-                        bar_time = bar_time,
-                        bar_interval = PriceBar.H1,
-                        year     = now.year,
-                        month    = now.month,
-                        day      = now.day)
-    dummy_bar.put()
+    # dummy_bar = PriceBar.get_or_insert('dummy_bar',
+    #                     open     = 0,
+    #                     high     = 0,
+    #                     low      = 0,
+    #                     close    = 0,
+    #                     volume   = 0, 
+    #                     bar_time = bar_time,
+    #                     bar_interval = PriceBar.H1,
+    #                     year     = now.year,
+    #                     month    = now.month,
+    #                     day      = now.day)
+    # dummy_bar.put()
     
     from mail import init_mails
     init_mails()

@@ -19,8 +19,8 @@ from google.appengine.api import files
 from webapp2 import abort, cached_property, RequestHandler, Response, HTTPException, uri_for as url_for, get_app
 from webapp2_extras import jinja2, sessions, json
 
-from models import AccountBalance , Account, get_system_config
-from exchanger import get_account_balance
+from models import AccountBalance, Operation, Account, get_system_config, PriceBar
+from exchanger import get_account_balance, get_ticker
 
 from filters import *
 from config import config
@@ -144,6 +144,7 @@ class Jinja2Mixin(object):
       env.globals['email_verified']       = self.email_verified
       env.globals['ars_balance']          = self.ars_balance
       env.globals['btc_balance']          = self.btc_balance
+      env.globals['ticker']               = get_ticker()
     
     # Globals solo para backend
     elif isinstance(self, BackendHandler):

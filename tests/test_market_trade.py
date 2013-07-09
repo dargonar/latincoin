@@ -9,6 +9,11 @@ from google.appengine.ext import db
 from google.appengine.ext import testbed
 from google.appengine.datastore import datastore_stub_util
 
+import webapp2
+
+from config import config
+from urls import get_rules
+
 from models import Account, TradeOrder, AccountBalance, Dummy, Operation, AccountOperation
 from exchanger import *
 
@@ -20,6 +25,13 @@ from bitcoin_helper import zero_btc
 class TestMarketTrade(unittest.TestCase, TestUtilMixin):
 
   def setUp(self):
+
+    # Creamos el contexto webapp2
+    app = webapp2.WSGIApplication(routes=get_rules(config), config=config, debug=True)
+
+    req = webapp2.Request.blank('/bet_casela')
+    req.app = app
+    webapp2._local.request = req
     
     # First, create an instance of the Testbed class.
     self.testbed = testbed.Testbed()
@@ -32,6 +44,8 @@ class TestMarketTrade(unittest.TestCase, TestUtilMixin):
     
     # Initialize the datastore stub with this policy.
     self.testbed.init_datastore_v3_stub(consistency_policy=self.policy)
+    self.testbed.init_taskqueue_stub()
+    self.testbed.init_memcache_stub()
 
     self.aux_init_all()
 
@@ -73,8 +87,13 @@ class TestMarketTrade(unittest.TestCase, TestUtilMixin):
     self.aux_add_bid(self.u(0), Decimal('6'), Decimal('200'))
     self.aux_add_bid(self.u(0), Decimal('5'), Decimal('250'))
     self.aux_add_bid(self.u(0), Decimal('5'), Decimal('300'))
-    self.aux_add_bid(self.u(1), Decimal('5'), Decimal('350'))
-    self.aux_add_bid(self.u(2), Decimal('5'), Decimal('400'))
+    
+    for x in xrange(2000):
+      self.aux_add_bid(self.u(1), Decimal('5')/Decimal('2000'), Decimal('350'))
+    
+    for x in xrange(25):
+      self.aux_add_bid(self.u(2), Decimal('5')/Decimal('25'), Decimal('400'))
+
     self.aux_add_bid(self.u(3), Decimal('5'), Decimal('500'))
 
     
@@ -82,7 +101,10 @@ class TestMarketTrade(unittest.TestCase, TestUtilMixin):
     
     self.assertTrue(p[0] is not None) and self.assertEqual(p[1], u'ok')
 
-    for s in p[0].sales:
+    sales = p[0].sales.fetch(10000)
+    print 'sales:%d' % len(sales)
+
+    for s in sales:
       r = apply_operation(str(s.key()))
       self.assertTrue(r is not None)
 

@@ -8,6 +8,7 @@ from datetime import datetime
 from decimal import Decimal
 
 from google.appengine.ext import db
+from google.appengine.api import memcache
 
 from webapp2 import RequestHandler, uri_for as url_for
 
@@ -86,7 +87,7 @@ class TasksController(RequestHandler):
                         bar_interval = last_bar.bar_interval)
 
     next_bar.put()
-        
+    memcache.delete('ticker')
 
   def match_orders(self, **kwargs):
     
@@ -94,11 +95,16 @@ class TasksController(RequestHandler):
     if not sconfig.can_trade():
       return
 
-    exchanger.match_orders()
+    ops = exchanger.match_orders()
+    for op in ops:
+      exchanger.apply_operation(str(op.key()))
 
   def apply_operations(self, **kwargs):
-    
-    for op in Operation.all().filter('status =', Operation.OPERATION_PENDING):
+
+    query = Operation.all()
+    query = query.filter('status =', Operation.OPERATION_PENDING)
+
+    for op in query.run(read_policy=db.STRONG_CONSISTENCY):
       exchanger.apply_operation(str(op.key()))
 
   def update_btc_balance(self, **kwargs):

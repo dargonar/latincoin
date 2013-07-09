@@ -4,10 +4,25 @@ from random import uniform
 
 from google.appengine.ext import db
 
-from models import Account, TradeOrder, AccountBalance, Dummy, Operation, AccountOperation, BankAccount, ForwardTx
-from exchanger import get_account_balance, add_limit_trade
+from models import Operation, Account, TradeOrder, AccountBalance, Dummy, Operation, AccountOperation, BankAccount, ForwardTx
+from exchanger import get_account_balance, add_limit_trade, apply_operation
 
 class TestUtilMixin:
+
+  def aux_apply_ops(self, ops):
+    
+    if len(ops):
+      print "------> aplicando %d ordenes" % len(ops)
+
+    for op in ops:
+      apply_operation(str(op.key()))
+
+  def aux_apply_operations(self):
+    query = Operation.all()
+    query = query.filter('status =', Operation.OPERATION_PENDING)
+
+    for op in query.run(read_policy=db.STRONG_CONSISTENCY):
+      apply_operation(str(op.key()))    
 
   def aux_sum_trade_orders(self, user):
     ret = {'ARS':Decimal('0'), 'BTC':Decimal('0')}

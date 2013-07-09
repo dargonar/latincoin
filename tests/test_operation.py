@@ -92,18 +92,13 @@ class TestOperation(unittest.TestCase, TestUtilMixin):
 
     self.aux_add_ask(self.u(4), Decimal('10'), Decimal('301'))
     self.aux_add_ask(self.u(4), Decimal('10'), Decimal('302'))
-
      
-    op = match_orders()
-    self.assertEqual( True, op[0] != None )
-    dummy = db.get(op[0].key())
-    
+    ops = match_orders()
+    self.assertEqual( True, len(ops) == 2 )
+    #dummy = db.get(ops[0].key())
 
-    ops = Operation.all().fetch(10)
-    self.assertEqual( 1, len(ops) )
-
-    res1[0] = db.get(res1[0].key())
-    res2[0] = db.get(res2[0].key())
+    ops = Operation.all().order('-created_at').fetch(10)
+    self.assertEqual( 2, len(ops) )
 
     self.aux_assert_pending_op(ops[0], self.users[0], self.users[1], res1[0], res2[0], Decimal('2'), Decimal('300'))
 

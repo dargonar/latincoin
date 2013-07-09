@@ -1,9 +1,18 @@
 # -*- coding: utf-8 -*-
 import unittest
-
-from time import sleep
-from decimal import Decimal
 from random import uniform
+
+# import time
+# now=time.time()
+
+# def mytime(): 
+#   #print '---------------------------------'
+#   mynow = now + uniform(5,15)*60
+#   return mynow
+
+# time.time = mytime
+
+from decimal import Decimal
 
 from google.appengine.ext import db
 from google.appengine.ext import testbed
@@ -22,6 +31,8 @@ from my_test_utils import TestUtilMixin
 
 from bitcoin_helper import zero_btc
 
+
+
 class TestOrders(unittest.TestCase, TestUtilMixin):
 
   def setUp(self):
@@ -29,7 +40,7 @@ class TestOrders(unittest.TestCase, TestUtilMixin):
     # Creamos el contexto webapp2
     app = webapp2.WSGIApplication(routes=get_rules(config), config=config, debug=True)
 
-    req = webapp2.Request.blank('/bet_casela')
+    req = webapp2.Request.blank('/beto_casela')
     req.app = app
     webapp2._local.request = req
     
@@ -45,6 +56,7 @@ class TestOrders(unittest.TestCase, TestUtilMixin):
     # Initialize the datastore stub with this policy.
     self.testbed.init_datastore_v3_stub(consistency_policy=self.policy)
     self.testbed.init_taskqueue_stub()
+    self.testbed.init_memcache_stub()
 
     self.aux_init_all()
 
@@ -96,14 +108,33 @@ class TestOrders(unittest.TestCase, TestUtilMixin):
 
       r = None
 
-      # 60% chances de meter orden
+      # 60% chances de comprar/vender
       if uniform(1,100) > 40:
 
         # 50% chances de meter bid o ask
         if uniform(1,100) > 50:
-          r = self.aux_add_random_bid(user, 1, 10, 100, 200)
+          
+          # 70 % chances limit
+          if uniform(1,100) > 30:
+            r = self.aux_add_random_bid(user, 1, 10, 100, 200)
+            if r[0]: print 'meti limit bid %s' % r[0].created_at.strftime("%Y-%m-%d %H:%M:%S")
+          else:
+            p = add_market_trade(user, TradeOrder.BID_ORDER, Decimal(uniform(1,5)) )
+            if p[0]:
+              print 'meti de mercado bid %s' % p[0].created_at.strftime("%Y-%m-%d %H:%M:%S")
+              self.aux_apply_operations()
         else:
-          r = self.aux_add_random_ask(user, 1, 10, 150, 250)
+          # 70 % chances limit
+          if uniform(1,100) > 30:
+            r = self.aux_add_random_ask(user, 1, 10, 150, 250)
+            if r[0]: print 'meti limit ask %s' % r[0].created_at.strftime("%Y-%m-%d %H:%M:%S")
+          else:
+            p = add_market_trade(user, TradeOrder.ASK_ORDER, Decimal(uniform(1,5)) )
+            if p[0]:
+              print 'meti de mercado ask %s' % p[0].created_at.strftime("%Y-%m-%d %H:%M:%S")
+              self.aux_apply_operations()
+
+          
 
       # 40%
       else:
@@ -140,11 +171,9 @@ class TestOrders(unittest.TestCase, TestUtilMixin):
           print 'mando a depositar: %.5f %s' % (cuanto, currency)
 
             
-      # 70% chances de correr el match_orders
-      if uniform(1,100) > 30:
-        res = match_orders() 
-        if res[0] is not None:
-          apply_operation( str(res[0].key()) )
+      # 20% chances de correr el match_orders
+      if uniform(1,100) > 80:
+        self.aux_apply_ops(match_orders())
 
       # 15% de chances de cancelar una orden
       if r and r[0] and uniform(1,100) > 85:
@@ -153,12 +182,8 @@ class TestOrders(unittest.TestCase, TestUtilMixin):
           self.assertFalse(cancel_order(str(r[0].key())))
 
     # Corremos las ultimas veces hasta que no se toquen las puntas
-    print 'corremos una mas ...'
-    res = match_orders()
-    while res[0] is not None:
-      print 'print una mas ...'
-      apply_operation(str(res[0].key()))
-      res = match_orders()
+    print '-----------------corremos una mas--------------------'
+    self.aux_apply_ops(match_orders())
 
     bba = self.aux_get_best_bid_ask()
 
@@ -167,6 +192,10 @@ class TestOrders(unittest.TestCase, TestUtilMixin):
     # Comparamos las sumas de los accountoperation contra el balance global
     res = self.aux_compare_guita()
     self.assertTrue( zero_btc(res['in']['ARS'] - res['sumbal']['ARS']) )
+    
+    print res['in']['BTC']
+    print res['sumbal']['BTC']
+    
     self.assertTrue( zero_btc(res['in']['BTC'] - res['sumbal']['BTC']) )
 
     # Por todos los usuarios, verificamos que el balance comprometido 
@@ -181,12 +210,12 @@ class TestOrders(unittest.TestCase, TestUtilMixin):
 
       res = self.aux_sum_trade_orders(u)
       
-      print 
-      print 'sum ask ord : %.5f' % res['BTC']
-      print 'amt btc comp: %.5f' % res2['BTC'].amount_comp
-      print 
-      print 'sum bid ord : %.5f' % res['ARS']
-      print 'amt ars comp: %.5f' % res2['ARS'].amount_comp
+      # print 
+      # print 'sum ask ord : %.5f' % res['BTC']
+      # print 'amt btc comp: %.5f' % res2['BTC'].amount_comp
+      # print 
+      # print 'sum bid ord : %.5f' % res['ARS']
+      # print 'amt ars comp: %.5f' % res2['ARS'].amount_comp
 
       self.assertTrue( zero_btc(res2['ARS'].amount_comp-res['ARS']) )
       self.assertTrue( zero_btc(res2['BTC'].amount_comp-res['BTC']) )
@@ -204,7 +233,9 @@ class TestOrders(unittest.TestCase, TestUtilMixin):
 
     # Todas las trades ordenes cerradas
     for t in TradeOrder.all().filter('status =', TradeOrder.ORDER_COMPLETED):
-      self.assertTrue(zero_btc(t.amount))
+      
+      if not t.is_market():
+        self.assertTrue(zero_btc(t.amount))
 
     # Todas las trades ordenes canceladas
     # for t in TradeOrder.all().filter('status =', TradeOrder.ORDER_CANCELED):

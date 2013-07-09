@@ -4,21 +4,73 @@ import logging
 from decimal import Decimal
 from google.appengine.ext import db
 from google.appengine.ext import deferred
+from google.appengine.api import memcache
 
-from models import TradeOrder, Operation, Account, AccountOperation, Dummy, ForwardTx, BankAccount, AccountBalance
+from models import PriceBar, TradeOrder, Operation, Account, AccountOperation, Dummy, ForwardTx, BankAccount, AccountBalance
 
 from bitcoin_helper import zero_btc
 
 from mail.mailer import enqueue_mail
 
+def on_operation_applied(last_price, last_amount):
+  memcache.set('last_price', last_price)
+
+  ticker = get_ticker()
+  
+  ticker['high']    = max(ticker['high'], last_price)
+  ticker['low']     = min(ticker['low'],  last_price)
+  ticker['volume'] += last_amount
+
+  memcache.replace('ticker', ticker)
+
+def get_last_price():
+  last_price = memcache.get('last_price')
+  if last_price:
+    return last_price
+
+  last_price = Decimal('0')
+
+  last_op = Operation.all().filter('-created_at').get()
+  if last_op:
+    last_price = last_op.ppc
+
+  memcache.set('last_price', last_price)
+  return last_price
+
+def get_ticker():
+  ticker = memcache.get('ticker')
+  if ticker:
+    return ticker
+
+  high = low = volume = Decimal('0')
+  
+  query = PriceBar.all()
+  query = query.filter('bar_interval =', PriceBar.H1)
+  query = query.order('-bar_time')
+
+  count = 0
+  for bar in query:
+    
+    high    = max(bar.high, high)
+    low     = min(bar.low, low)
+    volume += bar.volume
+
+    count = count + 1
+    if count > 23:
+      break
+
+  ticker = {'high':high, 'low':low, 'volume':volume}
+  memcache.set('ticker', ticker)
+  return ticker
+
 def get_ohlc(from_ts, to_ts, prev_close=0):
   
   _open = high = low = close = None ; volume = 0
   for o in Operation.all().filter('created_at >=', from_ts).filter('created_at <', to_ts):
-    price  = int(o.ppc*Decimal('1e3'))
-    vol    = int(o.traded_btc*Decimal('1e3'))
+    price  = o.ppc
+    vol    = o.traded_btc
 
-    if not _open : _open = price
+    if not _open : _open = prev_close
     if not high or price > high: high = price
     if not low or price < low: low = price      
     close = price
@@ -26,7 +78,7 @@ def get_ohlc(from_ts, to_ts, prev_close=0):
     volume = volume + vol
 
   # Si no habia nada en el intervalo ponemos ohlc en prev_close
-  if not _open:
+  if _open is None:
     _open = high = low = close = prev_close
 
   return {'open':_open, 'high':high, 'low':low, 'close':close, 'volume':volume}
@@ -303,7 +355,7 @@ def apply_operation(operation_key):
     op = Operation.get(db.Key(operation_key))
     
     # Si ya se habia aplicado no la aplico nuevamente
-    if op.status == Operation.OPERATION_DONE:
+    if not op.is_pending():
       return op
 
     seller_rate = op.seller.commission_rate
@@ -434,7 +486,9 @@ def apply_operation(operation_key):
 
     return op
 
-  return _tx()
+  last_op = _tx()
+  on_operation_applied(last_op.ppc, last_op.traded_btc)
+  return last_op
 
 
 # Intenta matchear la mejor BID con la mejor ASK
@@ -447,79 +501,95 @@ def match_orders():
   @db.transactional(xg=True)
   def _tx():
 
-    # Tomamos la mejor (mas alta) BID activa
-    best_bid = TradeOrder.all() \
+    # Tomamos las bids ordenadas (la mas alta primero)
+    bids = TradeOrder.all() \
           .ancestor(parent) \
           .filter('order_type =', TradeOrder.LIMIT_ORDER) \
           .filter('bid_ask =', TradeOrder.BID_ORDER) \
           .filter('status =', TradeOrder.ORDER_ACTIVE) \
           .order('-ppc_int') \
-          .get()
+          .run()
 
-    # Tienen que ser válido el bid
-    if best_bid is None:
-      return [None, u'No hay suficientes ordenes para matchear']
 
-    # Tomamos la mejor (mas baja) ASK activa (que no sea del usuario del bid)
-    best_ask = None
-    for ask_order in TradeOrder.all() \
+    # Tomamos las asks ordenadas (la mas baja primero)
+    asks = TradeOrder.all() \
           .ancestor(parent) \
           .filter('order_type =', TradeOrder.LIMIT_ORDER) \
           .filter('bid_ask =', TradeOrder.ASK_ORDER) \
           .filter('status =', TradeOrder.ORDER_ACTIVE) \
-          .order('ppc_int'):
+          .order('ppc_int') \
+          .run()
 
-      if str(TradeOrder.user.get_value_for_datastore(ask_order)) != str(TradeOrder.user.get_value_for_datastore(best_bid)):
-         best_ask = ask_order
-         break
+    def get_next(q):
+      res = None
+      try:
+        res = q.next()
+      except:
+        pass
 
-    # Tienen que ser válido el ask
-    if best_ask is None:
-      return [None, u'No hay suficientes ordenes para matchear']
+      return res
 
-    # Nos fijamos si hacen el match
-    if best_bid.ppc < best_ask.ppc:
-      return [None, u'No hay coincidencia (bet_bid=%.2f, best_ask=%.2f)' % (best_bid.ppc, best_ask.ppc)]
+    modified_orders = []
+    new_operations  = []
 
-    # Hay posibilidad de operacion, obtenemos los valores para armar la operacion
-    amount = min(best_bid.amount, best_ask.amount)
-    ppc    = best_ask.ppc
+    # Traemos las primeras ordenes
+    best_bid = get_next(bids)
+    if best_bid:
+      best_ask = get_next(asks)
 
-    # Se crea una nueva operation Operation.OPERATION_PENDING
-    # Luego, cuando se generen los 6 AccountOperations y la actualizacion de
-    # los balances se pasa a OPERATION_DONE
-    
-    # if best_ask is None or best_ask.user is None or best_bid is None or best_bid.user is None:
-      # return [None, u'user en order is none']
+    # Iteramos mientras tengamos ask y bid
+    while best_bid and best_ask:
+
+      # Nos fijamos si hay match
+      if best_bid.ppc < best_ask.ppc:
+        break
+
+      # Hay posibilidad de operacion, obtenemos los valores para armar la operacion
+      amount = min(best_bid.amount, best_ask.amount)
+      ppc    = best_ask.ppc
+
+      # Se crea una nueva operation Operation.OPERATION_PENDING
+      # Luego, cuando se generen los 6 AccountOperations y la actualizacion de
+      # los balances se pasa a OPERATION_DONE
       
-    op = Operation(parent=Dummy.get_by_key_name('operations'),
-                   purchase_order    = best_bid,
-                   sale_order        = best_ask,
-                   traded_btc        = amount,
-                   traded_currency   = amount*ppc,
-                   ppc               = ppc,
-                   currency          = 'ARS',
-                   seller            = best_ask.user,
-                   buyer             = best_bid.user,
-                   status            = Operation.OPERATION_PENDING,
-                   type              = Operation.OPERATION_BUY if best_bid.created_at > best_ask.created_at else Operation.OPERATION_SELL
-          );
+      op = Operation(parent=Dummy.get_by_key_name('operations'),
+                     purchase_order    = best_bid,
+                     sale_order        = best_ask,
+                     traded_btc        = amount,
+                     traded_currency   = amount*ppc,
+                     ppc               = ppc,
+                     currency          = 'ARS',
+                     seller            = TradeOrder.user.get_value_for_datastore(best_ask),
+                     buyer             = TradeOrder.user.get_value_for_datastore(best_bid),
+                     status            = Operation.OPERATION_PENDING,
+                     type              = Operation.OPERATION_BUY if best_bid.created_at > best_ask.created_at else Operation.OPERATION_SELL
+            );
 
-    # Acomodamos los valores de los TradeOrders y los marcamos como completos en caso 
-    # Que den 0
-
-    best_bid.amount -= amount
-    if zero_btc(best_bid.amount):
-      best_bid.status = TradeOrder.ORDER_COMPLETED
+      # Guardamos la operacion para salvar posteriormente
+      new_operations.append(op)
     
-    best_ask.amount -= amount
-    if zero_btc(best_ask.amount):
-      best_ask.status = TradeOrder.ORDER_COMPLETED
+      # Acomodamos los valores de los TradeOrders 
+      # y los marcamos como completos en caso que den 0
 
-    # Grabamos todo
-    db.put([op,best_bid,best_ask])
+      best_bid.amount -= amount
+      if zero_btc(best_bid.amount):
+        best_bid.status = TradeOrder.ORDER_COMPLETED
+        modified_orders.append(best_bid)
 
-    return [op, u'ok']
+        best_bid = get_next(bids)
+      
+      best_ask.amount -= amount
+      if zero_btc(best_ask.amount):
+        best_ask.status = TradeOrder.ORDER_COMPLETED
+        modified_orders.append(best_ask)
+
+        best_ask = get_next(asks)
+
+    # Grabamos si hay algo para grabar
+    if len(new_operations):
+      db.put(new_operations + modified_orders)
+
+    return new_operations
 
   return _tx()
 

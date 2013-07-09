@@ -126,6 +126,21 @@ indexes:
   - name: bid_ask
   - name: order_type
   - name: status
+  - name: ppc_int
+
+- kind: TradeOrder
+  properties:
+  - name: bid_ask
+  - name: order_type
+  - name: status
+  - name: ppc_int
+    direction: desc
+
+- kind: TradeOrder
+  properties:
+  - name: bid_ask
+  - name: order_type
+  - name: status
   - name: user
   - name: created_at
 

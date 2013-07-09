@@ -43,7 +43,7 @@ class MainController(FrontendHandler):
 
     # type  = kwargs['type']
     # mode  = kwargs['mode']
-    sort = '%sppc' % sort
+    sort = '%sppc_int' % sort
     query  = TradeOrder.all() 
 
     if mode == 'active':
